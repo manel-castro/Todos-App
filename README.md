@@ -2,7 +2,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 This project is a continuation of the React Crash Course of Transversy Media on Youtube. I added by myself some features. 
 
-https://www.youtube.com/watch?v=sBws8MSXN7A 
+React Crash Course: https://www.youtube.com/watch?v=sBws8MSXN7A 
 
 The React Crash Course includes: 
 - Working with props and use of Functions in React.
