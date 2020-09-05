@@ -10,6 +10,7 @@ import "./App.css";
 /* 
 ++++++++++TODOS++++++++++++++
 - User System (if you're logout it don't shows you the todo's page)
+- Efficiency problem: change in single todo request to database all of them.
 */
 
 const firebase = require("firebase");
@@ -18,6 +19,7 @@ class App extends React.Component {
   state = {
     todos: [],
     errors: [],
+    loggedUser: false,
   };
 
   /*
@@ -31,6 +33,7 @@ class App extends React.Component {
       .createUserWithEmailAndPassword(newUser.email, newUser.password)
       .then((cred) => {
         console.log(cred);
+        window.location.href = "/";
       })
       .catch((error) => {
         // TODO: Send errors to show in login page
@@ -47,7 +50,9 @@ class App extends React.Component {
       .signInWithEmailAndPassword(userData.email, userData.password)
       .then((cred) => {
         console.log(cred);
-      });
+        window.location.href = "/app";
+      })
+      .catch((err) => console.log(err));
   };
 
   logout = () => {
@@ -56,6 +61,10 @@ class App extends React.Component {
       .signOut()
       .then(() => {
         console.log("Signed Out");
+        this.setState({
+          loggedUser: false,
+        });
+        window.location.href = "/login";
       });
   };
 
@@ -69,16 +78,24 @@ class App extends React.Component {
           .collection("todos")
           .orderBy("timestamp", "desc")
           .onSnapshot((serverUpdate) => {
-            const todos = serverUpdate.docs.map((todo) => {
-              const data = todo.data();
-              data["id"] = todo.id;
-              return data;
-            });
+            const todos = serverUpdate.docs.map(
+              (todo) => {
+                const data = todo.data();
+                data["id"] = todo.id;
+                return data;
+              },
+              (err) => {
+                console.log(err.message);
+              }
+            );
 
             // todos.sort((x, y) => {
             //   return x.timestamp - y.timestamp;
             // })
-            this.setState({ todos: todos });
+            this.setState({
+              todos: todos,
+              loggedUser: true,
+            });
             console.log(this.state.todos);
           });
       } else {
@@ -133,7 +150,7 @@ class App extends React.Component {
       <Router>
         <div className="App">
           <div className="container">
-            <Header logout={this.logout} />
+            <Header logout={this.logout} loggedUser={this.state.loggedUser} />
             <Route
               exact
               path="/"
