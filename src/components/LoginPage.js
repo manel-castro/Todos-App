@@ -14,6 +14,7 @@ class LoginPage extends React.Component {
     email: "",
     pass: "",
   };
+
   onChange = (e) => {
     e.preventDefault();
     this.setState({
@@ -70,6 +71,11 @@ class LoginPage extends React.Component {
             value={this.state.pass}
             onChange={this.onChange}
           ></input>
+          <div style={{ color: "red" }}>
+            {Object.keys(this.props.errors).map((key) => (
+              <>{this.props.errors[key]}</>
+            ))}
+          </div>
           <div style={{ marginTop: 5 }}>
             <button
               id="login"

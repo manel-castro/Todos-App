@@ -18,9 +18,11 @@ const firebase = require("firebase");
 class App extends React.Component {
   state = {
     todos: [],
-    errors: [],
+    errors: {},
     loggedUser: false,
   };
+
+  currentUser;
 
   /*
   -----------TODO----------------
@@ -34,11 +36,12 @@ class App extends React.Component {
       .then((cred) => {
         console.log(cred);
         window.location.href = "/";
+        this.currentUser = cred;
       })
-      .catch((error) => {
+      .catch((err) => {
         // TODO: Send errors to show in login page
         this.setState({
-          errors: [...this.state.errors, error],
+          errors: { ...this.state.errors, userErrors: err.message },
         });
         console.log(this.state.errors);
       });
@@ -50,9 +53,15 @@ class App extends React.Component {
       .signInWithEmailAndPassword(userData.email, userData.password)
       .then((cred) => {
         console.log(cred);
-        window.location.href = "/app";
+        window.location.href = "/";
+        this.currentUser = cred;
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        // console.log(err.message);
+        this.setState({
+          errors: { ...this.state.errors, userErrors: err.message },
+        });
+      });
   };
 
   logout = () => {
@@ -68,14 +77,19 @@ class App extends React.Component {
       });
   };
 
+  //Callback users system
+
   //Requesting data from an Firebase once page is rendered
   componentDidMount = async () => {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
+        this.currentUser = user;
         console.log(user);
+        console.log(user.getIdToken());
         await firebase
           .firestore()
           .collection("todos")
+          .where("userId", "==", this.currentUser.uid)
           .orderBy("timestamp", "desc")
           .onSnapshot((serverUpdate) => {
             const todos = serverUpdate.docs.map(
@@ -101,6 +115,7 @@ class App extends React.Component {
       } else {
         this.setState({
           todos: [],
+          loggedUser: false,
         });
       }
     });
@@ -142,6 +157,7 @@ class App extends React.Component {
       title: note.title,
       completed: note.completed,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      userId: this.currentUser.uid,
     });
   };
 
@@ -151,24 +167,34 @@ class App extends React.Component {
         <div className="App">
           <div className="container">
             <Header logout={this.logout} loggedUser={this.state.loggedUser} />
-            <Route
-              exact
-              path="/"
-              render={(props) => (
-                <TodosLayout
-                  AddTodo={this.AddTodo}
-                  todos={this.state.todos}
-                  markComplete={this.markComplete}
-                  delTodo={this.delTodo}
-                />
-              )}
-            />
+
+            {this.state.loggedUser ? (
+              <Route
+                exact
+                path="/"
+                render={(props) => (
+                  <TodosLayout
+                    AddTodo={this.AddTodo}
+                    todos={this.state.todos}
+                    markComplete={this.markComplete}
+                    delTodo={this.delTodo}
+                  />
+                )}
+              />
+            ) : (
+              <h2 style={{ textAlign: "center" }}>You need to login</h2>
+            )}
+
             <Route path="/about" render={About} />
             <div>
               <Route
                 path="/login"
                 render={(props) => (
-                  <LoginPage login={this.login} signup={this.signup} />
+                  <LoginPage
+                    login={this.login}
+                    signup={this.signup}
+                    errors={this.state.errors}
+                  />
                 )}
               />
             </div>

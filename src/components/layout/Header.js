@@ -8,7 +8,7 @@ function Header(props) {
       <Link style={linkStyle} to="/about">
         About
       </Link>{" "}
-      <div>
+      <>
         {props.loggedUser ? (
           <>
             |{" "}
@@ -17,9 +17,14 @@ function Header(props) {
             </Link>
           </>
         ) : (
-          ""
+          <>
+            |{" "}
+            <Link style={linkStyle} to="/login">
+              Login
+            </Link>
+          </>
         )}
-      </div>
+      </>
     </header>
   );
 }
