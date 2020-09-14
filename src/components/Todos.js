@@ -1,47 +1,60 @@
-import React from 'react';
-import TodoItem from './TodoItem';
-import PropTypes from 'prop-types';
+import React from "react";
+import TodoItem from "./TodoItem";
+import PropTypes from "prop-types";
 
+const Todos = ({ todos, markComplete, delTodo }) => {
+  //For conditional rendering below.
+  const completedTodos = todos.filter((todo) => {
+    return todo.completed === true;
+  });
 
-class Todos extends React.Component{
-
-  render() {
-    //   console.log(this.props.todos)
-    return (
-      <div>
-        {this.props.todos.filter(todo => {
+  return (
+    <div>
+      {todos
+        .filter((todo) => {
           return todo.completed === false;
-        }).map((todo)=>(
-          <TodoItem key={todo.id} todo={todo} markComplete={this.props.markComplete} delTodo={this.props.delTodo}/>
+        })
+        .map((todo) => (
+          <TodoItem
+            key={todo.id}
+            todo={todo}
+            markComplete={markComplete}
+            delTodo={delTodo}
+          />
         ))}
+      {completedTodos.length === 0 ? null : (
         <div style={completedStyle}>
           <p>Completed Todos</p>
-          {this.props.todos.filter(todo => {
-          return todo.completed === true;
-        }).map((todo)=>(
-          <TodoItem key={todo.id} todo={todo} markComplete={this.props.markComplete} delTodo={this.props.delTodo}/>
-        ))}
+          <div style={completedTodoStyle}>
+            {completedTodos.map((todo) => (
+              <TodoItem
+                key={todo.id}
+                todo={todo}
+                markComplete={markComplete}
+                delTodo={delTodo}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-
-    );
-  }
-}
+      )}
+    </div>
+  );
+};
 
 const completedStyle = {
-  padding: '10px',
-  margin: '10px',
-  background: '#d9d9d9'  
+  padding: "10px",
+  margin: "10px",
+  background: "#d9d9d9",
+};
 
-}
+const completedTodoStyle = {
+  textDecoration: "line-through",
+};
 
-
-  //PropTypes (Good Practice)
 Todos.propTypes = {
-    todos: PropTypes.array.isRequired,
-    markComplete: PropTypes.func.isRequired,
-    delTodo: PropTypes.func.isRequired
-
-}
+  todos: PropTypes.array.isRequired,
+  markComplete: PropTypes.func.isRequired,
+  delTodo: PropTypes.func.isRequired,
+};
 
 export default Todos;

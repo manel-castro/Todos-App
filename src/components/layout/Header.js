@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
-function Header(props) {
+const Header = ({ loggedUser, userLogout }) => {
   return (
     <header style={headerStyle}>
       <h1>TodoList</h1>{" "}
@@ -9,10 +10,10 @@ function Header(props) {
         About
       </Link>{" "}
       <>
-        {props.loggedUser ? (
+        {loggedUser ? (
           <>
             |{" "}
-            <Link style={linkStyle} onClick={props.logout} to="/">
+            <Link style={linkStyle} onClick={userLogout} to="/">
               Logout
             </Link>
           </>
@@ -27,7 +28,7 @@ function Header(props) {
       </>
     </header>
   );
-}
+};
 
 const headerStyle = {
   background: "#333",
@@ -39,6 +40,11 @@ const headerStyle = {
 const linkStyle = {
   color: "#fff",
   textDecoration: "none",
+};
+
+Header.propTypes = {
+  loggedUser: PropTypes.bool.isRequired,
+  userLogout: PropTypes.func.isRequired,
 };
 
 export default Header;

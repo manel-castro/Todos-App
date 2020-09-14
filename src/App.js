@@ -25,46 +25,43 @@ class App extends React.Component {
   currentUser;
 
   /*
-  -----------TODO----------------
+    USERS SYSTEM
   */
 
-  signup = (newUser) => {
-    // firebase.auth().createUserWithEmailAndPassword()
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(newUser.email, newUser.password)
-      .then((cred) => {
-        console.log(cred);
-        window.location.href = "/";
-        this.currentUser = cred;
-      })
-      .catch((err) => {
-        // TODO: Send errors to show in login page
-        this.setState({
-          errors: { ...this.state.errors, userErrors: err.message },
+  userAccess = (userData) => {
+    if (userData.action === "login") {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(userData.email, userData.password)
+        .then((cred) => {
+          console.log(cred);
+          window.location.href = "/";
+          this.currentUser = cred;
+        })
+        .catch((err) => {
+          this.setState({
+            errors: { ...this.state.errors, userErrors: err.message },
+          });
         });
-        console.log(this.state.errors);
-      });
+    } else if (userData.action === "login") {
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(userData.email, userData.password)
+        .then((cred) => {
+          console.log(cred);
+          this.currentUser = cred;
+          window.location.href = "/";
+        })
+        .catch((err) => {
+          this.setState({
+            errors: { ...this.state.errors, userErrors: err.message },
+          });
+          console.log(this.state.errors);
+        });
+    } else return;
   };
 
-  login = (userData) => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(userData.email, userData.password)
-      .then((cred) => {
-        console.log(cred);
-        window.location.href = "/";
-        this.currentUser = cred;
-      })
-      .catch((err) => {
-        // console.log(err.message);
-        this.setState({
-          errors: { ...this.state.errors, userErrors: err.message },
-        });
-      });
-  };
-
-  logout = () => {
+  userLogout = () => {
     firebase
       .auth()
       .signOut()
@@ -77,9 +74,6 @@ class App extends React.Component {
       });
   };
 
-  //Callback users system
-
-  //Requesting data from an Firebase once page is rendered
   componentDidMount = async () => {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
@@ -103,9 +97,6 @@ class App extends React.Component {
               }
             );
 
-            // todos.sort((x, y) => {
-            //   return x.timestamp - y.timestamp;
-            // })
             this.setState({
               todos: todos,
               loggedUser: true,
@@ -122,10 +113,8 @@ class App extends React.Component {
   };
 
   /*
-  ------------------------------
+    USER ACTIONS
   */
-
-  // Toggle completee
   markComplete = (id) => {
     let state;
     this.state.todos.map((todo) => {
@@ -140,14 +129,12 @@ class App extends React.Component {
     });
   };
 
-  // Delete Todo
   delTodo = (id) => {
     if (window.confirm("Are you sure to delete this note")) {
       firebase.firestore().collection("todos").doc(id).delete();
     }
   };
 
-  // Add Todo
   AddTodo = (title) => {
     const note = {
       title: title,
@@ -166,7 +153,10 @@ class App extends React.Component {
       <Router>
         <div className="App">
           <div className="container">
-            <Header logout={this.logout} loggedUser={this.state.loggedUser} />
+            <Header
+              userLogout={this.userLogout}
+              loggedUser={this.state.loggedUser}
+            />
 
             {this.state.loggedUser ? (
               <Route
@@ -191,8 +181,7 @@ class App extends React.Component {
                 path="/login"
                 render={(props) => (
                   <LoginPage
-                    login={this.login}
-                    signup={this.signup}
+                    userAccess={this.userAccess}
                     errors={this.state.errors}
                   />
                 )}
