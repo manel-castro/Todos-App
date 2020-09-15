@@ -6,7 +6,6 @@ const LoginPage = ({ userAccess, errors }) => {
 
   const onClick = (e) => {
     e.preventDefault();
-    console.log(e.target.id);
     userAccess({
       email,
       password,
