@@ -114,6 +114,7 @@ const App = (props) => {
   */
   const markComplete = (id) => {
     let isCompleted; //test with prevstate
+    //Optimistic markComplete
     todos.map((todo) => {
       if (todo.id === id) {
         isCompleted = !todo.completed;
@@ -121,14 +122,34 @@ const App = (props) => {
       return isCompleted;
     });
 
-    firebase.firestore().collection("todos").doc(id).update({
-      completed: isCompleted,
-    });
+    firebase
+      .firestore()
+      .collection("todos")
+      .doc(id)
+      .update({
+        completed: isCompleted,
+      })
+      .catch((err) => {
+        setErrors({
+          userMarkCompleteError: err.message,
+        });
+        alert("This action haven't been done: " + err.message);
+      });
   };
 
   const delTodo = (id) => {
     if (window.confirm("Are you sure to delete this note")) {
-      firebase.firestore().collection("todos").doc(id).delete();
+      firebase
+        .firestore()
+        .collection("todos")
+        .doc(id)
+        .delete()
+        .catch((err) => {
+          setErrors({
+            userDelTodoError: err.message,
+          });
+          alert("Error when deleting: " + err.message);
+        });
     }
   };
 
@@ -150,6 +171,7 @@ const App = (props) => {
         setErrors({
           userMarkCompleteError: err.message,
         });
+        alert("Error when adding: " + err.message);
       });
   };
 
