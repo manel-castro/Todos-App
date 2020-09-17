@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import Header from "./components/layout/Header";
 import TodosLayout from "./components/TodosLayout";
 import LoginPage from "./components/LoginPage";
@@ -32,7 +32,6 @@ const App = (props) => {
         .signInWithEmailAndPassword(userData.email, userData.password)
         .then((cred) => {
           console.log(cred);
-          window.location.href = "/";
           setCurrentUser(cred);
         })
         .catch((err) => {
@@ -41,18 +40,18 @@ const App = (props) => {
             userAccessError: err.message,
           }));
         });
-    } else if (userData.action === "login") {
+    } else if (userData.action === "signin") {
       firebase
         .auth()
         .createUserWithEmailAndPassword(userData.email, userData.password)
         .then((cred) => {
           console.log(cred);
           setCurrentUser(cred);
-          window.location.href = "/";
         })
         .catch((err) => {
           setErrors((prevErrors) => ({
-            errors: { ...prevErrors, userAccessError: err.message },
+            ...prevErrors,
+            userAccessError: err.message,
           }));
           console.log(errors);
         });
@@ -176,33 +175,37 @@ const App = (props) => {
   };
 
   return (
-    <Router>
-      {loggedUser ? <Redirect to="/" /> : <Redirect to="/login" />}
+    <>
       <div className="App">
         <div className="container">
+          {loggedUser ? <Redirect to="/" /> : <Redirect to="/login" />}
+
           <Header userLogout={userLogout} loggedUser={loggedUser} />
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={() => (
+                <TodosLayout
+                  addTodo={addTodo}
+                  todos={todos}
+                  markComplete={markComplete}
+                  delTodo={delTodo}
+                />
+              )}
+            />
 
-          <Route
-            exact
-            path="/"
-            render={() => (
-              <TodosLayout
-                addTodo={addTodo}
-                todos={todos}
-                markComplete={markComplete}
-                delTodo={delTodo}
-              />
-            )}
-          />
-
-          <Route path="/about" render={About} />
-          <Route
-            path="/login"
-            render={() => <LoginPage userAccess={userAccess} errors={errors} />}
-          />
+            <Route path="/about" render={About} />
+            <Route
+              path="/login"
+              render={() => (
+                <LoginPage userAccess={userAccess} errors={errors} />
+              )}
+            />
+          </Switch>
         </div>
       </div>
-    </Router>
+    </>
   );
 };
 

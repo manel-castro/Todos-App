@@ -48,7 +48,7 @@ const LoginPage = ({ userAccess, errors }) => {
         ></input>
         <div style={{ color: "red" }}>
           {Object.keys(errors).map((key) => (
-            <>{errors[key]}</>
+            <div id={key}>{errors[key]}</div>
           ))}
         </div>
         <div style={{ marginTop: 5 }}>

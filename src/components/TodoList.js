@@ -2,7 +2,7 @@ import React from "react";
 import TodoItem from "./TodoItem";
 import PropTypes from "prop-types";
 
-const Todos = ({ todos, markComplete, delTodo }) => {
+const TodoList = ({ todos, markComplete, delTodo }) => {
   //For conditional rendering below.
   const completedTodos = todos.filter((todo) => {
     return todo.completed === true;
@@ -51,10 +51,10 @@ const completedTodoStyle = {
   textDecoration: "line-through",
 };
 
-Todos.propTypes = {
+TodoList.propTypes = {
   todos: PropTypes.array.isRequired,
   markComplete: PropTypes.func.isRequired,
   delTodo: PropTypes.func.isRequired,
 };
 
-export default Todos;
+export default TodoList;

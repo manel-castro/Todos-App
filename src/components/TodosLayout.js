@@ -2,14 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import AddTodo from "./AddTodo";
-import Todos from "./Todos";
+import TodoList from "./TodoList";
 
 const TodosLayout = ({ addTodo, todos, markComplete, delTodo }) => {
   return (
     <>
       <AddTodo addTodo={addTodo} />
       <div style={{ overflowY: "scroll", height: "84vh" }}>
-        <Todos todos={todos} markComplete={markComplete} delTodo={delTodo} />
+        <TodoList todos={todos} markComplete={markComplete} delTodo={delTodo} />
       </div>
     </>
   );
