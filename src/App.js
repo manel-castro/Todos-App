@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import Header from "./components/layout/Header";
 import TodosLayout from "./components/TodosLayout";
 import LoginPage from "./components/LoginPage";
@@ -177,36 +177,29 @@ const App = (props) => {
 
   return (
     <Router>
+      {loggedUser ? <Redirect to="/" /> : <Redirect to="/login" />}
       <div className="App">
         <div className="container">
           <Header userLogout={userLogout} loggedUser={loggedUser} />
 
-          {loggedUser ? (
-            <Route
-              exact
-              path="/"
-              render={() => (
-                <TodosLayout
-                  addTodo={addTodo}
-                  todos={todos}
-                  markComplete={markComplete}
-                  delTodo={delTodo}
-                />
-              )}
-            />
-          ) : (
-            <h2 style={{ textAlign: "center" }}>You need to login</h2>
-          )}
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <TodosLayout
+                addTodo={addTodo}
+                todos={todos}
+                markComplete={markComplete}
+                delTodo={delTodo}
+              />
+            )}
+          />
 
           <Route path="/about" render={About} />
-          <div>
-            <Route
-              path="/login"
-              render={() => (
-                <LoginPage userAccess={userAccess} errors={errors} />
-              )}
-            />
-          </div>
+          <Route
+            path="/login"
+            render={() => <LoginPage userAccess={userAccess} errors={errors} />}
+          />
         </div>
       </div>
     </Router>
