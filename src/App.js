@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
+
 import Header from "./components/layout/Header";
 import TodosLayout from "./components/todos-page/TodosLayout";
 import LoginPage from "./components/login-page/LoginPage";
@@ -27,19 +28,6 @@ const App = (props) => {
   /*
     USERS SYSTEM
   */
-
-  const userLogout = () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        console.log("Signed Out");
-        setLoggedUser({
-          loggedUser: false,
-        });
-        window.location.href = "/login";
-      });
-  };
 
   const firebaseState = async () =>
     await firebase.auth().onAuthStateChanged(async (user) => {
@@ -148,9 +136,7 @@ const App = (props) => {
     <>
       <div className="App">
         <div className="container">
-          {loggedUser ? <Redirect to="/" /> : <Redirect to="/login" />}
-
-          <Header userLogout={userLogout} loggedUser={loggedUser} />
+          <Header />
           <Switch>
             <Route
               exact

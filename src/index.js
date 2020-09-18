@@ -2,8 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { BrowserRouter as Router } from "react-router-dom";
 import { Provider as ReduxProvider } from "react-redux";
+import { BrowserRouter as Router } from "react-router-dom";
 import configureStore from "./redux/configureStore";
 
 const firebase = require("firebase");

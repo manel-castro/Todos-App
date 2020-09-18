@@ -4,13 +4,11 @@ import initialState from "./initialState";
 export default function userReducers(state = initialState.user, action) {
   switch (action.type) {
     case types.USER_LOGIN_SUCCESS:
-      console.log(action.userCredentials);
-      return state;
+      return [...state, { loggedIn: true }];
     case types.USER_SIGNUP_SUCCESS:
-      console.log(action.newUserCredentials);
-      return state;
+      return [...state, { loggedIn: true }];
     case types.USER_LOGOUT_SUCCESS:
-      return null;
+      return [...state, { loggedIn: false }];
     default:
       return state;
   }

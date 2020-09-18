@@ -3,8 +3,8 @@ import firebase from "firebase";
 
 //Todo: manage errors redux.
 
-export function userLoginSuccess(userCredentials) {
-  return { type: types.USER_LOGIN_SUCCESS, userCredentials };
+export function userLoginSuccess(cred) {
+  return { type: types.USER_LOGIN_SUCCESS, cred };
 }
 
 export function userSignupSuccess(newUserCredentials) {
@@ -18,23 +18,21 @@ export function userLogoutSuccess() {
 //
 //Thunks
 
-export function userLogin(userData) {
+export function userLogin(user) {
   return function (dispatch, getState) {
-    console.log(userData);
+    const { email, password } = user;
+    console.log("action userLogin");
     return firebase
       .auth()
-      .signInWithEmailAndPassword(userData.email, userData.password)
+      .signInWithEmailAndPassword(email, password)
       .then((cred) => {
-        console.log(cred);
-        dispatch(userLoginSuccess(cred));
+        console.log("Logged, credentials:");
+        console.log(cred.uid);
+        dispatch(userLoginSuccess(cred.uid));
+        console.log("success");
       })
       .catch((err) => {
-        // setErrors((prevErrors) => ({
-        //   ...prevErrors,
-        //   userAccessError: err.message,
-        // }));
-        console.log(err.message);
-        //**TODO**//
+        throw err;
       });
   };
 }
