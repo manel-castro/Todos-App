@@ -1,18 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
+import TextInput from "../common/TextInput";
 
-const LoginPage = ({ userAccess, errors }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const onClick = (e) => {
-    e.preventDefault();
-    userAccess({
-      email,
-      password,
-      action: e.target.id,
-    });
-  };
-
+function LoginForm({ onChange, onSave, user, errors, saving }) {
   return (
     <div
       style={{
@@ -30,22 +19,24 @@ const LoginPage = ({ userAccess, errors }) => {
           marginTop: 10,
         }}
       >
-        <h4>Email</h4>
-        <input
-          id="email"
+        <TextInput
+          name="email"
+          label="Email"
           type="text"
           placeholder="Email Adress"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        ></input>
-        <h4>Password</h4>
-        <input
-          id="pass"
+          value={user.email}
+          onChange={onChange}
+          error={errors.email}
+        />
+        <TextInput
+          name="password"
+          label="Password"
           type="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        ></input>
+          value={user.password}
+          onChange={onChange}
+          errors={errors.password}
+        />
         <div style={{ color: "red" }}>
           {Object.keys(errors).map((key) => (
             <div id={key}>{errors[key]}</div>
@@ -53,18 +44,18 @@ const LoginPage = ({ userAccess, errors }) => {
         </div>
         <div style={{ marginTop: 5 }}>
           <button
-            id="login"
+            name="login"
             className="btn"
             style={{ margin: 7, backgroundColor: "silver" }}
-            onClick={onClick}
+            onClick={onSave}
           >
             Login
           </button>
           <button
-            id="signin"
+            name="signup"
             className="btn"
             style={{ margin: 7 }}
-            onClick={onClick}
+            onClick={onSave}
           >
             Sign In
           </button>
@@ -72,6 +63,6 @@ const LoginPage = ({ userAccess, errors }) => {
       </form>
     </div>
   );
-};
+}
 
-export default LoginPage;
+export default LoginForm;

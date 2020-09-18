@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Header from "./components/layout/Header";
-import TodosLayout from "./components/TodosLayout";
-import LoginPage from "./components/LoginPage";
-import About from "./components/pages/About";
+import TodosLayout from "./components/todos-page/TodosLayout";
+import LoginPage from "./components/login-page/LoginPage";
+import About from "./components/about/About";
 // import uuid from 'uuid';
 import "./App.css";
 
@@ -11,6 +11,9 @@ import "./App.css";
 ++++++++++TODOS++++++++++++++
 - User System (if you're logout it don't shows you the todo's page)
 - Efficiency problem: change in single todo request to database all of them.
+- Add 404 page
+- Add username slugs (make public button?)
+- About button to go to Todos page
 */
 
 const firebase = require("firebase");
@@ -24,39 +27,6 @@ const App = (props) => {
   /*
     USERS SYSTEM
   */
-
-  const userAccess = (userData) => {
-    if (userData.action === "login") {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(userData.email, userData.password)
-        .then((cred) => {
-          console.log(cred);
-          setCurrentUser(cred);
-        })
-        .catch((err) => {
-          setErrors((prevErrors) => ({
-            ...prevErrors,
-            userAccessError: err.message,
-          }));
-        });
-    } else if (userData.action === "signin") {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(userData.email, userData.password)
-        .then((cred) => {
-          console.log(cred);
-          setCurrentUser(cred);
-        })
-        .catch((err) => {
-          setErrors((prevErrors) => ({
-            ...prevErrors,
-            userAccessError: err.message,
-          }));
-          console.log(errors);
-        });
-    } else return;
-  };
 
   const userLogout = () => {
     firebase
@@ -196,12 +166,7 @@ const App = (props) => {
             />
 
             <Route path="/about" render={About} />
-            <Route
-              path="/login"
-              render={() => (
-                <LoginPage userAccess={userAccess} errors={errors} />
-              )}
-            />
+            <Route path="/login" render={() => <LoginPage />} />
           </Switch>
         </div>
       </div>
