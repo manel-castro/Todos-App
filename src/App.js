@@ -5,6 +5,7 @@ import Header from "./components/layout/Header";
 import TodosLayout from "./components/todos-page/TodosLayout";
 import LoginPage from "./components/login-page/LoginPage";
 import About from "./components/about/About";
+import PrivateRoute from "./components/common/PrivateRoute";
 // import uuid from 'uuid';
 import "./App.css";
 
@@ -151,7 +152,11 @@ const App = (props) => {
               )}
             />
 
-            <Route path="/about" render={About} />
+            <PrivateRoute
+              path="/about"
+              component={About}
+              authenticated={false}
+            />
             <Route path="/login" render={() => <LoginPage />} />
           </Switch>
         </div>

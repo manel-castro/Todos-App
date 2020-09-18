@@ -5,6 +5,7 @@ import * as serviceWorker from "./serviceWorker";
 import { Provider as ReduxProvider } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 import configureStore from "./redux/configureStore";
+import { history } from "./components/_helpers/history";
 
 const firebase = require("firebase");
 require("firebase/firestore");
@@ -25,7 +26,7 @@ const store = configureStore();
 
 ReactDOM.render(
   <ReduxProvider store={store}>
-    <Router>
+    <Router history={history}>
       <App />
     </Router>
   </ReduxProvider>,
