@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
 const AddTodo = ({ onChange, onSubmit, title, placeholder }) => {
@@ -23,6 +23,11 @@ const AddTodo = ({ onChange, onSubmit, title, placeholder }) => {
   );
 };
 
-AddTodo.propTypes = {};
+AddTodo.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  placeholder: PropTypes.string.isRequired,
+};
 
 export default AddTodo;

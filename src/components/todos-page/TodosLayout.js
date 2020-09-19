@@ -34,10 +34,18 @@ const TodosLayout = ({ addTodo, todos, markComplete, delTodo }) => {
     e.preventDefault();
     const validation = await isNewTodoValid(newTodoTitle);
     if (!validation) return;
-    console.log("fired");
+    console.log("add");
     addTodo({ title: newTodoTitle });
     setNewTodoTitle("");
     setNewTodoError("Add todo...");
+  };
+
+  const handleMarkCompleted = async (todo) => {
+    try {
+      await markComplete(todo);
+    } catch (err) {
+      alert("Server error: Todo haven't been marked");
+    }
   };
 
   return (
@@ -50,7 +58,11 @@ const TodosLayout = ({ addTodo, todos, markComplete, delTodo }) => {
         placeholder={newTodoError}
       />
       <div style={{ overflowY: "scroll", height: "84vh" }}>
-        <TodoList todos={todos} markComplete={markComplete} delTodo={delTodo} />
+        <TodoList
+          todos={todos}
+          markComplete={handleMarkCompleted}
+          delTodo={delTodo}
+        />
       </div>
     </>
   );
@@ -72,6 +84,7 @@ export function mapStateToProps(state, ownProps) {
 
 export const mapDispatchToProps = {
   addTodo: todosActions.addTodo,
+  markComplete: todosActions.markTodoCompleted,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodosLayout);

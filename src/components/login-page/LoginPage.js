@@ -24,7 +24,7 @@ const LoginPage = ({ userLogin, userSignup }) => {
     const isValidErrors = {};
     const regEx = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/;
     if (email.length === 0) {
-      console.log("fired");
+      console.log("executing");
       isValidErrors.email = "Email is empty";
     } else if (!validateEmail(email)) {
       isValidErrors.email = "Email is badly formatted";

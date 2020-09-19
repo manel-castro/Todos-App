@@ -7,6 +7,18 @@ export default function todosReducer(state = initialState.todos, action) {
       return [...action.todos];
     case types.ADD_TODO_SUCCESS:
       return state;
+    case types.MARK_TODO_COMPLETED_OPTIMISTIC:
+      return state.map((todo) => {
+        return todo.id === action.todo.id
+          ? { ...todo, ...!todo.completed }
+          : todo;
+      });
+    // case types.ERROR_MARK_TODO_COMPLETED_OPTIMISTIC:
+    //   return state.map((todo) => {
+    //     return todo.id === action.todo.id
+    //       ? { ...todo, ...!todo.completed }
+    //       : todo;
+    //   });
     case types.USER_LOGOUT_SUCCESS:
       return [];
     default:

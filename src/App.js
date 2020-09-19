@@ -59,30 +59,30 @@ const App = (props) => {
   /*
     USER ACTIONS
   */
-  const markComplete = (id) => {
-    let isCompleted; //test with prevstate
-    //Optimistic markComplete
-    todos.map((todo) => {
-      if (todo.id === id) {
-        isCompleted = !todo.completed;
-      }
-      return isCompleted;
-    });
+  // const markComplete = (id) => {
+  //   let isCompleted; //test with prevstate
+  //   //Optimistic markComplete
+  //   todos.map((todo) => {
+  //     if (todo.id === id) {
+  //       isCompleted = !todo.completed;
+  //     }
+  //     return isCompleted;
+  //   });
 
-    firebase
-      .firestore()
-      .collection("todos")
-      .doc(id)
-      .update({
-        completed: isCompleted,
-      })
-      .catch((err) => {
-        setErrors({
-          userMarkCompleteError: err.message,
-        });
-        alert("This action haven't been done: " + err.message);
-      });
-  };
+  //   firebase
+  //     .firestore()
+  //     .collection("todos")
+  //     .doc(id)
+  //     .update({
+  //       completed: isCompleted,
+  //     })
+  //     .catch((err) => {
+  //       setErrors({
+  //         userMarkCompleteError: err.message,
+  //       });
+  //       alert("This action haven't been done: " + err.message);
+  //     });
+  // };
 
   const delTodo = (id) => {
     if (window.confirm("Are you sure to delete this note")) {
@@ -131,9 +131,7 @@ const App = (props) => {
             <Route
               exact
               path="/"
-              render={() => (
-                <TodosLayout markComplete={markComplete} delTodo={delTodo} />
-              )}
+              render={() => <TodosLayout delTodo={delTodo} />}
             />
 
             <PrivateRoute

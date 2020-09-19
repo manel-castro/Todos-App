@@ -20,19 +20,14 @@ export class TodoItem extends Component {
             justifyContent: "space-between",
           }}
         >
-          <div
-            onClick={() => markComplete(todo.id)}
-            style={{ cursor: "pointer" }}
-          >
+          <div onClick={() => markComplete(todo)} style={{ cursor: "pointer" }}>
             {todo.title}
           </div>
           <div>
             <DeleteForeverIcon
               onClick={() => delTodo(todo.id)}
               style={btnStyle}
-            >
-              X
-            </DeleteForeverIcon>
+            ></DeleteForeverIcon>
           </div>
         </div>
       </div>
