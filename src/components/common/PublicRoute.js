@@ -1,7 +1,11 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 
-function PublicRoute({ component: Component, authenticated, ...rest }) {
+export default function PublicRoute({
+  component: Component,
+  authenticated,
+  ...rest
+}) {
   return (
     <Route
       {...rest}
@@ -15,5 +19,3 @@ function PublicRoute({ component: Component, authenticated, ...rest }) {
     />
   );
 }
-
-export default PublicRoute;

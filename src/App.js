@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { connect } from "react-redux";
 import * as todosActions from "./redux/actions/todosActions";
 import * as userActions from "./redux/actions/userActions";
 import PropTypes from "prop-types";
+import { history } from "./components/_helpers/history";
+import { Router } from "react-router-dom";
 
 import Header from "./components/layout/Header";
 import TodosLayout from "./components/todos-page/TodosLayout";
 import LoginPage from "./components/login-page/LoginPage";
 import About from "./components/about/About";
 import PrivateRoute from "./components/common/PrivateRoute";
+import PublicRoute from "./components/common/PublicRoute";
+
 // import uuid from 'uuid';
 import "./App.css";
 
@@ -36,8 +40,13 @@ const App = (props) => {
   /*
     USERS SYSTEM
   */
-  const { getTodos, userLoginSuccess, userLogoutSuccess, loggedIn } = props;
-
+  const {
+    getTodos,
+    userLoginSuccess,
+    userLogoutSuccess,
+    loggedIn = false,
+  } = props;
+  console.log(loggedIn);
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -55,17 +64,23 @@ const App = (props) => {
     <>
       <div className="App">
         <div className="container">
-          <Header />
-          <Switch>
-            <Route exact path="/" render={() => <TodosLayout />} />
+          <Router history={history}>
+            <Header />
 
             <PrivateRoute
-              path="/about"
-              component={About}
-              authenticated={false}
+              exact
+              path="/"
+              component={TodosLayout}
+              authenticated={loggedIn}
             />
-            <Route path="/login" render={() => <LoginPage />} />
-          </Switch>
+
+            <Route path="/about" render={() => <About />} />
+            <PublicRoute
+              path="/login"
+              component={LoginPage}
+              authenticated={loggedIn}
+            />
+          </Router>
         </div>
       </div>
     </>
@@ -81,7 +96,7 @@ App.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   return {
-    loggedIn: state.loggedIn,
+    loggedIn: state.loggedIn ? state.loggedIn : false,
   };
 }
 
