@@ -3,12 +3,12 @@ import firebase from "firebase";
 
 //Todo: manage errors redux.
 
-export function userLoginSuccess(cred) {
-  return { type: types.USER_LOGIN_SUCCESS, cred };
+export function userLoginSuccess() {
+  return { type: types.USER_LOGIN_SUCCESS };
 }
 
-export function userSignupSuccess(newUserCredentials) {
-  return { type: types.USER_SIGNUP_SUCCESS, newUserCredentials };
+export function userSignupSuccess() {
+  return { type: types.USER_SIGNUP_SUCCESS };
 }
 
 export function userLogoutSuccess() {
@@ -46,13 +46,7 @@ export function userSignup(newUserData) {
         dispatch(userSignupSuccess(cred));
       })
       .catch((err) => {
-        // setErrors((prevErrors) => ({
-        //   ...prevErrors,
-        //   userAccessError: err.message,
-        // }));
-
-        //**TODO**//
-        console.log(err.message);
+        throw err;
       });
   };
 }

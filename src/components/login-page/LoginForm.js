@@ -6,9 +6,9 @@ function LoginForm({ onChange, onSave, user, errors, saving }) {
     <div
       style={{
         margin: "auto",
+        width: 300,
         textAlign: "center",
         marginTop: "20vh",
-        maxWidth: "30vw",
       }}
     >
       <h2>Sign in / Login</h2>
@@ -35,13 +35,9 @@ function LoginForm({ onChange, onSave, user, errors, saving }) {
           placeholder="Password"
           value={user.password}
           onChange={onChange}
-          errors={errors.password}
+          error={errors.password}
         />
-        <div style={{ color: "red" }}>
-          {Object.keys(errors).map((key) => (
-            <div id={key}>{errors[key]}</div>
-          ))}
-        </div>
+        <div style={{ color: "red" }}>{errors.onSave}</div>
         <div style={{ marginTop: 5 }}>
           <button
             name="login"

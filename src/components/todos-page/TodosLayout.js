@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 import AddTodo from "./AddTodo";
 import TodoList from "./TodoList";
@@ -23,4 +24,10 @@ TodosLayout.propTypes = {
   addTodo: PropTypes.func.isRequired,
 };
 
-export default TodosLayout;
+export function mapStateToProps(state, ownProps) {
+  return {
+    todos: state.todos,
+  };
+}
+
+export default connect(mapStateToProps)(TodosLayout);

@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
+import { connect } from "react-redux";
+import * as todosActions from "./redux/actions/todosActions";
+import * as userActions from "./redux/actions/userActions";
+import PropTypes from "prop-types";
 
 import Header from "./components/layout/Header";
 import TodosLayout from "./components/todos-page/TodosLayout";
@@ -16,6 +20,14 @@ import "./App.css";
 - Add 404 page
 - Add username slugs (make public button?)
 - About button to go to Todos page
+
+Near todos.
+- Connect to redux all todos
+- Use private and public routes to manage redirects. 
+- Solve the branch (we're in tmp now)
+- Manage errors
+- Apply bootstrap
+
 */
 
 const firebase = require("firebase");
@@ -29,42 +41,19 @@ const App = (props) => {
   /*
     USERS SYSTEM
   */
-
-  const firebaseState = async () =>
-    await firebase.auth().onAuthStateChanged(async (user) => {
-      if (user) {
-        setCurrentUser(user);
-        console.log(user);
-        console.log(user.getIdToken());
-        await firebase
-          .firestore()
-          .collection("todos")
-          .where("userId", "==", user.uid)
-          .orderBy("timestamp", "desc")
-          .onSnapshot((serverUpdate) => {
-            const todos = serverUpdate.docs.map(
-              (todo) => {
-                const data = todo.data();
-                data["id"] = todo.id;
-                return data;
-              },
-              (err) => {
-                console.log(err.message);
-              }
-            );
-
-            setTodos([...todos]);
-            setLoggedUser(true);
-            console.log(todos);
-          });
-      } else {
-        setTodos([]);
-        setLoggedUser(false);
-      }
-    });
+  const { getTodos, userLoginSuccess, userLogoutSuccess, loggedIn } = props;
 
   useEffect(() => {
-    firebaseState();
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        //I keep action creators separated
+        // for easy understanding in case to add new features.
+        userLoginSuccess();
+        getTodos(user.uid);
+      } else {
+        userLogoutSuccess();
+      }
+    });
   }, []);
 
   /*
@@ -145,7 +134,6 @@ const App = (props) => {
               render={() => (
                 <TodosLayout
                   addTodo={addTodo}
-                  todos={todos}
                   markComplete={markComplete}
                   delTodo={delTodo}
                 />
@@ -165,4 +153,23 @@ const App = (props) => {
   );
 };
 
-export default App;
+App.propTypes = {
+  getTodos: PropTypes.func.isRequired,
+  userLoginSuccess: PropTypes.func.isRequired,
+  userLogoutSuccess: PropTypes.func.isRequired,
+  loggedIn: PropTypes.bool.isRequired,
+};
+
+function mapStateToProps(state, ownProps) {
+  return {
+    loggedIn: state.loggedIn,
+  };
+}
+
+const mapDispatchToProps = {
+  getTodos: todosActions.getTodos,
+  userLoginSuccess: userActions.userLoginSuccess,
+  userLogoutSuccess: userActions.userLogoutSuccess,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

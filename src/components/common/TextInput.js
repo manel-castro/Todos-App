@@ -1,10 +1,21 @@
+import { CancelPresentationOutlined } from "@material-ui/icons";
 import React from "react";
 
 function TextInput({ name, label, type, placeholder, value, onChange, error }) {
+  console.log("error is: " + error);
   return (
-    <>
-      <label htmlFor={name}>{label}</label>
-      <>
+    <div
+      style={{
+        margin: 10,
+        display: "flex",
+        flexFlow: "row nowrap",
+        justifyContent: "space-between",
+      }}
+    >
+      <div>
+        <label htmlFor={name}>{label}</label>
+      </div>
+      <div>
         <input
           name={name}
           type={type}
@@ -12,9 +23,9 @@ function TextInput({ name, label, type, placeholder, value, onChange, error }) {
           value={value}
           onChange={onChange}
         ></input>
-        {error && <div>{error}</div>}
-      </>
-    </>
+        {error && <div style={{ fontSize: 10 }}>{error}</div>}
+      </div>
+    </div>
   );
 }
 
