@@ -1,28 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-const AddTodo = ({ addTodo }) => {
-  const [title, setTitle] = useState("");
-  const [placeholder, setPlaceHolder] = useState("Add todo...");
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-    const regEx = /^[A-Za-z]/;
-    if (title === "" || !regEx.test(title)) {
-      setPlaceHolder("We need some letters");
-      setTitle("");
-      return 0;
-    }
-    if (title.length > 100) {
-      setPlaceHolder("Title too long");
-      setTitle("");
-      return 0;
-    }
-    addTodo(title);
-    setTitle("");
-    setPlaceHolder("Add todo...");
-  };
-
+const AddTodo = ({ onChange, onSubmit, title, placeholder }) => {
   return (
     <form onSubmit={onSubmit} style={{ display: "flex" }}>
       <input
@@ -31,7 +10,7 @@ const AddTodo = ({ addTodo }) => {
         style={{ flex: "10", padding: "5px" }}
         placeholder={placeholder}
         value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        onChange={onChange}
         autoComplete="off"
       />
       <input
@@ -44,8 +23,6 @@ const AddTodo = ({ addTodo }) => {
   );
 };
 
-AddTodo.propTypes = {
-  addTodo: PropTypes.func.isRequired,
-};
+AddTodo.propTypes = {};
 
 export default AddTodo;

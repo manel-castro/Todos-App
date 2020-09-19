@@ -1,14 +1,54 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import * as todosActions from "../../redux/actions/todosActions";
 
 import AddTodo from "./AddTodo";
 import TodoList from "./TodoList";
 
 const TodosLayout = ({ addTodo, todos, markComplete, delTodo }) => {
+  const [newTodoTitle, setNewTodoTitle] = useState("");
+  //I'll use errors directly as placeholder until I have other solution.
+  const [newTodoError, setNewTodoError] = useState("Add todo...");
+
+  const handleAddTodoChange = (e) => {
+    setNewTodoTitle(e.target.value);
+  };
+
+  const isNewTodoValid = (title) => {
+    const regEx = /^[A-Za-z]/;
+    if (title === "" || !regEx.test(title)) {
+      setNewTodoError("We need some letters");
+      setNewTodoTitle("");
+      return false;
+    }
+    if (title.length > 100) {
+      setNewTodoError("Title too long");
+      setNewTodoTitle("");
+      return false;
+    }
+    return true;
+  };
+
+  const handleAddTodoSubmit = async (e) => {
+    e.preventDefault();
+    const validation = await isNewTodoValid(newTodoTitle);
+    if (!validation) return;
+    console.log("fired");
+    addTodo({ title: newTodoTitle });
+    setNewTodoTitle("");
+    setNewTodoError("Add todo...");
+  };
+
   return (
     <>
-      <AddTodo addTodo={addTodo} />
+      <AddTodo
+        onChange={handleAddTodoChange}
+        onSubmit={handleAddTodoSubmit}
+        title={newTodoTitle}
+        errors={newTodoError}
+        placeholder={newTodoError}
+      />
       <div style={{ overflowY: "scroll", height: "84vh" }}>
         <TodoList todos={todos} markComplete={markComplete} delTodo={delTodo} />
       </div>
@@ -30,4 +70,8 @@ export function mapStateToProps(state, ownProps) {
   };
 }
 
-export default connect(mapStateToProps)(TodosLayout);
+export const mapDispatchToProps = {
+  addTodo: todosActions.addTodo,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodosLayout);

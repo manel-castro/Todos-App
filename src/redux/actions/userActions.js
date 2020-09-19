@@ -3,12 +3,12 @@ import firebase from "firebase";
 
 //Todo: manage errors redux.
 
-export function userLoginSuccess() {
-  return { type: types.USER_LOGIN_SUCCESS };
+export function userLoginSuccess(credentials) {
+  return { type: types.USER_LOGIN_SUCCESS, credentials };
 }
 
-export function userSignupSuccess() {
-  return { type: types.USER_SIGNUP_SUCCESS };
+export function userSignupSuccess(credentials) {
+  return { type: types.USER_SIGNUP_SUCCESS, credentials };
 }
 
 export function userLogoutSuccess() {
@@ -26,10 +26,7 @@ export function userLogin(user) {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((cred) => {
-        console.log("Logged, credentials:");
-        console.log(cred.uid);
-        dispatch(userLoginSuccess(cred.uid));
-        console.log("success");
+        dispatch(userLoginSuccess(cred.user.uid));
       })
       .catch((err) => {
         throw err;
@@ -43,7 +40,7 @@ export function userSignup(newUserData) {
       .auth()
       .createUserWithEmailAndPassword(newUserData.email, newUserData.password)
       .then((cred) => {
-        dispatch(userSignupSuccess(cred));
+        dispatch(userSignupSuccess(cred.user.uid));
       })
       .catch((err) => {
         throw err;

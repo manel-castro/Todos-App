@@ -48,8 +48,8 @@ const App = (props) => {
       if (user) {
         //I keep action creators separated
         // for easy understanding in case to add new features.
-        userLoginSuccess();
-        getTodos(user.uid);
+        userLoginSuccess(user.uid);
+        getTodos();
       } else {
         userLogoutSuccess();
       }
@@ -100,27 +100,27 @@ const App = (props) => {
     }
   };
 
-  const addTodo = (title) => {
-    const note = {
-      title: title,
-      completed: false,
-    };
-    firebase
-      .firestore()
-      .collection("todos")
-      .add({
-        title: note.title,
-        completed: note.completed,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        userId: currentUser.uid,
-      })
-      .catch((err) => {
-        setErrors({
-          userMarkCompleteError: err.message,
-        });
-        alert("Error when adding: " + err.message);
-      });
-  };
+  // const addTodo = (title) => {
+  //   const note = {
+  //     title: title,
+  //     completed: false,
+  //   };
+  //   firebase
+  //     .firestore()
+  //     .collection("todos")
+  //     .add({
+  //       title: note.title,
+  //       completed: note.completed,
+  //       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+  //       userId: currentUser.uid,
+  //     })
+  //     .catch((err) => {
+  //       setErrors({
+  //         userMarkCompleteError: err.message,
+  //       });
+  //       alert("Error when adding: " + err.message);
+  //     });
+  // };
 
   return (
     <>
@@ -132,11 +132,7 @@ const App = (props) => {
               exact
               path="/"
               render={() => (
-                <TodosLayout
-                  addTodo={addTodo}
-                  markComplete={markComplete}
-                  delTodo={delTodo}
-                />
+                <TodosLayout markComplete={markComplete} delTodo={delTodo} />
               )}
             />
 
