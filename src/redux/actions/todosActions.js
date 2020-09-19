@@ -13,12 +13,8 @@ export function markTodoCompletedOptimistic(todo) {
   return { type: types.MARK_TODO_COMPLETED_OPTIMISTIC, todo };
 }
 
-// export function errorMarkTodoCompletedOptimistic(todo) {
-//   return { type: types.ERROR_MARK_TODO_COMPLETED_OPTIMISTIC, todo };
-// }
-
-export function deleteTodoSuccess(todo) {
-  return { type: types.DELETE_TODO_SUCCESS, todo };
+export function deleteTodoOptimistic(todo) {
+  return { type: types.DELETE_TODO_OPTIMISTIC, todo };
 }
 
 //THUNKS
@@ -82,7 +78,6 @@ export function markTodoCompleted(todo) {
         completed: !todo.completed,
       })
       .catch((err) => {
-        // dispatch(errorMarkTodoCompletedOptimistic(todo));
         throw err;
       });
   };
@@ -91,15 +86,14 @@ export function markTodoCompleted(todo) {
 //need to implement pendant:
 export function deleteTodo(todo) {
   return function (dispatch, getState) {
-    if (window.confirm("Are you sure to delete this note?")) {
-      return firebase
-        .firestore()
-        .collection("todos")
-        .doc(todo.id)
-        .delete()
-        .catch((err) => {
-          throw err;
-        });
-    }
+    dispatch(deleteTodoOptimistic(todo.id));
+    return firebase
+      .firestore()
+      .collection("todos")
+      .doc(todo.id)
+      .delete()
+      .catch((err) => {
+        throw err;
+      });
   };
 }

@@ -13,12 +13,10 @@ export default function todosReducer(state = initialState.todos, action) {
           ? { ...todo, ...!todo.completed }
           : todo;
       });
-    // case types.ERROR_MARK_TODO_COMPLETED_OPTIMISTIC:
-    //   return state.map((todo) => {
-    //     return todo.id === action.todo.id
-    //       ? { ...todo, ...!todo.completed }
-    //       : todo;
-    //   });
+    case types.DELETE_TODO_OPTIMISTIC:
+      return state.filter((todo) => {
+        return todo.id !== action.todo.id;
+      });
     case types.USER_LOGOUT_SUCCESS:
       return [];
     default:

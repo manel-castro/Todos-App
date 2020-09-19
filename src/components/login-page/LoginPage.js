@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
 import * as userActions from "../../redux/actions/userActions";
 import PropTypes from "prop-types";
 import LoginForm from "./LoginForm";
@@ -22,7 +21,7 @@ const LoginPage = ({ userLogin, userSignup }) => {
   const inputIsValid = () => {
     const { email, password } = user;
     const isValidErrors = {};
-    const regEx = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/;
+
     if (email.length === 0) {
       console.log("executing");
       isValidErrors.email = "Email is empty";
@@ -64,7 +63,6 @@ const LoginPage = ({ userLogin, userSignup }) => {
 
   return (
     <>
-      {/* {isLogged ? <Redirect to="/" /> : null} */}
       <LoginForm
         onSave={handleSave}
         onChange={handleChange}
@@ -76,7 +74,10 @@ const LoginPage = ({ userLogin, userSignup }) => {
   );
 };
 
-// LoginPage.propTypes = {};
+LoginPage.propTypes = {
+  userLogin: PropTypes.func.isRequired,
+  userSignup: PropTypes.func.isRequired,
+};
 
 const mapStateToProps = (state, ownProps) => {
   // return { isLogged: state.user.length !== 0 ? true : false };

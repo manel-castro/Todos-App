@@ -33,11 +33,6 @@ Near todos.
 const firebase = require("firebase");
 
 const App = (props) => {
-  const [todos, setTodos] = useState([]);
-  const [errors, setErrors] = useState({});
-  const [loggedUser, setLoggedUser] = useState(false);
-  const [currentUser, setCurrentUser] = useState({});
-
   /*
     USERS SYSTEM
   */
@@ -56,83 +51,13 @@ const App = (props) => {
     });
   }, []);
 
-  /*
-    USER ACTIONS
-  */
-  // const markComplete = (id) => {
-  //   let isCompleted; //test with prevstate
-  //   //Optimistic markComplete
-  //   todos.map((todo) => {
-  //     if (todo.id === id) {
-  //       isCompleted = !todo.completed;
-  //     }
-  //     return isCompleted;
-  //   });
-
-  //   firebase
-  //     .firestore()
-  //     .collection("todos")
-  //     .doc(id)
-  //     .update({
-  //       completed: isCompleted,
-  //     })
-  //     .catch((err) => {
-  //       setErrors({
-  //         userMarkCompleteError: err.message,
-  //       });
-  //       alert("This action haven't been done: " + err.message);
-  //     });
-  // };
-
-  const delTodo = (id) => {
-    if (window.confirm("Are you sure to delete this note")) {
-      firebase
-        .firestore()
-        .collection("todos")
-        .doc(id)
-        .delete()
-        .catch((err) => {
-          setErrors({
-            userDelTodoError: err.message,
-          });
-          alert("Error when deleting: " + err.message);
-        });
-    }
-  };
-
-  // const addTodo = (title) => {
-  //   const note = {
-  //     title: title,
-  //     completed: false,
-  //   };
-  //   firebase
-  //     .firestore()
-  //     .collection("todos")
-  //     .add({
-  //       title: note.title,
-  //       completed: note.completed,
-  //       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-  //       userId: currentUser.uid,
-  //     })
-  //     .catch((err) => {
-  //       setErrors({
-  //         userMarkCompleteError: err.message,
-  //       });
-  //       alert("Error when adding: " + err.message);
-  //     });
-  // };
-
   return (
     <>
       <div className="App">
         <div className="container">
           <Header />
           <Switch>
-            <Route
-              exact
-              path="/"
-              render={() => <TodosLayout delTodo={delTodo} />}
-            />
+            <Route exact path="/" render={() => <TodosLayout />} />
 
             <PrivateRoute
               path="/about"

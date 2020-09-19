@@ -1,4 +1,3 @@
-import { CancelPresentationOutlined } from "@material-ui/icons";
 import React from "react";
 
 function TextInput({ name, label, type, placeholder, value, onChange, error }) {

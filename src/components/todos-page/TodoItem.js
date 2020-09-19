@@ -25,7 +25,7 @@ export class TodoItem extends Component {
           </div>
           <div>
             <DeleteForeverIcon
-              onClick={() => delTodo(todo.id)}
+              onClick={() => delTodo(todo)}
               style={btnStyle}
             ></DeleteForeverIcon>
           </div>

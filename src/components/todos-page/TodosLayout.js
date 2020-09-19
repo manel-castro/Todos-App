@@ -8,8 +8,7 @@ import TodoList from "./TodoList";
 
 const TodosLayout = ({ addTodo, todos, markComplete, delTodo }) => {
   const [newTodoTitle, setNewTodoTitle] = useState("");
-  //I'll use errors directly as placeholder until I have other solution.
-  const [newTodoError, setNewTodoError] = useState("Add todo...");
+  const [newTodoError, setNewTodoError] = useState("Add todo..."); //I'll use errors directly as placeholder until I have other solution.
 
   const handleAddTodoChange = (e) => {
     setNewTodoTitle(e.target.value);
@@ -48,6 +47,16 @@ const TodosLayout = ({ addTodo, todos, markComplete, delTodo }) => {
     }
   };
 
+  const handleDeleteTodo = async (todo) => {
+    if (window.confirm("Are you sure to delete this note?")) {
+      try {
+        await delTodo(todo);
+      } catch (err) {
+        alert("Server error: Todo haven't been deleted");
+      }
+    }
+  };
+
   return (
     <>
       <AddTodo
@@ -61,7 +70,7 @@ const TodosLayout = ({ addTodo, todos, markComplete, delTodo }) => {
         <TodoList
           todos={todos}
           markComplete={handleMarkCompleted}
-          delTodo={delTodo}
+          delTodo={handleDeleteTodo}
         />
       </div>
     </>
@@ -85,6 +94,7 @@ export function mapStateToProps(state, ownProps) {
 export const mapDispatchToProps = {
   addTodo: todosActions.addTodo,
   markComplete: todosActions.markTodoCompleted,
+  delTodo: todosActions.deleteTodo,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodosLayout);
