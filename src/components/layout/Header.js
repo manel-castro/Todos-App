@@ -1,7 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { userLogout } from "../../redux/actions/userActions";
 
-function Header(props) {
+const Header = ({ userLogout }) => {
+  const isLogged = true;
   return (
     <header style={headerStyle}>
       <h1>TodoList</h1>{" "}
@@ -9,17 +13,17 @@ function Header(props) {
         About
       </Link>{" "}
       <>
-        {props.loggedUser ? (
+        {isLogged ? (
           <>
             |{" "}
-            <Link style={linkStyle} onClick={props.logout} to="/">
+            <Link style={linkStyle} onClick={userLogout} to="/">
               Logout
             </Link>
           </>
         ) : (
           <>
             |{" "}
-            <Link style={linkStyle} to="/login">
+            <Link style={linkStyle} to="/">
               Login
             </Link>
           </>
@@ -27,7 +31,7 @@ function Header(props) {
       </>
     </header>
   );
-}
+};
 
 const headerStyle = {
   background: "#333",
@@ -41,4 +45,19 @@ const linkStyle = {
   textDecoration: "none",
 };
 
-export default Header;
+Header.propTypes = {
+  // isLogged: PropTypes.bool.isRequired,
+  userLogout: PropTypes.func.isRequired,
+};
+
+function mapStateToProps(state, ownProps) {
+  return {
+    // isLogged: state.user.length !== 0 ? true : false,
+  };
+}
+
+const mapDispatchToProps = {
+  userLogout: userLogout,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

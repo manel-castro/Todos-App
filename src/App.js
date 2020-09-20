@@ -1,9 +1,18 @@
-import React from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { history } from "./components/_helpers/history";
+import { Router } from "react-router-dom";
+
 import Header from "./components/layout/Header";
-import TodosLayout from "./components/TodosLayout";
-import LoginPage from "./components/LoginPage";
-import About from "./components/pages/About";
+import TodosLayout from "./components/todos-page/TodosLayout";
+import LoginPage from "./components/login-page/LoginPage";
+import About from "./components/about/About";
+import PrivateRoute from "./components/common/PrivateRoute";
+import PublicRoute from "./components/common/PublicRoute";
+import Spinner from "./components/_utils/Spinner";
+
 // import uuid from 'uuid';
 import "./App.css";
 
@@ -11,198 +20,65 @@ import "./App.css";
 ++++++++++TODOS++++++++++++++
 - User System (if you're logout it don't shows you the todo's page)
 - Efficiency problem: change in single todo request to database all of them.
+- Add 404 page
+- Add username slugs (make public button?)
+- About button to go to Todos page
+
+Near todos.
+- Solve the branch (we're in tmp now)
+- Apply bootstrap
+
 */
 
-const firebase = require("firebase");
-
-class App extends React.Component {
-  state = {
-    todos: [],
-    errors: {},
-    loggedUser: false,
-  };
-
-  currentUser;
-
+const App = (props) => {
   /*
-  -----------TODO----------------
+    USERS SYSTEM
   */
+  useEffect(() => console.log("App did mount"), []);
 
-  signup = (newUser) => {
-    // firebase.auth().createUserWithEmailAndPassword()
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(newUser.email, newUser.password)
-      .then((cred) => {
-        console.log(cred);
-        window.location.href = "/";
-        this.currentUser = cred;
-      })
-      .catch((err) => {
-        // TODO: Send errors to show in login page
-        this.setState({
-          errors: { ...this.state.errors, userErrors: err.message },
-        });
-        console.log(this.state.errors);
-      });
-  };
+  const { loggedIn } = props;
+  console.log("from app: ", loggedIn);
+  return (
+    <>
+      <div className="App">
+        <div className="container">
+          <Router history={history}>
+            <Header />
+            <Switch>
+              <Route path="/about" render={() => <About history={history} />} />
 
-  login = (userData) => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(userData.email, userData.password)
-      .then((cred) => {
-        console.log(cred);
-        window.location.href = "/";
-        this.currentUser = cred;
-      })
-      .catch((err) => {
-        // console.log(err.message);
-        this.setState({
-          errors: { ...this.state.errors, userErrors: err.message },
-        });
-      });
-  };
+              {loggedIn !== null ? (
+                <PrivateRoute
+                  exact
+                  path="/app"
+                  component={TodosLayout}
+                  authenticated={loggedIn}
+                />
+              ) : null}
 
-  logout = () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        console.log("Signed Out");
-        this.setState({
-          loggedUser: false,
-        });
-        window.location.href = "/login";
-      });
-  };
-
-  //Callback users system
-
-  //Requesting data from an Firebase once page is rendered
-  componentDidMount = async () => {
-    firebase.auth().onAuthStateChanged(async (user) => {
-      if (user) {
-        this.currentUser = user;
-        console.log(user);
-        console.log(user.getIdToken());
-        await firebase
-          .firestore()
-          .collection("todos")
-          .where("userId", "==", this.currentUser.uid)
-          .orderBy("timestamp", "desc")
-          .onSnapshot((serverUpdate) => {
-            const todos = serverUpdate.docs.map(
-              (todo) => {
-                const data = todo.data();
-                data["id"] = todo.id;
-                return data;
-              },
-              (err) => {
-                console.log(err.message);
-              }
-            );
-
-            // todos.sort((x, y) => {
-            //   return x.timestamp - y.timestamp;
-            // })
-            this.setState({
-              todos: todos,
-              loggedUser: true,
-            });
-            console.log(this.state.todos);
-          });
-      } else {
-        this.setState({
-          todos: [],
-          loggedUser: false,
-        });
-      }
-    });
-  };
-
-  /*
-  ------------------------------
-  */
-
-  // Toggle completee
-  markComplete = (id) => {
-    let state;
-    this.state.todos.map((todo) => {
-      if (todo.id === id) {
-        state = !todo.completed;
-      }
-      return state;
-    });
-
-    firebase.firestore().collection("todos").doc(id).update({
-      completed: state,
-    });
-  };
-
-  // Delete Todo
-  delTodo = (id) => {
-    if (window.confirm("Are you sure to delete this note")) {
-      firebase.firestore().collection("todos").doc(id).delete();
-    }
-  };
-
-  // Add Todo
-  AddTodo = (title) => {
-    const note = {
-      title: title,
-      completed: false,
-    };
-    firebase.firestore().collection("todos").add({
-      title: note.title,
-      completed: note.completed,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      userId: this.currentUser.uid,
-    });
-  };
-
-  render() {
-    return (
-      <Router>
-        <div className="App">
-          <div className="container">
-            <Header logout={this.logout} loggedUser={this.state.loggedUser} />
-
-            {this.state.loggedUser ? (
-              <Route
-                exact
-                path="/"
-                render={(props) => (
-                  <TodosLayout
-                    AddTodo={this.AddTodo}
-                    todos={this.state.todos}
-                    markComplete={this.markComplete}
-                    delTodo={this.delTodo}
-                  />
-                )}
-              />
-            ) : (
-              <h2 style={{ textAlign: "center" }}>You need to login</h2>
-            )}
-
-            <Route path="/about" render={About} />
-            <div>
-              <Route
-                path="/login"
-                render={(props) => (
-                  <LoginPage
-                    login={this.login}
-                    signup={this.signup}
-                    errors={this.state.errors}
-                  />
-                )}
-              />
-            </div>
-          </div>
+              {loggedIn !== null ? (
+                <PublicRoute
+                  path="/"
+                  component={LoginPage}
+                  authenticated={loggedIn}
+                />
+              ) : null}
+            </Switch>
+          </Router>
         </div>
-      </Router>
-    );
-  }
+      </div>
+    </>
+  );
+};
+
+App.propTypes = {
+  loggedIn: PropTypes.bool.isRequired,
+};
+
+function mapStateToProps(state, ownProps) {
+  return {
+    loggedIn: state.user.loggedIn,
+  };
 }
 
-export default App;
+export default connect(mapStateToProps)(App);
