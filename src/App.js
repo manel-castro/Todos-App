@@ -9,6 +9,8 @@ import Header from "./components/layout/Header";
 import TodosLayout from "./components/todos-page/TodosLayout";
 import LoginPage from "./components/login-page/LoginPage";
 import About from "./components/about/About";
+import NotFoundPage from "./components/not-found/NotFoundPage";
+
 import PrivateRoute from "./components/common/PrivateRoute";
 import PublicRoute from "./components/common/PublicRoute";
 import Spinner from "./components/_utils/Spinner";
@@ -22,22 +24,15 @@ import "./App.css";
 - Efficiency problem: change in single todo request to database all of them.
 - Add 404 page
 - Add username slugs (make public button?)
-- About button to go to Todos page
 
 Near todos.
-- Solve the branch (we're in tmp now)
 - Apply bootstrap
 
 */
 
 const App = (props) => {
-  /*
-    USERS SYSTEM
-  */
-  useEffect(() => console.log("App did mount"), []);
-
   const { loggedIn } = props;
-  console.log("from app: ", loggedIn);
+
   return (
     <>
       <div className="App">
@@ -58,11 +53,13 @@ const App = (props) => {
 
               {loggedIn !== null ? (
                 <PublicRoute
+                  exact
                   path="/"
                   component={LoginPage}
                   authenticated={loggedIn}
                 />
               ) : null}
+              <Route render={() => <NotFoundPage />} />
             </Switch>
           </Router>
         </div>

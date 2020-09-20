@@ -6,7 +6,6 @@ export default function PublicRoute({
   authenticated,
   ...rest
 }) {
-  console.log("authenticated is: " + authenticated);
   return (
     <Route
       {...rest}

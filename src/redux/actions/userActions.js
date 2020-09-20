@@ -26,7 +26,6 @@ export function userLogoutSuccess() {
 export function userLogin(user) {
   return function (dispatch, getState) {
     const { email, password } = user;
-    console.log("action userLogin");
     setTimeout(() => {
       return firebase
         .auth()
@@ -61,7 +60,6 @@ export function userLogout() {
       .auth()
       .signOut()
       .then(() => {
-        console.log("Signed Out");
         dispatch(userLogoutSuccess());
       });
   };
@@ -70,8 +68,6 @@ export function userLogout() {
 export const verifyAuth = () => async (dispatch) => {
   firebase.auth().onAuthStateChanged(async (user) => {
     if (user) {
-      console.log("userLogged");
-      console.log(user);
       dispatch(userLoginSuccess(user.uid));
       dispatch(todosActions.getTodos());
     } else {

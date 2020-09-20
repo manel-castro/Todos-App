@@ -33,7 +33,7 @@ const TodosLayout = ({ addTodo, todos, markComplete, delTodo }) => {
     e.preventDefault();
     const validation = await isNewTodoValid(newTodoTitle);
     if (!validation) return;
-    console.log("add");
+
     addTodo({ title: newTodoTitle });
     setNewTodoTitle("");
     setNewTodoError("Add todo...");

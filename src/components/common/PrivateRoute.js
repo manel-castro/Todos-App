@@ -6,8 +6,6 @@ export default function PrivateRoute({
   authenticated,
   ...rest
 }) {
-  console.log("from privateRoute", authenticated);
-  useEffect(() => console.log("PrivateRoute did mount"), []);
   return (
     <Route
       {...rest}

@@ -29,7 +29,6 @@ export function getTodos() {
       .where("userId", "==", userUid)
       .orderBy("timestamp", "desc")
       .onSnapshot((serverUpdate) => {
-        console.log("Snapshot fired");
         const todos = serverUpdate.docs.map(
           (todo) => {
             const data = todo.data();
@@ -70,7 +69,6 @@ export function addTodo(todo) {
 
 export function markTodoCompleted(todo) {
   return function (dispatch, getState) {
-    console.log("markcompletedaction fired");
     dispatch(markTodoCompletedOptimistic(todo));
     firebase
       .firestore()
