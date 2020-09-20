@@ -27,15 +27,17 @@ export function userLogin(user) {
   return function (dispatch, getState) {
     const { email, password } = user;
     console.log("action userLogin");
-    return firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((cred) => {
-        dispatch(userLoginSuccess(cred.user.uid));
-      })
-      .catch((err) => {
-        throw err;
-      });
+    setTimeout(() => {
+      return firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then((cred) => {
+          dispatch(userLoginSuccess(cred.user.uid));
+        })
+        .catch((err) => {
+          throw err;
+        });
+    }, 2000);
   };
 }
 

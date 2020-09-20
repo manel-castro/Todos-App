@@ -22,6 +22,7 @@ export function deleteTodoOptimistic(todo) {
 export function getTodos() {
   return function (dispatch, getState) {
     const userUid = getState().user.uid;
+
     firebase
       .firestore()
       .collection("todos")
@@ -41,7 +42,6 @@ export function getTodos() {
         );
         dispatch(getTodosSuccess(todos));
       });
-    return;
   };
 }
 
@@ -61,7 +61,9 @@ export function addTodo(todo) {
       .catch((err) => {
         throw err;
       });
+
     dispatch(addTodoSuccess());
+
     return;
   };
 }
@@ -70,7 +72,7 @@ export function markTodoCompleted(todo) {
   return function (dispatch, getState) {
     console.log("markcompletedaction fired");
     dispatch(markTodoCompletedOptimistic(todo));
-    return firebase
+    firebase
       .firestore()
       .collection("todos")
       .doc(todo.id)
@@ -86,14 +88,16 @@ export function markTodoCompleted(todo) {
 //need to implement pendant:
 export function deleteTodo(todo) {
   return function (dispatch, getState) {
-    dispatch(deleteTodoOptimistic(todo.id));
-    return firebase
-      .firestore()
-      .collection("todos")
-      .doc(todo.id)
-      .delete()
-      .catch((err) => {
-        throw err;
-      });
+    dispatch(deleteTodoOptimistic(todo));
+    setTimeout(() => {
+      firebase
+        .firestore()
+        .collection("todos")
+        .doc(todo.id)
+        .delete()
+        .catch((err) => {
+          throw err;
+        });
+    }, 2000);
   };
 }

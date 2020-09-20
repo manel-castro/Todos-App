@@ -9,7 +9,7 @@ const Header = ({ userLogout }) => {
   return (
     <header style={headerStyle}>
       <h1>TodoList</h1>{" "}
-      <Link style={linkStyle} to="/app">
+      <Link style={linkStyle} to="/about">
         About
       </Link>{" "}
       <>
