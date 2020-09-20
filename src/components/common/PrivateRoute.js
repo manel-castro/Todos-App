@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Redirect } from "react-router-dom";
 
 export default function PrivateRoute({
@@ -6,16 +6,16 @@ export default function PrivateRoute({
   authenticated,
   ...rest
 }) {
+  console.log("from privateRoute", authenticated);
+  useEffect(() => console.log("PrivateRoute did mount"), []);
   return (
     <Route
       {...rest}
       render={(props) =>
-        authenticated ? (
-          <Component props={props} />
+        authenticated === true ? (
+          <Component {...props} />
         ) : (
-          <Redirect
-            to={{ pathname: "/login", state: { from: props.location } }}
-          />
+          <Redirect to={{ pathname: "/", state: { from: props.location } }} />
         )
       }
     />

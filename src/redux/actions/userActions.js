@@ -1,5 +1,10 @@
 import * as types from "./actionTypes";
+import { config } from "../../firebaseConfig";
 import firebase from "firebase";
+import * as todosActions from "./todosActions";
+require("firebase/firestore");
+
+firebase.initializeApp(config);
 
 //Todo: manage errors redux.
 
@@ -59,3 +64,16 @@ export function userLogout() {
       });
   };
 }
+
+export const verifyAuth = () => async (dispatch) => {
+  firebase.auth().onAuthStateChanged(async (user) => {
+    if (user) {
+      console.log("userLogged");
+      console.log(user);
+      dispatch(userLoginSuccess(user.uid));
+      dispatch(todosActions.getTodos());
+    } else {
+      dispatch(userLogoutSuccess());
+    }
+  });
+};

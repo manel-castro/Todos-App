@@ -6,14 +6,15 @@ export default function PublicRoute({
   authenticated,
   ...rest
 }) {
+  console.log("authenticated is: " + authenticated);
   return (
     <Route
       {...rest}
       render={(props) =>
-        !authenticated ? (
-          <Component props={props} />
+        authenticated === false ? (
+          <Component {...props} />
         ) : (
-          <Redirect to={{ pathname: "/", state: { from: props.location } }} />
+          <Redirect to="/app" />
         )
       }
     />

@@ -21,7 +21,7 @@ export function deleteTodoOptimistic(todo) {
 
 export function getTodos() {
   return function (dispatch, getState) {
-    const userUid = getState().user[0].uid;
+    const userUid = getState().user.uid;
     firebase
       .firestore()
       .collection("todos")
@@ -47,7 +47,7 @@ export function getTodos() {
 
 export function addTodo(todo) {
   return function (dispatch, getState) {
-    const userUid = getState().user[0].uid;
+    const userUid = getState().user.uid;
 
     firebase
       .firestore()
@@ -73,7 +73,7 @@ export function markTodoCompleted(todo) {
     return firebase
       .firestore()
       .collection("todos")
-      .doc(todo.id + 1)
+      .doc(todo.id)
       .update({
         completed: !todo.completed,
       })

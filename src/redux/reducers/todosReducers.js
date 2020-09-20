@@ -6,7 +6,7 @@ export default function todosReducer(state = initialState.todos, action) {
     case types.GET_TODOS_SUCCESS:
       return [...action.todos];
     case types.ADD_TODO_SUCCESS:
-      return state;
+      return [...state];
     case types.MARK_TODO_COMPLETED_OPTIMISTIC:
       return state.map((todo) => {
         return todo.id === action.todo.id

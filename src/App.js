@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import * as todosActions from "./redux/actions/todosActions";
-import * as userActions from "./redux/actions/userActions";
 import PropTypes from "prop-types";
 import { history } from "./components/_helpers/history";
 import { Router } from "react-router-dom";
@@ -34,49 +32,36 @@ Near todos.
 
 */
 
-const firebase = require("firebase");
-
 const App = (props) => {
   /*
     USERS SYSTEM
   */
-  const {
-    getTodos,
-    userLoginSuccess,
-    userLogoutSuccess,
-    loggedIn = false,
-  } = props;
-  console.log(loggedIn);
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        //I keep action creators separated
-        // for easy understanding in case to add new features.
-        userLoginSuccess(user.uid);
-        getTodos();
-      } else {
-        userLogoutSuccess();
-      }
-    });
-  }, []);
+  useEffect(() => console.log("App did mount"), []);
 
+  const { loggedIn = null } = props;
+  console.log("from app: ", loggedIn);
   return (
     <>
       <div className="App">
         <div className="container">
           <Router history={history}>
-            <Header />
+            {/* {loggedIn === true ? <Redirect to="/app" /> : <Redirect to="/" />} */}
 
-            <PrivateRoute
-              exact
-              path="/"
-              component={TodosLayout}
-              authenticated={loggedIn}
-            />
+            <Header />
+            <div>
+              {console.log("fired")}
+
+              <PrivateRoute
+                exact
+                path="/app"
+                component={TodosLayout}
+                authenticated={loggedIn}
+              />
+            </div>
 
             <Route path="/about" render={() => <About />} />
             <PublicRoute
-              path="/login"
+              path="/"
               component={LoginPage}
               authenticated={loggedIn}
             />
@@ -88,22 +73,13 @@ const App = (props) => {
 };
 
 App.propTypes = {
-  getTodos: PropTypes.func.isRequired,
-  userLoginSuccess: PropTypes.func.isRequired,
-  userLogoutSuccess: PropTypes.func.isRequired,
   loggedIn: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
   return {
-    loggedIn: state.loggedIn ? state.loggedIn : false,
+    loggedIn: state.user.loggedIn,
   };
 }
 
-const mapDispatchToProps = {
-  getTodos: todosActions.getTodos,
-  userLoginSuccess: userActions.userLoginSuccess,
-  userLogoutSuccess: userActions.userLogoutSuccess,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps)(App);

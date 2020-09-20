@@ -9,7 +9,7 @@ const Header = ({ userLogout }) => {
   return (
     <header style={headerStyle}>
       <h1>TodoList</h1>{" "}
-      <Link style={linkStyle} to="/about">
+      <Link style={linkStyle} to="/app">
         About
       </Link>{" "}
       <>
@@ -23,7 +23,7 @@ const Header = ({ userLogout }) => {
         ) : (
           <>
             |{" "}
-            <Link style={linkStyle} to="/login">
+            <Link style={linkStyle} to="/">
               Login
             </Link>
           </>

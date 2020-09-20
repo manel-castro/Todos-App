@@ -1,7 +1,6 @@
 import React from "react";
 
 function TextInput({ name, label, type, placeholder, value, onChange, error }) {
-  console.log("error is: " + error);
   return (
     <div
       style={{

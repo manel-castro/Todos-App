@@ -15,7 +15,6 @@ const LoginPage = ({ userLogin, userSignup }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((prevUser) => ({ ...prevUser, [name]: value }));
-    console.log(user);
   };
 
   const inputIsValid = () => {
@@ -23,7 +22,6 @@ const LoginPage = ({ userLogin, userSignup }) => {
     const isValidErrors = {};
 
     if (email.length === 0) {
-      console.log("executing");
       isValidErrors.email = "Email is empty";
     } else if (!validateEmail(email)) {
       isValidErrors.email = "Email is badly formatted";
@@ -80,7 +78,7 @@ LoginPage.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  // return { isLogged: state.user.length !== 0 ? true : false };
+  return {};
 };
 const mapDispatchToProps = {
   userLogin: userActions.userLogin,

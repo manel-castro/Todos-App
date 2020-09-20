@@ -1,4 +1,7 @@
 export default {
-  user: [{ loggedIn: false }],
+  user: {
+    loggedIn: false,
+    uid: null,
+  },
   todos: [],
 };
