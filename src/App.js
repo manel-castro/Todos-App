@@ -15,6 +15,8 @@ import PrivateRoute from "./components/common/PrivateRoute";
 import PublicRoute from "./components/common/PublicRoute";
 import Spinner from "./components/_utils/Spinner";
 
+import GlobalStyle from "./globalStyles";
+
 // import uuid from 'uuid';
 import "./App.css";
 
@@ -28,6 +30,7 @@ import "./App.css";
 Near todos.
 - Apply bootstrap
 
+- Spinner on loads
 */
 
 const App = (props) => {
@@ -38,6 +41,7 @@ const App = (props) => {
       <div className="App">
         <div className="container">
           <Router history={history}>
+            <GlobalStyle />
             <Header />
             <Switch>
               <Route path="/about" render={() => <About history={history} />} />
@@ -59,7 +63,8 @@ const App = (props) => {
                   authenticated={loggedIn}
                 />
               ) : null}
-              <Route render={() => <NotFoundPage />} />
+              {loggedIn === null ? <Route component={Spinner} /> : null}
+              <Route component={NotFoundPage} />
             </Switch>
           </Router>
         </div>
