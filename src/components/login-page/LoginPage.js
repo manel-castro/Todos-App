@@ -13,6 +13,7 @@ const LoginPage = ({ userLogin, userSignup }) => {
   // Spinner on actions
 
   const handleChange = (e) => {
+    console.log(e.target.name, e.target.value);
     const { name, value } = e.target;
     setUser((prevUser) => ({ ...prevUser, [name]: value }));
   };
@@ -37,6 +38,9 @@ const LoginPage = ({ userLogin, userSignup }) => {
 
   const handleSave = async (e) => {
     e.preventDefault();
+
+    setSaving(true);
+
     const { name } = e.target;
     const { email, password } = user;
 
@@ -46,15 +50,19 @@ const LoginPage = ({ userLogin, userSignup }) => {
     if (name === "login") {
       try {
         await userLogin({ email, password });
+        setSaving(false);
       } catch (err) {
         setErrors({ onSave: err.message });
+        setSaving(false);
       }
     }
     if (name === "signup") {
       try {
         await userSignup({ email, password });
+        setSaving(false);
       } catch (err) {
         setErrors({ onSave: err.message });
+        setSaving(false);
       }
     }
   };

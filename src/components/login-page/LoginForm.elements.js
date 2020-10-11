@@ -2,12 +2,16 @@ import styled from "styled-components";
 
 export const LoginContainer = styled.div`
   display: flex;
-  margin-top: 20vh;
+  margin-top: 60px;
   align-items: center;
   padding: 10px;
+
+  @media screen and (max-width: 500px) {
+    padding: 5px;
+  }
 `;
 
-export const LoginWrap = styled.form`
+export const LoginFormWrap = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,6 +21,10 @@ export const LoginWrap = styled.form`
   border-radius: 8px;
   border: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+
+  @media screen and (max-width: 500px) {
+    padding: 5px;
+  }
 `;
 
 export const LoginTitle = styled.h1`
@@ -47,6 +55,11 @@ export const LoginInput = styled.input`
   background-color: white;
   font-size: 16px;
   outline: none;
+
+  @media screen and (max-width: 500px) {
+    width: 90%;
+  }
+
   &:focus {
     outline: none;
     border: 1px solid rgb(170, 170, 170);
@@ -71,14 +84,21 @@ export const LoginButton = styled.button`
   border-radius: 8px;
   background-color: rgb(70, 70, 70);
   color: white;
-  padding: 12px 80px;
+  width: 230px;
+  height: 50px;
   margin-top: 10px;
   margin-bottom: 10px;
   font-size: 16px;
   outline: none;
   border: none;
   transition: all 0.15s ease;
+
+  @media screen and (min-width: 500px) {
+    width: 90%;
+  }
+
   &:hover {
     background-color: rgb(85, 85, 85);
+    cursor: pointer;
   }
 `;

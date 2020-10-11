@@ -1,28 +1,42 @@
 import {
   LoginContainer,
-  LoginWrap,
+  LoginFormWrap,
   LoginTitle,
   LoginInputWrapper,
   LoginTextInput,
   LoginInput,
   LoginButton,
 } from "./LoginForm.elements.js";
-
+import { Spinner } from "../../globalStyles";
 import React from "react";
 
-function LoginForm({}) {
+function LoginForm({ onChange, onSave, user, saving }) {
   return (
     <LoginContainer>
-      <LoginWrap>
+      <LoginFormWrap>
         <LoginTitle>Welcome</LoginTitle>
         <LoginInputWrapper>
-          <LoginInput placeholder="Email address" type="text" name="Password" />
+          <LoginInput
+            placeholder="Email address"
+            type="text"
+            name="email"
+            value={user.email}
+            onChange={onChange}
+          />
         </LoginInputWrapper>
         <LoginInputWrapper>
-          <LoginInput placeholder="Password" type="password" name="Password" />
+          <LoginInput
+            placeholder="Password"
+            type="password"
+            name="password"
+            value={user.password}
+            onChange={onChange}
+          />
         </LoginInputWrapper>
-        <LoginButton>Log In</LoginButton>
-      </LoginWrap>
+        <LoginButton name="login" onClick={onSave}>
+          {saving ? <Spinner fontSize="3px" size="10em" /> : "Log In"}
+        </LoginButton>
+      </LoginFormWrap>
     </LoginContainer>
   );
 }

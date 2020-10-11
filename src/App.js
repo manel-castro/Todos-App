@@ -13,12 +13,11 @@ import NotFoundPage from "./components/not-found/NotFoundPage";
 
 import PrivateRoute from "./components/common/PrivateRoute";
 import PublicRoute from "./components/common/PublicRoute";
-import Spinner from "./components/_utils/Spinner";
+import { Spinner } from "./globalStyles";
 
 import GlobalStyle from "./globalStyles";
 
 // import uuid from 'uuid';
-import "./App.css";
 
 /* 
 ++++++++++TODOS++++++++++++++
@@ -63,7 +62,18 @@ const App = (props) => {
                   authenticated={loggedIn}
                 />
               ) : null}
-              {loggedIn === null ? <Route component={Spinner} /> : null}
+              {loggedIn === null ? (
+                <Route
+                  render={() => (
+                    <Spinner
+                      primary
+                      fontSize="10px"
+                      size="10em"
+                      style={{ marginTop: "60px" }}
+                    />
+                  )}
+                />
+              ) : null}
               <Route component={NotFoundPage} />
             </Switch>
           </Router>
