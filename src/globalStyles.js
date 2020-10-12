@@ -22,9 +22,10 @@ const GlobalStyle = createGlobalStyle`
 
 export const Container = styled.div`
   display: flex;
+  flex-direction: column;
   z-index: 1;
   width: 100%;
-  max-width: 1300px;
+  height: 100vh;
   margin-left: auto;
   margin-right: auto;
 `;
@@ -93,6 +94,20 @@ export const Spinner = styled.div`
       transform: rotate(360deg);
     }
   }
+`;
+
+export const FooterContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 7vh;
+  background-color: white;
+`;
+
+export const FooterText = styled.p`
+  color: rgb(140, 150, 150);
 `;
 
 export default GlobalStyle;

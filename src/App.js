@@ -15,8 +15,11 @@ import PrivateRoute from "./components/common/PrivateRoute";
 import PublicRoute from "./components/common/PublicRoute";
 import { Spinner } from "./globalStyles";
 
-import GlobalStyle from "./globalStyles";
-
+import GlobalStyle, {
+  Container,
+  FooterContainer,
+  FooterText,
+} from "./globalStyles";
 // import uuid from 'uuid';
 
 /* 
@@ -36,50 +39,50 @@ const App = (props) => {
   const { loggedIn } = props;
 
   return (
-    <>
-      <div className="App">
-        <div className="container">
-          <Router history={history}>
-            <GlobalStyle />
-            <Header />
-            <Switch>
-              <Route path="/about" render={() => <About history={history} />} />
+    <Container>
+      <Router history={history}>
+        <GlobalStyle />
+        <Header />
+        <Switch>
+          <Route path="/about" render={() => <About history={history} />} />
 
-              {loggedIn !== null ? (
-                <PrivateRoute
-                  exact
-                  path="/app"
-                  component={TodosLayout}
-                  authenticated={loggedIn}
-                />
-              ) : null}
+          {loggedIn !== null ? (
+            <PrivateRoute
+              exact
+              path="/app"
+              component={TodosLayout}
+              authenticated={loggedIn}
+            />
+          ) : null}
 
-              {loggedIn !== null ? (
-                <PublicRoute
-                  exact
-                  path="/"
-                  component={LoginPage}
-                  authenticated={loggedIn}
+          {loggedIn !== null ? (
+            <PublicRoute
+              exact
+              path="/"
+              component={LoginPage}
+              authenticated={loggedIn}
+            />
+          ) : null}
+          {loggedIn === null ? (
+            <Route
+              render={() => (
+                <Spinner
+                  primary
+                  fontSize="10px"
+                  size="10em"
+                  style={{ marginTop: "60px" }}
                 />
-              ) : null}
-              {loggedIn === null ? (
-                <Route
-                  render={() => (
-                    <Spinner
-                      primary
-                      fontSize="10px"
-                      size="10em"
-                      style={{ marginTop: "60px" }}
-                    />
-                  )}
-                />
-              ) : null}
-              <Route component={NotFoundPage} />
-            </Switch>
-          </Router>
-        </div>
-      </div>
-    </>
+              )}
+            />
+          ) : null}
+          <Route component={NotFoundPage} />
+        </Switch>
+      </Router>
+
+      <FooterContainer>
+        <FooterText>Designed by Manel.</FooterText>
+      </FooterContainer>
+    </Container>
   );
 };
 

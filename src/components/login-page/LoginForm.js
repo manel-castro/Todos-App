@@ -6,15 +6,19 @@ import {
   LoginTextInput,
   LoginInput,
   LoginButton,
+  LoginErrors,
+  PasswordReset,
+  LoginDivider,
+  SignInButton,
 } from "./LoginForm.elements.js";
 import { Spinner } from "../../globalStyles";
 import React from "react";
 
-function LoginForm({ onChange, onSave, user, saving }) {
+function LoginForm({ onChange, onSave, user, saving, errors }) {
   return (
     <LoginContainer>
       <LoginFormWrap>
-        <LoginTitle>Welcome</LoginTitle>
+        <LoginTitle>Hey, writer!</LoginTitle>
         <LoginInputWrapper>
           <LoginInput
             placeholder="Email address"
@@ -23,6 +27,7 @@ function LoginForm({ onChange, onSave, user, saving }) {
             value={user.email}
             onChange={onChange}
           />
+          <LoginErrors>{errors.email}</LoginErrors>
         </LoginInputWrapper>
         <LoginInputWrapper>
           <LoginInput
@@ -32,10 +37,16 @@ function LoginForm({ onChange, onSave, user, saving }) {
             value={user.password}
             onChange={onChange}
           />
+          <LoginErrors>{errors.password}</LoginErrors>
         </LoginInputWrapper>
         <LoginButton name="login" onClick={onSave}>
           {saving ? <Spinner fontSize="3px" size="10em" /> : "Log In"}
         </LoginButton>
+        <LoginErrors>{errors.onSave}</LoginErrors>
+        <PasswordReset>Forgot your password?</PasswordReset>
+        <LoginDivider />
+
+        <SignInButton>Sign In</SignInButton>
       </LoginFormWrap>
     </LoginContainer>
   );

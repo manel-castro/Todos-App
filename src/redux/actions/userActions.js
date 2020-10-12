@@ -26,17 +26,15 @@ export function userLogoutSuccess() {
 export function userLogin(user) {
   return function (dispatch, getState) {
     const { email, password } = user;
-    setTimeout(() => {
-      return firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password)
-        .then((cred) => {
-          dispatch(userLoginSuccess(cred.user.uid));
-        })
-        .catch((err) => {
-          throw err;
-        });
-    }, 2000);
+    return firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((cred) => {
+        dispatch(userLoginSuccess(cred.user.uid));
+      })
+      .catch((err) => {
+        throw err;
+      });
   };
 }
 

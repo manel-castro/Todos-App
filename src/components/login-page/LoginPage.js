@@ -36,22 +36,23 @@ const LoginPage = ({ userLogin, userSignup }) => {
     return Object.keys(isValidErrors).length === 0;
   };
 
-  const handleSave = async (e) => {
-    e.preventDefault();
-
-    setSaving(true);
-
+  const loginReq = async (e) => {
     const { name } = e.target;
     const { email, password } = user;
 
     const validation = await !inputIsValid();
-    if (validation) return;
-
+    if (validation) {
+      console.log("errors");
+      setSaving(false);
+      return;
+    }
+    console.log("didnt reach");
     if (name === "login") {
       try {
         await userLogin({ email, password });
         setSaving(false);
       } catch (err) {
+        console.log(err.message);
         setErrors({ onSave: err.message });
         setSaving(false);
       }
@@ -65,6 +66,13 @@ const LoginPage = ({ userLogin, userSignup }) => {
         setSaving(false);
       }
     }
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+
+    await loginReq(e);
   };
 
   return (
