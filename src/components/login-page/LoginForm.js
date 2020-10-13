@@ -7,14 +7,31 @@ import {
   LoginInput,
   LoginButton,
   LoginErrors,
-  PasswordReset,
   LoginDivider,
   SignInButton,
+  PasswordResetLink,
+  PasswordResetWrap,
+  PasswordResetModal,
+  PasswordResetModalContent,
+  CloseModalCross,
+  PasswordResetButton,
+  PasswordResetInputWrapper,
+  PasswordResetInput,
 } from "./LoginForm.elements.js";
 import { Spinner } from "../../globalStyles";
 import React from "react";
 
-function LoginForm({ onChange, onSave, user, saving, errors }) {
+function LoginForm({
+  onChange,
+  handleLogin,
+  handleSignup,
+  handlePasswordReset,
+  isPasswordReset,
+  modalPassReset,
+  user,
+  saving,
+  errors,
+}) {
   return (
     <LoginContainer>
       <LoginFormWrap>
@@ -39,15 +56,40 @@ function LoginForm({ onChange, onSave, user, saving, errors }) {
           />
           <LoginErrors>{errors.password}</LoginErrors>
         </LoginInputWrapper>
-        <LoginButton name="login" onClick={onSave}>
-          {saving ? <Spinner fontSize="3px" size="10em" /> : "Log In"}
+        <LoginButton name="login" onClick={handleLogin}>
+          {saving.login ? <Spinner fontSize="3px" size="10em" /> : "Log In"}
         </LoginButton>
         <LoginErrors>{errors.onSave}</LoginErrors>
-        <PasswordReset>Forgot your password?</PasswordReset>
+        <PasswordResetWrap>
+          <PasswordResetLink onClick={modalPassReset}>
+            Forgot your password?
+          </PasswordResetLink>
+        </PasswordResetWrap>
         <LoginDivider />
 
-        <SignInButton>Sign In</SignInButton>
+        <SignInButton name="signup" onClick={handleSignup}>
+          {saving.signup ? <Spinner fontSize="3px" size="10em" /> : "Sign In"}
+        </SignInButton>
       </LoginFormWrap>
+      <PasswordResetModal isPasswordReset={isPasswordReset}>
+        <PasswordResetModalContent isPasswordReset={isPasswordReset}>
+          <CloseModalCross />
+          <p> You'll recive an email with a link to reset your password.</p>
+          <PasswordResetInputWrapper>
+            <PasswordResetInput
+              placeholder="Email address"
+              type="text"
+              name="emailPassReset"
+              value={user.emailPassReset}
+              onChange={onChange}
+            />
+            <LoginErrors>{errors.emailResetPass}</LoginErrors>
+          </PasswordResetInputWrapper>
+          <PasswordResetButton onClick={handlePasswordReset}>
+            Send email
+          </PasswordResetButton>
+        </PasswordResetModalContent>
+      </PasswordResetModal>
     </LoginContainer>
   );
 }

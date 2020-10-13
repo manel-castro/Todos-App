@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { IoMdClose } from "react-icons/io";
 
 export const LoginContainer = styled.div`
   display: flex;
@@ -21,11 +22,11 @@ export const LoginFormWrap = styled.form`
   border-radius: 8px;
   border: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
-  max-width: 440px;
+  width: 350px;
 
   @media screen and (max-width: 500px) {
     padding: 5px;
-    max-width: 95vw;
+    width: 95vw;
   }
 `;
 
@@ -39,6 +40,11 @@ export const LoginInputWrapper = styled.div`
   flex-direction: column;
   margin-bottom: 12px;
   align-items: center;
+  width: 100%;
+
+  @media screen and (max-width: 500px) {
+    width: 90vw;
+  }
 `;
 
 export const LoginTextInput = styled.h5`
@@ -52,7 +58,7 @@ export const LoginInput = styled.input`
   border: 1px solid rgb(220, 242, 242);
   box-sizing: border-box;
   padding: 14px 16px;
-  width: 350px;
+  width: 100%;
   color: black;
   background-color: white;
   font-size: 16px;
@@ -111,19 +117,6 @@ export const LoginErrors = styled.small`
   max-width: 90vw;
 `;
 
-export const PasswordReset = styled.a`
-  text-decoration: none;
-  font-size: 14px;
-  color: rgb(70, 70, 70);
-  text-align: center;
-  margin: 5px auto;
-
-  &:hover {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-`;
-
 export const LoginDivider = styled.hr`
   border-top: 1px solid rgb(220, 242, 242);
   border-left: 0;
@@ -140,5 +133,85 @@ export const SignInButton = styled(LoginButton)`
 
   &:hover {
     background-color: rgb(240, 240, 240);
+  }
+`;
+
+//Password Reset stylings: will open modal
+export const PasswordResetWrap = styled.a`
+  margin: 5px auto;
+`;
+
+export const PasswordResetLink = styled.p`
+  text-decoration: none;
+  font-size: 14px;
+  color: rgb(70, 70, 70);
+  text-align: center;
+
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+`;
+
+export const PasswordResetModal = styled.div`
+  display: ${({ isPasswordReset }) =>
+    isPasswordReset ? "flex" : "none"}; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100vw; /* Full width */
+  height: 100vh; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+`;
+
+export const PasswordResetModalContent = styled.div`
+  background-color: #fefefe;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 100px auto;
+  padding: 20px;
+  border: 1px solid #888;
+	width: 370px;
+	height: 200px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+	@media screen and (max-width: 500px){
+		width: 95vw;
+	}
+  transition: all 0.4s ease;
+	opacity: ${({ isPasswordReset }) => (isPasswordReset ? "1" : "0")});
+`;
+
+export const CloseModalCross = styled(IoMdClose)`
+  color: white;
+  margin-left: 0px;
+`;
+
+export const PasswordResetButton = styled(SignInButton)`
+  margin-top: 15px;
+  padding: 5px;
+  width: 50%;
+  height: 50px;
+`;
+
+export const PasswordResetInputWrapper = styled(LoginInputWrapper)`
+  color: black;
+  width: 95%;
+  height: 40%;
+`;
+
+export const PasswordResetInput = styled(LoginInput)`
+  color: black;
+  margin-top: 20px;
+  width: 100%;
+
+  &:focus {
+    box-shadow: 0 0 0;
   }
 `;
