@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import LoginForm from "./LoginForm";
 import { validateEmail } from "../_helpers/validateEmail";
 
-const LoginPage = ({ userLogin, userSignup }) => {
+const LoginPage = ({ userLogin, userSignup, resetPassword }) => {
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -13,7 +13,7 @@ const LoginPage = ({ userLogin, userSignup }) => {
   });
   const [errors, setErrors] = useState({ email: "" });
   const [saving, setSaving] = useState({});
-  const [isPasswordReset, setIsPasswordReset] = useState(true);
+  const [isPasswordReset, setIsPasswordReset] = useState(false);
   //containerComponent and presentational component
   // Spinner on actions
 
@@ -26,7 +26,7 @@ const LoginPage = ({ userLogin, userSignup }) => {
     let isValidErrors = {};
     let emailObj = "email";
     if (isResetPass) {
-      emailObj = "emailResetPass";
+      emailObj = "emailPassReset";
     }
 
     if (email.length === 0) {
@@ -66,7 +66,7 @@ const LoginPage = ({ userLogin, userSignup }) => {
       await userSignup({ email, password });
       setSaving({});
     } catch (err) {
-      setErrors({ onSave: err.message });
+      setErrors({ signup: err.message });
       setSaving({});
     }
   };
@@ -88,7 +88,7 @@ const LoginPage = ({ userLogin, userSignup }) => {
       await userLogin({ email, password });
       setSaving({});
     } catch (err) {
-      setErrors({ onSave: err.message });
+      setErrors({ login: err.message });
       setSaving({});
     }
   };
@@ -104,8 +104,22 @@ const LoginPage = ({ userLogin, userSignup }) => {
       console.log("not valid");
       return;
     }
-    setErrors((prevState) => ({ ...prevState, emailResetPass: "" }));
-    console.log("passed test");
+
+    try {
+      await resetPassword(user.emailPassReset);
+    } catch (err) {
+      console.log(err);
+      alert(err.message);
+      setSaving({});
+      return;
+    }
+
+    setErrors((prevState) => ({ ...prevState, emailPassReset: "" }));
+    setSaving({});
+    setIsPasswordReset(false);
+    alert(
+      "Follow the instructions of the email we sent to you, and then try to Log In."
+    );
   };
 
   return (
@@ -136,6 +150,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = {
   userLogin: userActions.userLogin,
   userSignup: userActions.userSignup,
+  resetPassword: userActions.resetPassword,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

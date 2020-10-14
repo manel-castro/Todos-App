@@ -32,13 +32,13 @@ export const LoginFormWrap = styled.form`
 
 export const LoginTitle = styled.h1`
   font-size: 24px;
-  margin: 17px auto 17px auto;
+  margin: 17px auto 20px auto;
 `;
 
 export const LoginInputWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 12px;
+  margin-bottom: 0px;
   align-items: center;
   width: 100%;
 
@@ -94,7 +94,6 @@ export const LoginButton = styled.button`
   color: white;
   width: 100%;
   height: 50px;
-  margin-bottom: 10px;
   font-size: 16px;
   outline: none;
   border: none;
@@ -115,6 +114,7 @@ export const LoginErrors = styled.small`
   color: red;
   text-align: center;
   max-width: 90vw;
+  height: 25px;
 `;
 
 export const LoginDivider = styled.hr`
@@ -130,7 +130,7 @@ export const SignInButton = styled(LoginButton)`
   border: 1px solid rgb(150, 150, 150);
   color: rgb(80, 80, 80);
   width: 60%;
-
+  margin-bottom: 0px;
   &:hover {
     background-color: rgb(240, 240, 240);
   }
@@ -138,7 +138,7 @@ export const SignInButton = styled(LoginButton)`
 
 //Password Reset stylings: will open modal
 export const PasswordResetWrap = styled.a`
-  margin: 5px auto;
+  margin: 0px auto;
 `;
 
 export const PasswordResetLink = styled.p`
@@ -178,7 +178,7 @@ export const PasswordResetModalContent = styled.div`
   padding: 20px;
   border: 1px solid #888;
 	width: 370px;
-	height: 200px;
+	height: 230px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 
 	@media screen and (max-width: 500px){
@@ -188,13 +188,19 @@ export const PasswordResetModalContent = styled.div`
 	opacity: ${({ isPasswordReset }) => (isPasswordReset ? "1" : "0")});
 `;
 
+export const CrossContainer = styled.div`
+  margin: -10px -10px auto auto;
+  cursor: pointer;
+`;
+
 export const CloseModalCross = styled(IoMdClose)`
   color: white;
-  margin-left: 0px;
+  font-size: 20px;
+  background-color: rgb(50, 50, 50);
 `;
 
 export const PasswordResetButton = styled(SignInButton)`
-  margin-top: 15px;
+  margin: 15px auto auto auto;
   padding: 5px;
   width: 50%;
   height: 50px;

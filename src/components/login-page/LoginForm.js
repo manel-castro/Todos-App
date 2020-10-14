@@ -14,12 +14,13 @@ import {
   PasswordResetModal,
   PasswordResetModalContent,
   CloseModalCross,
+  CrossContainer,
   PasswordResetButton,
   PasswordResetInputWrapper,
   PasswordResetInput,
 } from "./LoginForm.elements.js";
 import { Spinner } from "../../globalStyles";
-import React from "react";
+import React, { useRef, useEffect } from "react";
 
 function LoginForm({
   onChange,
@@ -59,21 +60,23 @@ function LoginForm({
         <LoginButton name="login" onClick={handleLogin}>
           {saving.login ? <Spinner fontSize="3px" size="10em" /> : "Log In"}
         </LoginButton>
-        <LoginErrors>{errors.onSave}</LoginErrors>
+        <LoginErrors>{errors.login}</LoginErrors>
         <PasswordResetWrap>
           <PasswordResetLink onClick={modalPassReset}>
             Forgot your password?
           </PasswordResetLink>
         </PasswordResetWrap>
         <LoginDivider />
-
         <SignInButton name="signup" onClick={handleSignup}>
-          {saving.signup ? <Spinner fontSize="3px" size="10em" /> : "Sign In"}
+          {saving.signup ? <Spinner fontSize="3px" size="10em" /> : "Sign Up"}
         </SignInButton>
+        <LoginErrors>{errors.signup}</LoginErrors>
       </LoginFormWrap>
       <PasswordResetModal isPasswordReset={isPasswordReset}>
         <PasswordResetModalContent isPasswordReset={isPasswordReset}>
-          <CloseModalCross />
+          <CrossContainer onClick={modalPassReset}>
+            <CloseModalCross />
+          </CrossContainer>
           <p> You'll recive an email with a link to reset your password.</p>
           <PasswordResetInputWrapper>
             <PasswordResetInput
@@ -83,7 +86,7 @@ function LoginForm({
               value={user.emailPassReset}
               onChange={onChange}
             />
-            <LoginErrors>{errors.emailResetPass}</LoginErrors>
+            <LoginErrors>{errors.emailPassReset}</LoginErrors>
           </PasswordResetInputWrapper>
           <PasswordResetButton onClick={handlePasswordReset}>
             Send email

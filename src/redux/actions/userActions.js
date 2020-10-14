@@ -20,6 +20,10 @@ export function userLogoutSuccess() {
   return { type: types.USER_LOGOUT_SUCCESS };
 }
 
+export function resetPasswordSuccess() {
+  return { type: types.RESET_PASSWORD_SUCCESS };
+}
+
 //
 //Thunks
 
@@ -72,4 +76,16 @@ export const verifyAuth = () => async (dispatch) => {
       dispatch(userLogoutSuccess());
     }
   });
+};
+
+export const resetPassword = (email) => async (dispatch) => {
+  await firebase
+    .auth()
+    .sendPasswordResetEmail(email)
+    .then(function () {
+      dispatch(resetPasswordSuccess());
+    })
+    .catch(function (error) {
+      throw error;
+    });
 };

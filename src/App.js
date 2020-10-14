@@ -22,18 +22,6 @@ import GlobalStyle, {
 } from "./globalStyles";
 // import uuid from 'uuid';
 
-/* 
-++++++++++TODOS++++++++++++++
-- User System (if you're logout it don't shows you the todo's page)
-- Efficiency problem: change in single todo request to database all of them.
-- Add 404 page
-- Add username slugs (make public button?)
-
-Near todos.
-- Apply bootstrap
-
-- Spinner on loads
-*/
 
 const App = (props) => {
   const { loggedIn } = props;
@@ -87,7 +75,7 @@ const App = (props) => {
 };
 
 App.propTypes = {
-  loggedIn: PropTypes.bool.isRequired,
+  loggedIn: PropTypes.any.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
