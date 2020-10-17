@@ -1,60 +1,42 @@
 import React from "react";
 import TodoItem from "./TodoItem";
 import PropTypes from "prop-types";
+import { TodosListContainer, TodosListWrap } from "./TodoList.elements";
 
-const TodoList = ({ todos, markComplete, delTodo }) => {
+const TodoList = ({ todos, delTodo, addSubItem, getNewValue, error }) => {
   //For conditional rendering below.
-  const completedTodos = todos.filter((todo) => {
-    return todo.completed === true;
-  });
+  //useful to order items by label, or search items?
+  //const completedTodos = todos.filter((todo) => {
+  //  return todo.completed === true;
+  //});
 
   return (
-    <div>
-      {todos
-        .filter((todo) => {
-          return todo.completed === false;
-        })
-        .map((todo) => (
-          <TodoItem
-            key={todo.id}
-            todo={todo}
-            markComplete={markComplete}
-            delTodo={delTodo}
-          />
-        ))}
-      {completedTodos.length === 0 ? null : (
-        <div style={completedStyle}>
-          <p>Completed Todos</p>
-          <div style={completedTodoStyle}>
-            {completedTodos.map((todo) => (
-              <TodoItem
-                key={todo.id}
-                todo={todo}
-                markComplete={markComplete}
-                delTodo={delTodo}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
+    <TodosListContainer>
+      <TodosListWrap>
+        {todos
+          //.filter((todo) => {
+          //return todo.completed === false;
+          //})
+          .map((todo) => (
+            <TodoItem
+              key={todo.id}
+              todo={todo}
+              delTodo={delTodo}
+              addSubItem={addSubItem}
+              getNewValue={getNewValue}
+              error={error}
+            />
+          ))}
+      </TodosListWrap>
+    </TodosListContainer>
   );
-};
-
-const completedStyle = {
-  padding: "10px",
-  margin: "10px",
-  background: "#d9d9d9",
-};
-
-const completedTodoStyle = {
-  textDecoration: "line-through",
 };
 
 TodoList.propTypes = {
   todos: PropTypes.array.isRequired,
   markComplete: PropTypes.func.isRequired,
   delTodo: PropTypes.func.isRequired,
+  addSubItem: PropTypes.func.isRequired,
 };
 
 export default TodoList;

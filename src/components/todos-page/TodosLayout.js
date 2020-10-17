@@ -6,9 +6,16 @@ import * as todosActions from "../../redux/actions/todosActions";
 import AddTodo from "./AddTodo";
 import TodoList from "./TodoList";
 
-const TodosLayout = ({ addTodo, todos, markComplete, delTodo }) => {
+const TodosLayout = ({
+  addTodo,
+  todos,
+  markComplete,
+  delTodo,
+  addSubItem,
+  modifyTodo,
+}) => {
   const [newTodoTitle, setNewTodoTitle] = useState("");
-  const [newTodoError, setNewTodoError] = useState("Add todo..."); //I'll use errors directly as placeholder until I have other solution.
+  const [newTodoError, setNewTodoError] = useState(""); //I'll use errors directly as placeholder until I have other solution.
 
   const handleAddTodoChange = (e) => {
     setNewTodoTitle(e.target.value);
@@ -29,14 +36,14 @@ const TodosLayout = ({ addTodo, todos, markComplete, delTodo }) => {
     return true;
   };
 
-  const handleAddTodoSubmit = async (e) => {
-    e.preventDefault();
-    const validation = await isNewTodoValid(newTodoTitle);
-    if (!validation) return;
-
-    addTodo({ title: newTodoTitle });
-    setNewTodoTitle("");
-    setNewTodoError("Add todo...");
+  const handleAddTodoSubmit = async () => {
+    //const validation = await isNewTodoValid(newTodoTitle);
+    //if (!validation) return;
+    try {
+      addTodo();
+    } catch (err) {
+      console.log("addTodo failed", err);
+    }
   };
 
   const handleMarkCompleted = async (todo) => {
@@ -57,20 +64,28 @@ const TodosLayout = ({ addTodo, todos, markComplete, delTodo }) => {
     }
   };
 
+  const handleAddSubItem = async (todo) => {
+    try {
+      await addSubItem(todo);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleChangeTodo = async (todoId, title) => {
+    modifyTodo(todoId, title);
+  };
+
   return (
     <>
-      <AddTodo
-        onChange={handleAddTodoChange}
-        onSubmit={handleAddTodoSubmit}
-        title={newTodoTitle}
-        errors={newTodoError}
-        placeholder={newTodoError}
-      />
+      <AddTodo onSubmit={handleAddTodoSubmit} />
       <div style={{ overflowY: "scroll", height: "84vh" }}>
         <TodoList
           todos={todos}
-          markComplete={handleMarkCompleted}
           delTodo={handleDeleteTodo}
+          addSubItem={handleAddSubItem}
+          getNewValue={handleChangeTodo}
+          error={newTodoError}
         />
       </div>
     </>
@@ -95,6 +110,8 @@ export const mapDispatchToProps = {
   addTodo: todosActions.addTodo,
   markComplete: todosActions.markTodoCompleted,
   delTodo: todosActions.deleteTodo,
+  addSubItem: todosActions.addSubItem,
+  modifyTodo: todosActions.modifyTodo,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodosLayout);

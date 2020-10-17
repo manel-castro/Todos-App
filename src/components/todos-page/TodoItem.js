@@ -1,55 +1,53 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import {
+  TodoItemWrap,
+  TodoTitleWrap,
+  DeleteTodo,
+  SubItemsContainer,
+  AddSubItemWrap,
+  AddSubItemButton,
+} from "./TodoItem.elements.js";
+import SubItemLayout from "./SubItemLayout";
+import TextDisplay from "../common/TextDisplay";
 
 export class TodoItem extends Component {
-  //Style into the component but separated from the div
-  // to use the ternary operator and simplify things
-
   render() {
-    //destructuring: to pull of the variables from props and use just the single variable
-    const { todo, markComplete, delTodo } = this.props;
-
+    const { todo, delTodo, addSubItem, getNewValue, error } = this.props;
+    console.log("this todo", todo);
     return (
-      <div style={todoStyle}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "nowrap",
-            justifyContent: "space-between",
-          }}
-        >
-          <div onClick={() => markComplete(todo)} style={{ cursor: "pointer" }}>
-            {todo.title}
+      <TodoItemWrap>
+        <TodoTitleWrap>
+          <div style={{ cursor: "pointer" }}>
+            <TextDisplay
+              text={todo.title}
+              fontSize={"20px"}
+              error={error}
+              getNewValue={getNewValue}
+              todoId={todo.id}
+            />
           </div>
           <div>
-            <DeleteForeverIcon
-              onClick={() => delTodo(todo)}
-              style={btnStyle}
-            ></DeleteForeverIcon>
+            <DeleteTodo onClick={() => delTodo(todo)} />
           </div>
-        </div>
-      </div>
+        </TodoTitleWrap>
+        <SubItemsContainer>
+          <AddSubItemWrap>
+            <AddSubItemButton onClick={() => addSubItem(todo)}>
+              Add sub-item
+            </AddSubItemButton>
+          </AddSubItemWrap>
+          <>
+            <SubItemLayout todo={todo} />
+          </>
+        </SubItemsContainer>
+      </TodoItemWrap>
     );
   }
 }
 
-const todoStyle = {
-  background: "#f4f4f4",
-  padding: "10px",
-  borderBottom: "1px #ccc dotted",
-};
-
-const btnStyle = {
-  color: "red",
-  cursor: "pointer",
-  float: "right",
-};
-
 TodoItem.propTypes = {
   todo: PropTypes.object.isRequired,
-  markComplete: PropTypes.func.isRequired,
   delTodo: PropTypes.func.isRequired,
 };
 

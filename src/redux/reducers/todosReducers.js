@@ -19,6 +19,19 @@ export default function todosReducer(state = initialState.todos, action) {
       });
     case types.USER_LOGOUT_SUCCESS:
       return [];
+    case types.OPEN_SUB_ITEM_LEVEL:
+      return state.map((todo) => {
+        return todo.id === action.todoId
+          ? {
+              ...todo,
+              openedKeys: {
+                ...todo.openedKeys,
+                [action.key]: action.action,
+              },
+            }
+          : todo;
+      });
+
     default:
       return state;
   }
