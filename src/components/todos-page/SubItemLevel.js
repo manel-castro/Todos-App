@@ -1,7 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { hasChildren } from "../_helpers/subItemsHelpers";
-
+import {
+  SubItemsContainer,
+  ListItem,
+  SubLevelButtonWrap,
+  SubLevelButton,
+} from "./SubItemLevel.elements.js";
 // this is a recursive component, with conditions in order to skew the behavior.
 
 function SubItemLevel({
@@ -9,75 +14,85 @@ function SubItemLevel({
   handleOpenLevel,
   openedSubItems = {},
   handleNewSubItem,
+  addSubItem,
+  level,
 }) {
   const childrenList = hasChildren(subItem);
   console.log(openedSubItems);
   return (
-    <>
+    <SubItemsContainer>
       {Object.keys(childrenList).map((key) => {
         const isSubOpened =
           openedSubItems[key] !== undefined && openedSubItems[key] !== false;
 
         return (
           <>
-            <>add</>
-            <li style={{ marginLeft: "10px" }} key={key}>
+            <ListItem level={level} key={key}>
               <>{childrenList[key].title}</>
+              <>
+                {isSubOpened || !childrenList[key].hasChildren ? (
+                  <SubLevelButtonWrap>
+                    <SubLevelButton
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleNewSubItem(key);
+                      }}
+                    >
+                      Add
+                    </SubLevelButton>
+                  </SubLevelButtonWrap>
+                ) : null}
+              </>
               <>
                 {childrenList[key].hasChildren ? (
                   !isSubOpened ? (
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleOpenLevel(key, true);
-                      }}
-                    >
-                      Expand
-                    </button>
+                    <SubLevelButtonWrap>
+                      <SubLevelButton
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleOpenLevel(key, true);
+                        }}
+                      >
+                        Expand
+                      </SubLevelButton>
+                    </SubLevelButtonWrap>
                   ) : (
                     <>
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleOpenLevel(key, false);
-                        }}
-                      >
-                        Contract
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleNewSubItem();
-                        }}
-                      >
-                        Add
-                      </button>
+                      <SubLevelButtonWrap>
+                        <SubLevelButton
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleOpenLevel(key, false);
+                          }}
+                        >
+                          Contract
+                        </SubLevelButton>
+                      </SubLevelButtonWrap>
                     </>
                   )
                 ) : null}
               </>
-              {isSubOpened ? (
-                <>
-                  {console.log("rendered child")}
-                  <ul>
-                    <SubItemLevel
-                      subItem={subItem[key]}
-                      handleOpenLevel={handleOpenLevel}
-                      openedSubItems={openedSubItems}
-                    />
-                  </ul>
-                </>
-              ) : null}
-            </li>
-            <>Add</>
+            </ListItem>
+            {isSubOpened ? (
+              <>
+                {console.log("rendered child, level: ", level)}
+
+                <ul>
+                  <SubItemLevel
+                    subItem={subItem[key]}
+                    handleOpenLevel={handleOpenLevel}
+                    openedSubItems={openedSubItems}
+                    handleNewSubItem={handleNewSubItem}
+                  />
+                </ul>
+              </>
+            ) : null}
           </>
         );
       })}
-    </>
+    </SubItemsContainer>
   );
 }
-
-SubItemLevel.defaultProps = {};
 
 SubItemLevel.propTypes = {};
 

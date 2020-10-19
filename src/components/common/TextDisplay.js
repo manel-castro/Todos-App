@@ -6,21 +6,35 @@ export function TextDisplayChild({
   fontSize,
   error,
   handleChange,
+  handleColor,
+  color,
   handleOpen,
   open,
   validate,
 }) {
-  const handleFocus = () => {};
+  const handleFocus = () => {
+    handleColor(true);
+  };
+  const handleBlur = () => {
+    handleColor(false);
+    validate();
+  };
   return (
-    <>
-      {open ? (
+    <div style={{ cursor: "text" }}>
+      {true ? (
         <div>
           <input
-            style={{ fontSize: fontSize, border: "none", outline: "none" }}
+            style={{
+              color: color,
+              fontSize: fontSize,
+              border: "none",
+              outline: "none",
+            }}
             autoFocus
             onChange={handleChange}
             value={text}
-            onBlur={validate}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             autoComplete="off"
           ></input>{" "}
           <small style={{ color: "red" }}>{error}</small>
@@ -30,23 +44,56 @@ export function TextDisplayChild({
           {text}
         </div>
       )}
-    </>
+    </div>
   );
 }
 
 TextDisplayChild.propTypes = {};
 
-function TextDisplay({ todoId, text, fontSize, error, getNewValue }) {
+function TextDisplay({
+  todoId,
+  text,
+  fontSize = "16px",
+  colorOff = "black",
+  colorActive = "grey",
+  checkErrors,
+  getNewValue,
+}) {
   const [open, setOpen] = useState(false);
+  const [color, setColor] = useState(colorOff);
   const [value, setValue] = useState(text);
+  const [error, setError] = useState("");
+  let initialValue = text;
+
   const handleChange = (e) => {
+    setError(checkErrors(e.target.value));
     setValue(e.target.value);
   };
+
   const handleOpen = () => {
     setOpen(true);
   };
+
+  const handleColor = (active) => {
+    if (active) {
+      setColor(colorActive);
+    } else {
+      setColor(colorOff);
+    }
+  };
+
   const validate = () => {
-    getNewValue(todoId, value);
+    if (error.length !== 0) {
+      setValue(initialValue);
+      setError("");
+      return;
+    }
+    if (initialValue !== value) {
+      getNewValue(todoId, value);
+      console.log("firestore");
+      //			initialValue = value;
+    }
+    setOpen(false);
   };
 
   return (
@@ -59,6 +106,8 @@ function TextDisplay({ todoId, text, fontSize, error, getNewValue }) {
         open={open}
         validate={validate}
         handleOpen={handleOpen}
+        handleColor={handleColor}
+        color={color}
       />
     </div>
   );

@@ -5,15 +5,13 @@ import {
   TodoTitleWrap,
   DeleteTodo,
   SubItemsContainer,
-  AddSubItemWrap,
-  AddSubItemButton,
 } from "./TodoItem.elements.js";
 import SubItemLayout from "./SubItemLayout";
 import TextDisplay from "../common/TextDisplay";
 
 export class TodoItem extends Component {
   render() {
-    const { todo, delTodo, addSubItem, getNewValue, error } = this.props;
+    const { todo, delTodo, getNewValue, checkErrors } = this.props;
     console.log("this todo", todo);
     return (
       <TodoItemWrap>
@@ -22,9 +20,9 @@ export class TodoItem extends Component {
             <TextDisplay
               text={todo.title}
               fontSize={"20px"}
-              error={error}
               getNewValue={getNewValue}
               todoId={todo.id}
+              checkErrors={checkErrors}
             />
           </div>
           <div>
@@ -32,14 +30,7 @@ export class TodoItem extends Component {
           </div>
         </TodoTitleWrap>
         <SubItemsContainer>
-          <AddSubItemWrap>
-            <AddSubItemButton onClick={() => addSubItem(todo)}>
-              Add sub-item
-            </AddSubItemButton>
-          </AddSubItemWrap>
-          <>
-            <SubItemLayout todo={todo} />
-          </>
+          <SubItemLayout todo={todo} />
         </SubItemsContainer>
       </TodoItemWrap>
     );

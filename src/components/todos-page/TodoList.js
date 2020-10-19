@@ -3,7 +3,7 @@ import TodoItem from "./TodoItem";
 import PropTypes from "prop-types";
 import { TodosListContainer, TodosListWrap } from "./TodoList.elements";
 
-const TodoList = ({ todos, delTodo, addSubItem, getNewValue, error }) => {
+const TodoList = ({ todos, delTodo, addSubItem, getNewValue, checkErrors }) => {
   //For conditional rendering below.
   //useful to order items by label, or search items?
   //const completedTodos = todos.filter((todo) => {
@@ -24,7 +24,7 @@ const TodoList = ({ todos, delTodo, addSubItem, getNewValue, error }) => {
               delTodo={delTodo}
               addSubItem={addSubItem}
               getNewValue={getNewValue}
-              error={error}
+              checkErrors={checkErrors}
             />
           ))}
       </TodosListWrap>

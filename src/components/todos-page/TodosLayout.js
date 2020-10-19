@@ -14,31 +14,19 @@ const TodosLayout = ({
   addSubItem,
   modifyTodo,
 }) => {
-  const [newTodoTitle, setNewTodoTitle] = useState("");
-  const [newTodoError, setNewTodoError] = useState(""); //I'll use errors directly as placeholder until I have other solution.
-
-  const handleAddTodoChange = (e) => {
-    setNewTodoTitle(e.target.value);
-  };
-
   const isNewTodoValid = (title) => {
     const regEx = /^[A-Za-z]/;
+    let error;
     if (title === "" || !regEx.test(title)) {
-      setNewTodoError("We need some letters");
-      setNewTodoTitle("");
-      return false;
+      return "We need some letters";
     }
     if (title.length > 100) {
-      setNewTodoError("Title too long");
-      setNewTodoTitle("");
-      return false;
+      return "Text too long";
     }
-    return true;
+    return "";
   };
 
   const handleAddTodoSubmit = async () => {
-    //const validation = await isNewTodoValid(newTodoTitle);
-    //if (!validation) return;
     try {
       addTodo();
     } catch (err) {
@@ -46,13 +34,17 @@ const TodosLayout = ({
     }
   };
 
-  const handleMarkCompleted = async (todo) => {
-    try {
-      await markComplete(todo);
-    } catch (err) {
-      alert("Server error: Todo haven't been marked");
-    }
+  const handleChangeTodo = async (todoId, title) => {
+    modifyTodo(todoId, title);
   };
+
+  // const handleMarkCompleted = async (todo) => {
+  //   try {
+  //     await markComplete(todo);
+  //   } catch (err) {
+  //     alert("Server error: Todo haven't been marked");
+  //   }
+  // };
 
   const handleDeleteTodo = async (todo) => {
     if (window.confirm("Are you sure to delete this note?")) {
@@ -72,20 +64,16 @@ const TodosLayout = ({
     }
   };
 
-  const handleChangeTodo = async (todoId, title) => {
-    modifyTodo(todoId, title);
-  };
-
   return (
     <>
       <AddTodo onSubmit={handleAddTodoSubmit} />
-      <div style={{ overflowY: "scroll", height: "84vh" }}>
+      <div style={{ overflowY: "auto", height: "84vh" }}>
         <TodoList
           todos={todos}
           delTodo={handleDeleteTodo}
           addSubItem={handleAddSubItem}
           getNewValue={handleChangeTodo}
-          error={newTodoError}
+          checkErrors={isNewTodoValid}
         />
       </div>
     </>

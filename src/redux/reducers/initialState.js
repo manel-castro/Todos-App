@@ -4,5 +4,4 @@ export default {
     uid: null,
   },
   todos: [],
-  openedSubItems: [],
 };
