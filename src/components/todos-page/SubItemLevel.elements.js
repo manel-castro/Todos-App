@@ -2,17 +2,15 @@ import styled from "styled-components";
 import { SubItemButton } from "./SubItemLayout.elements";
 
 export const SubItemsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
   margin-left: 20px;
 `;
 
-export const ListItem = styled.li`
-  font-size: ${({ styleLevel }) => 1 - Math.log(styleLevel) / 6}rem;
+export const ListItem = styled.div`
+  font-size: ${({ styleLevel }) => 1 - (0.8 * Math.log(styleLevel)) / 5}rem;
   color: rgb(70, 70, 70);
   list-style: none;
   display: flex;
-  margin-top: ${({ styleLevel }) => 1.2 - Math.log(styleLevel) / 1.5}rem;
+  margin-top: ${({ styleLevel }) => 1.22 - 0.8 * Math.log(styleLevel)}rem;
   flex-direction: row;
   justify-content: flex-start;
 

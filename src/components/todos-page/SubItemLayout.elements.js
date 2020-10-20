@@ -6,7 +6,13 @@ export const SubItemLayoutContainer = styled.div`
 
 export const SubItemLayoutExpandedWrap = styled.div`
   padding-left: 5px;
-  padding-top: -5px;
+  margin-top: -0.3rem;
+  margin-bottom: 0.7rem;
+
+  @media screen and (max-width: 500px) {
+    margin-top: -1rem;
+    margin-bottom: 1rem;
+  }
 `;
 
 export const SubItemButton = styled.button`
@@ -23,9 +29,4 @@ export const SubItemButton = styled.button`
   &:hover {
     opacity: 1;
   }
-`;
-
-export const MultipleButtonRow = styled.div`
-  display: flex;
-  flex-direction: row;
 `;

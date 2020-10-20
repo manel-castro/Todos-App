@@ -15,6 +15,7 @@ function SubItemLevel({
   handleOpenLevel,
   openedSubItems = {},
   handleNewSubItem,
+  handleModifySubItem,
   level,
 }) {
   const childrenList = hasChildren(subItem);
@@ -29,9 +30,17 @@ function SubItemLevel({
             openedSubItems[key] !== undefined && openedSubItems[key] !== false;
 
           return (
-            <>
-              <ListItem styleLevel={level} key={key}>
-                <div>{key}</div>
+            <div key={key}>
+              <ListItem styleLevel={level}>
+                <div>
+                  <TextDisplay
+                    text={childrenList[key].title}
+                    fontSize={"15px"}
+                    getNewValue={handleModifySubItem}
+                    todoId={key}
+                    checkErrors={() => {}}
+                  />
+                </div>
                 <ButtonWrap>
                   <>
                     {isSubOpened || !childrenList[key].hasChildren ? (
@@ -89,18 +98,17 @@ function SubItemLevel({
               </ListItem>
               {isSubOpened ? (
                 <>
-                  <ul>
-                    <SubItemLevel
-                      subItem={subItem[key]}
-                      handleOpenLevel={handleOpenLevel}
-                      openedSubItems={openedSubItems}
-                      handleNewSubItem={handleNewSubItem}
-                      level={level}
-                    />
-                  </ul>
+                  <SubItemLevel
+                    subItem={subItem[key]}
+                    handleOpenLevel={handleOpenLevel}
+                    openedSubItems={openedSubItems}
+                    handleNewSubItem={handleNewSubItem}
+                    handleModifySubItem={handleModifySubItem}
+                    level={level}
+                  />
                 </>
               ) : null}
-            </>
+            </div>
           );
         })}
       </SubItemsContainer>

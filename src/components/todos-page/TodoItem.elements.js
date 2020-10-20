@@ -29,6 +29,5 @@ export const DeleteTodo = styled(DeleteForeverIcon)`
 `;
 
 export const SubItemsContainer = styled.div`
-  padding: 2px;
+  margin-bottom: 0px;
 `;
-

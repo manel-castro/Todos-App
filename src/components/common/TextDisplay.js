@@ -56,7 +56,7 @@ function TextDisplay({
   fontSize = "16px",
   colorOff = "black",
   colorActive = "grey",
-  checkErrors,
+  checkErrors = false,
   getNewValue,
 }) {
   const [open, setOpen] = useState(false);
@@ -66,7 +66,7 @@ function TextDisplay({
   let initialValue = text;
 
   const handleChange = (e) => {
-    setError(checkErrors(e.target.value));
+    if (checkErrors) setError(checkErrors(e.target.value));
     setValue(e.target.value);
   };
 
@@ -83,7 +83,7 @@ function TextDisplay({
   };
 
   const validate = () => {
-    if (error.length !== 0) {
+    if (error && error.length !== 0 && checkErrors !== false) {
       setValue(initialValue);
       setError("");
       return;

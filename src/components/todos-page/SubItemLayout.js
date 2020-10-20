@@ -15,11 +15,11 @@ function SubItemLayout({
   openedSubItems,
   currentLevel,
   addSubItem,
+  modifySubItem,
 }) {
   const [expand, setExpand] = useState(false);
   const [openedLevel, setOpenedLevel] = useState({});
   const handleExpand = (status = false) => {
-    // console.log("handleExpand: ", status);
     if (status) {
       setExpand(status);
     } else {
@@ -46,6 +46,14 @@ function SubItemLayout({
     }
   };
 
+  const handleModifySubItem = (subItemId, subItemText) => {
+    try {
+      modifySubItem(todo, subItemId, subItemText);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   let level = 0;
 
   return (
@@ -69,15 +77,14 @@ function SubItemLayout({
             </SubItemButton>
           </ButtonWrap>
           <SubItemLayoutExpandedWrap>
-            <ul>
-              <SubItemLevel
-                subItem={subItem}
-                handleOpenLevel={handleOpenLevel}
-                openedSubItems={openedLevel}
-                level={level}
-                handleNewSubItem={handleNewSubItem}
-              />
-            </ul>
+            <SubItemLevel
+              subItem={subItem}
+              handleOpenLevel={handleOpenLevel}
+              openedSubItems={openedLevel}
+              level={level}
+              handleNewSubItem={handleNewSubItem}
+              handleModifySubItem={handleModifySubItem}
+            />
           </SubItemLayoutExpandedWrap>
         </>
       ) : existSubItem ? (
@@ -85,7 +92,7 @@ function SubItemLayout({
           <SubItemButton onClick={handleExpand}>Expand</SubItemButton>
         </ButtonWrap>
       ) : (
-        <ButtonWrap>
+        <ButtonWrap display={"flex-start"} mobileDisplay={"center"}>
           <SubItemButton
             onClick={() => {
               handleNewSubItem();
@@ -112,6 +119,7 @@ export const mapDispatchToProps = {
   //  //  addSubItem: todosActions.addSubItem,
   openLevel: todosActions.openSubItemLevel,
   addSubItem: todosActions.addSubItem,
+  modifySubItem: todosActions.modifySubItem,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SubItemLayout);

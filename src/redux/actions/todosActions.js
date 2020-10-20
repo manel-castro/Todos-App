@@ -8,6 +8,10 @@ export function getTodosSuccess(todos) {
   return { type: types.GET_TODOS_SUCCESS, todos };
 }
 
+export function modifiedTodoBackEnd(id, todo) {
+  return { type: types.MODIFIED_TODO_BACK_END, id, todo };
+}
+
 export function addTodoSuccess() {
   return { type: types.ADD_TODO_SUCCESS };
 }
@@ -32,12 +36,17 @@ export function addSubItemSuccess() {
   return { type: types.ADD_SUB_ITEM_SUCCESS };
 }
 
+export function modifySubItemSuccess() {
+  return { type: types.MODIFY_SUB_ITEM_SUCCESS };
+}
+
 //
 //THUNKS
 
 export function getTodos() {
   return function (dispatch, getState) {
     const userUid = getState().user.uid;
+    let breaker = false;
 
     firebase
       .firestore()
@@ -45,6 +54,17 @@ export function getTodos() {
       .where("userId", "==", userUid)
       .orderBy("timestamp", "desc")
       .onSnapshot((serverUpdate) => {
+        //  serverUpdate.docChanges().forEach((change) => {
+        //    if (change.type === "modified") {
+        //      console.log("ALERt: ", change.doc.id, change.doc.data());
+        //      dispatch(modifiedTodoBackEnd(change.doc.id, change.doc.data()));
+        //      breaker = true;
+        //    }
+        //  });
+        //  if (breaker) {
+        //    breaker = false;
+        //    return;
+        //  }
         const todos = serverUpdate.docs.map(
           (todo) => {
             const data = todo.data();
@@ -144,8 +164,6 @@ export const addSubItem = (
   subItemText = "Edit your sub-item"
 ) => async (dispatch) => {
   const { id } = todo;
-  console.log("subItemparentId", subItemParentId);
-  console.log("TODO", todo);
 
   let firebaseObjectPath = "subItems";
 
@@ -157,11 +175,9 @@ export const addSubItem = (
   }
 
   let newSubItemId = uuid().substring(0, 13);
-  console.log("NEW: ", newSubItemId);
 
   firebaseObjectPath = firebaseObjectPath + "." + newSubItemId;
 
-  console.log("firebase is: ", firebaseObjectPath);
   //  subItemPath = "subItems." + newSubItemId;
 
   //.update({
@@ -173,18 +189,52 @@ export const addSubItem = (
     .doc(id)
     .update({
       [firebaseObjectPath]: {
-        title: "subItemText",
+        title: subItemText,
         timestamp: 1,
       },
     })
     .then(() => {
-      dispatch(addTodoSuccess());
+      dispatch(addSubItemSuccess());
     })
     .catch((err) => {
       throw err;
     });
 };
 
+export const modifySubItem = (todo, subItemId, subItemText) => async (
+  dispatch
+) => {
+  const { id } = todo;
+
+  let firebaseObjectPath = "subItems";
+
+  const subItemPath = subItemPathFunc(subItemId, todo);
+  subItemPath.forEach((item) => {
+    firebaseObjectPath = firebaseObjectPath + "." + item;
+  });
+
+  console.log(subItemPath);
+  firebaseObjectPath = firebaseObjectPath + ".title";
+
+  console.log("firebase is: ", firebaseObjectPath);
+
+  //.update({
+  //  "subItem.subItem2": firebase.firestore.FieldValue.delete(),
+  //})
+  await firebase
+    .firestore()
+    .collection("todos")
+    .doc(id)
+    .update({
+      [firebaseObjectPath]: subItemText,
+    })
+    .then(() => {
+      dispatch(modifySubItemSuccess());
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
 //Delete field in map firestore
 //.update({
 //  "subItem.subItem2": firebase.firestore.FieldValue.delete(),
