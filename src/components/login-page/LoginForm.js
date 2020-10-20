@@ -1,63 +1,99 @@
-import React from "react";
-import TextInput from "../common/TextInput";
+import {
+  LoginContainer,
+  LoginFormWrap,
+  LoginTitle,
+  LoginInputWrapper,
+  LoginTextInput,
+  LoginInput,
+  LoginButton,
+  LoginErrors,
+  LoginDivider,
+  SignInButton,
+  PasswordResetLink,
+  PasswordResetWrap,
+  PasswordResetModal,
+  PasswordResetModalContent,
+  CloseModalCross,
+  CrossContainer,
+  PasswordResetButton,
+  PasswordResetInputWrapper,
+  PasswordResetInput,
+} from "./LoginForm.elements.js";
+import { Spinner } from "../../globalStyles";
+import React, { useRef, useEffect } from "react";
 
-function LoginForm({ onChange, onSave, user, errors, saving }) {
+function LoginForm({
+  onChange,
+  handleLogin,
+  handleSignup,
+  handlePasswordReset,
+  isPasswordReset,
+  modalPassReset,
+  user,
+  saving,
+  errors,
+}) {
   return (
-    <div
-      style={{
-        margin: "auto",
-        width: 300,
-        textAlign: "center",
-        marginTop: "20vh",
-      }}
-    >
-      <h2>Sign in / Login</h2>
-      <form
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          marginTop: 10,
-        }}
-      >
-        <TextInput
-          name="email"
-          label="Email"
-          type="text"
-          placeholder="Email Adress"
-          value={user.email}
-          onChange={onChange}
-          error={errors.email}
-        />
-        <TextInput
-          name="password"
-          label="Password"
-          type="password"
-          placeholder="Password"
-          value={user.password}
-          onChange={onChange}
-          error={errors.password}
-        />
-        <div style={{ color: "red" }}>{errors.onSave}</div>
-        <div style={{ marginTop: 5 }}>
-          <button
-            name="login"
-            className="btn"
-            style={{ margin: 7, backgroundColor: "silver" }}
-            onClick={onSave}
-          >
-            Login
-          </button>
-          <button
-            name="signup"
-            className="btn"
-            style={{ margin: 7 }}
-            onClick={onSave}
-          >
-            Sign In
-          </button>
-        </div>
-      </form>
-    </div>
+    <LoginContainer>
+      <LoginFormWrap>
+        <LoginTitle>Hey, writer!</LoginTitle>
+        <LoginInputWrapper>
+          <LoginInput
+            placeholder="Email address"
+            type="text"
+            name="email"
+            value={user.email}
+            onChange={onChange}
+          />
+          <LoginErrors>{errors.email}</LoginErrors>
+        </LoginInputWrapper>
+        <LoginInputWrapper>
+          <LoginInput
+            placeholder="Password"
+            type="password"
+            name="password"
+            value={user.password}
+            onChange={onChange}
+          />
+          <LoginErrors>{errors.password}</LoginErrors>
+        </LoginInputWrapper>
+        <LoginButton name="login" onClick={handleLogin}>
+          {saving.login ? <Spinner fontSize="3px" size="10em" /> : "Log In"}
+        </LoginButton>
+        <LoginErrors>{errors.login}</LoginErrors>
+        <PasswordResetWrap>
+          <PasswordResetLink onClick={modalPassReset}>
+            Forgot your password?
+          </PasswordResetLink>
+        </PasswordResetWrap>
+        <LoginDivider />
+        <SignInButton name="signup" onClick={handleSignup}>
+          {saving.signup ? <Spinner fontSize="3px" size="10em" /> : "Sign Up"}
+        </SignInButton>
+        <LoginErrors>{errors.signup}</LoginErrors>
+      </LoginFormWrap>
+      <PasswordResetModal isPasswordReset={isPasswordReset}>
+        <PasswordResetModalContent isPasswordReset={isPasswordReset}>
+          <CrossContainer onClick={modalPassReset}>
+            <CloseModalCross />
+          </CrossContainer>
+          <p> You'll recive an email with a link to reset your password.</p>
+          <PasswordResetInputWrapper>
+            <PasswordResetInput
+              placeholder="Email address"
+              type="text"
+              name="emailPassReset"
+              value={user.emailPassReset}
+              onChange={onChange}
+            />
+            <LoginErrors>{errors.emailPassReset}</LoginErrors>
+          </PasswordResetInputWrapper>
+          <PasswordResetButton onClick={handlePasswordReset}>
+            Send email
+          </PasswordResetButton>
+        </PasswordResetModalContent>
+      </PasswordResetModal>
+    </LoginContainer>
   );
 }
 

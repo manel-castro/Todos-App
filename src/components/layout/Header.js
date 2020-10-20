@@ -4,8 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { userLogout } from "../../redux/actions/userActions";
 
-const Header = ({ userLogout }) => {
-  const isLogged = true;
+const Header = ({ userLogout, loggedIn }) => {
   return (
     <header style={headerStyle}>
       <h1>TodoList</h1>{" "}
@@ -13,21 +12,14 @@ const Header = ({ userLogout }) => {
         About
       </Link>{" "}
       <>
-        {isLogged ? (
+        {loggedIn ? (
           <>
             |{" "}
             <Link style={linkStyle} onClick={userLogout} to="/">
               Logout
             </Link>
           </>
-        ) : (
-          <>
-            |{" "}
-            <Link style={linkStyle} to="/">
-              Login
-            </Link>
-          </>
-        )}
+        ) : null}
       </>
     </header>
   );
@@ -46,13 +38,13 @@ const linkStyle = {
 };
 
 Header.propTypes = {
-  // isLogged: PropTypes.bool.isRequired,
+  loggedIn: PropTypes.bool.isRequired,
   userLogout: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
   return {
-    // isLogged: state.user.length !== 0 ? true : false,
+    loggedIn: state.user.loggedIn === null ? false : state.user.loggedIn,
   };
 }
 

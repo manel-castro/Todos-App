@@ -20,23 +20,25 @@ export function userLogoutSuccess() {
   return { type: types.USER_LOGOUT_SUCCESS };
 }
 
+export function resetPasswordSuccess() {
+  return { type: types.RESET_PASSWORD_SUCCESS };
+}
+
 //
 //Thunks
 
 export function userLogin(user) {
   return function (dispatch, getState) {
     const { email, password } = user;
-    setTimeout(() => {
-      return firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password)
-        .then((cred) => {
-          dispatch(userLoginSuccess(cred.user.uid));
-        })
-        .catch((err) => {
-          throw err;
-        });
-    }, 2000);
+    return firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((cred) => {
+        dispatch(userLoginSuccess(cred.user.uid));
+      })
+      .catch((err) => {
+        throw err;
+      });
   };
 }
 
@@ -74,4 +76,16 @@ export const verifyAuth = () => async (dispatch) => {
       dispatch(userLogoutSuccess());
     }
   });
+};
+
+export const resetPassword = (email) => async (dispatch) => {
+  await firebase
+    .auth()
+    .sendPasswordResetEmail(email)
+    .then(function () {
+      dispatch(resetPasswordSuccess());
+    })
+    .catch(function (error) {
+      throw error;
+    });
 };
