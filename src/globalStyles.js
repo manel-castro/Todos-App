@@ -42,6 +42,15 @@ outline: none;
 cursor: pointer;
 `;
 
+export const ButtonWrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: ${({ display }) => display};
+  @media screen and (max-width: 500px) {
+    justify-content: ${({ mobileDisplay }) => mobileDisplay};
+  }
+`;
+
 export const Spinner = styled.div`
   border-radius: 50%;
   width: ${({ size }) => size};

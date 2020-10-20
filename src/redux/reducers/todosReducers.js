@@ -4,7 +4,18 @@ import initialState from "./initialState";
 export default function todosReducer(state = initialState.todos, action) {
   switch (action.type) {
     case types.GET_TODOS_SUCCESS:
+      ////trying to optimize rerenders of every todo.
+      ////It should only update the key whose info has been updated
+      ////Not working for now
+      //const newArray = state.map((todo) => {
+      //  return action.todos.map((aTodo) => {
+      //    if (todo.id === aTodo.id) return { ...todo, ...aTodo };
+      //    return;
+      //  });
+      //});
+      //console.log("newArray: ", newArray);
       return [...action.todos];
+
     case types.ADD_TODO_SUCCESS:
       return [...state];
     case types.MARK_TODO_COMPLETED_OPTIMISTIC:

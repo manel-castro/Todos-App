@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import * as todosActions from "../../redux/actions/todosActions";
 import { connect } from "react-redux";
+import { ButtonWrap } from "../../globalStyles.js";
 import SubItemLevel from "./SubItemLevel";
-import { SubItemButtonWrap, SubItemButton } from "./SubItemLayout.elements";
+import {
+  SubItemLayoutContainer,
+  SubItemLayoutExpandedWrap,
+  SubItemButton,
+} from "./SubItemLayout.elements";
 
 function SubItemLayout({
   todo,
@@ -12,53 +17,85 @@ function SubItemLayout({
   addSubItem,
 }) {
   const [expand, setExpand] = useState(false);
-  const handleExpand = () => {
-    setExpand(!expand);
+  const [openedLevel, setOpenedLevel] = useState({});
+  const handleExpand = (status = false) => {
+    // console.log("handleExpand: ", status);
+    if (status) {
+      setExpand(status);
+    } else {
+      setExpand(!expand);
+    }
   };
   const subItem = todo.subItems;
   const existSubItem = Object.keys(subItem).length;
   const handleOpenLevel = (key, action) => {
-    openLevel(todo.id, key, action);
+    setOpenedLevel((prevState) => ({ ...prevState, [key]: action }));
+    //openLevel(todo.id, key, action);
   };
 
-  const handleNewSubItem = (subItemParentId) => {
+  const handleNewSubItem = (subItemParentId = false) => {
     try {
       addSubItem(todo, subItemParentId);
+      if (subItemParentId) {
+        handleOpenLevel(subItemParentId, true);
+      } else {
+        setExpand(true);
+      }
     } catch (err) {
       console.log(err.message);
     }
   };
 
-  console.log("openedSubItems: ", openedSubItems);
+  let level = 0;
+
   return (
-    <>
+    <SubItemLayoutContainer>
       {expand ? (
         <>
-          <SubItemButtonWrap>
-            <SubItemButton onClick={handleExpand}>Contract</SubItemButton>
-          </SubItemButtonWrap>
-          <ul>
-            <SubItemLevel
-              subItem={subItem}
-              handleOpenLevel={handleOpenLevel}
-              openedSubItems={openedSubItems}
-              level={currentLevel}
-              handleNewSubItem={handleNewSubItem}
-            />
-          </ul>
+          <ButtonWrap
+            color={"black"}
+            display={"flex-start"}
+            mobileDisplay={"center"}
+          >
+            <SubItemButton
+              onClick={() => {
+                handleNewSubItem();
+              }}
+            >
+              Add
+            </SubItemButton>
+            <SubItemButton onClick={() => handleExpand(false)}>
+              Contract
+            </SubItemButton>
+          </ButtonWrap>
+          <SubItemLayoutExpandedWrap>
+            <ul>
+              <SubItemLevel
+                subItem={subItem}
+                handleOpenLevel={handleOpenLevel}
+                openedSubItems={openedLevel}
+                level={level}
+                handleNewSubItem={handleNewSubItem}
+              />
+            </ul>
+          </SubItemLayoutExpandedWrap>
         </>
       ) : existSubItem ? (
-        <SubItemButtonWrap>
+        <ButtonWrap display={"flex-start"} mobileDisplay={"center"}>
           <SubItemButton onClick={handleExpand}>Expand</SubItemButton>
-        </SubItemButtonWrap>
+        </ButtonWrap>
       ) : (
-        <SubItemButtonWrap>
-          <SubItemButton onClick={() => addSubItem(todo)}>
+        <ButtonWrap>
+          <SubItemButton
+            onClick={() => {
+              handleNewSubItem();
+            }}
+          >
             Add sub-item
           </SubItemButton>
-        </SubItemButtonWrap>
+        </ButtonWrap>
       )}
-    </>
+    </SubItemLayoutContainer>
   );
 }
 
