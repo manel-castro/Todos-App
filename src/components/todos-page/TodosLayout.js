@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as todosActions from "../../redux/actions/todosActions";
@@ -6,17 +6,31 @@ import * as todosActions from "../../redux/actions/todosActions";
 import AddTodo from "./AddTodo";
 import TodoList from "./TodoList";
 
-const TodosLayout = ({
-  addTodo,
-  todos,
-  markComplete,
-  delTodo,
-  addSubItem,
-  modifyTodo,
-}) => {
-  const isNewTodoValid = (title) => {
+class TodosLayout extends PureComponent<Props, never> {
+  shouldComponentUpdate(nextProps: props) {
+    function isEqual(arr1, arr2) {
+      let equal = true;
+      //      console.log("ARR1 length", arr1.length);
+      //      console.log("ARR2 length", arr2.length);
+      if (arr1.length !== arr2.length) {
+        return false;
+      }
+      arr2.forEach((key, index) => {
+        if (arr2[index] !== arr1[index]) {
+          equal = false;
+          return equal;
+        }
+      });
+      return equal;
+    }
+    console.log(isEqual(this.props.todoIds, nextProps.todoIds));
+    return !isEqual(this.props.todoIds, nextProps.todoIds);
+  }
+  componentDidMount() {
+    console.log("TODOS LAYOUT MOUNTED");
+  }
+  isNewTodoValid = (title) => {
     const regEx = /^[A-Za-z]/;
-    let error;
     if (title === "" || !regEx.test(title)) {
       return "We need some letters";
     }
@@ -26,19 +40,19 @@ const TodosLayout = ({
     return "";
   };
 
-  const handleAddTodoSubmit = async () => {
+  handleAddTodoSubmit = async () => {
     try {
-      addTodo();
+      this.props.addTodo();
     } catch (err) {
       console.log("addTodo failed", err);
     }
   };
 
-  const handleChangeTodo = async (todoId, title) => {
-    modifyTodo(todoId, title);
+  handleChangeTodo = async (todoId, title) => {
+    this.props.modifyTodo(todoId, title);
   };
 
-  // const handleMarkCompleted = async (todo) => {
+  //  handleMarkCompleted = async (todo) => {
   //   try {
   //     await markComplete(todo);
   //   } catch (err) {
@@ -46,43 +60,48 @@ const TodosLayout = ({
   //   }
   // };
 
-  const handleDeleteTodo = async (todo) => {
+  handleDeleteTodo = async (todo) => {
     if (window.confirm("Are you sure to delete this note?")) {
       try {
-        await delTodo(todo);
+        await this.props.delTodo(todo);
       } catch (err) {
         alert("Server error: Todo haven't been deleted");
       }
     }
   };
 
-  const handleAddSubItem = async (todo) => {
+  handleAddSubItem = async (todo) => {
     try {
-      await addSubItem(todo);
+      await this.props.addSubItem(todo);
     } catch (err) {
       console.log(err);
     }
   };
+  render() {
+    const { todoIds = [] } = this.props;
+    console.log("TODOSSSSS");
+    console.log(todoIds);
 
-  return (
-    <>
-      <AddTodo onSubmit={handleAddTodoSubmit} />
-      <div style={{ overflowY: "auto", height: "84vh" }}>
-        <TodoList
-          todos={todos}
-          delTodo={handleDeleteTodo}
-          addSubItem={handleAddSubItem}
-          getNewValue={handleChangeTodo}
-          checkErrors={isNewTodoValid}
-        />
-      </div>
-    </>
-  );
-};
+    return (
+      <>
+        <AddTodo onSubmit={this.handleAddTodoSubmit} />
+        <div style={{ overflowY: "auto", height: "84vh" }}>
+          <TodoList
+            todoIds={todoIds}
+            delTodo={this.handleDeleteTodo}
+            addSubItem={this.handleAddSubItem}
+            getNewValue={this.handleChangeTodo}
+            checkErrors={this.isNewTodoValid}
+          />
+        </div>
+      </>
+    );
+  }
+}
 
 //PropTypes (Good Practice)
 TodosLayout.propTypes = {
-  todos: PropTypes.array.isRequired,
+  todoIds: PropTypes.array.isRequired,
   markComplete: PropTypes.func.isRequired,
   delTodo: PropTypes.func.isRequired,
   addTodo: PropTypes.func.isRequired,
@@ -90,7 +109,7 @@ TodosLayout.propTypes = {
 
 export function mapStateToProps(state, ownProps) {
   return {
-    todos: state.todos,
+    todoIds: state.todos.map((todo) => todo.id),
   };
 }
 

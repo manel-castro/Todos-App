@@ -15,7 +15,7 @@ export const hasChildren = (nestedObj) => {
   ObjectiveObj.map((key) => {
     let a = nestedObj[key];
     let count = 0;
-    console.log("key is: ", key);
+
     if (key === "title" || key === "timestamp") return;
 
     Object.keys(a).map((k) => {

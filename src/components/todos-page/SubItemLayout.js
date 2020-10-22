@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as todosActions from "../../redux/actions/todosActions";
 import { connect } from "react-redux";
 import { ButtonWrap } from "../../globalStyles.js";
@@ -17,6 +17,9 @@ function SubItemLayout({
   addSubItem,
   modifySubItem,
 }) {
+  useEffect(() => {
+    console.log("SUBITEM LAYOUT RERENDERED");
+  }, []);
   const [expand, setExpand] = useState(false);
   const [openedLevel, setOpenedLevel] = useState({});
   const handleExpand = (status = false) => {

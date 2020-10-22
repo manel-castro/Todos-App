@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import {
   TodoItemWrap,
@@ -9,14 +10,17 @@ import {
 import SubItemLayout from "./SubItemLayout";
 import TextDisplay from "../common/TextDisplay";
 
-export class TodoItem extends Component {
+export class TodoItem extends PureComponent {
+  shouldComponentUpdate;
+  componentDidMount() {
+    console.log("TODO ITEM RERENDERED");
+  }
   render() {
-    const { todo, delTodo, getNewValue, checkErrors } = this.props;
-    console.log("this todo", todo);
+    const { id, todo, delTodo, getNewValue, checkErrors } = this.props;
     return (
       <TodoItemWrap>
         <TodoTitleWrap>
-          <div style={{ cursor: "pointer" }}>
+          <div style={{ cursor: "pointer", width: "100%" }}>
             <TextDisplay
               text={todo.title}
               fontSize={"20px"}
@@ -42,4 +46,12 @@ TodoItem.propTypes = {
   delTodo: PropTypes.func.isRequired,
 };
 
-export default TodoItem;
+function mapStateToProps(state, ownState) {
+  const id = ownState.id;
+  const stateTodos = state.todos;
+  return {
+    todo: stateTodos.filter((todo) => id.includes(todo.id))[0],
+  };
+}
+
+export default connect(mapStateToProps)(TodoItem);

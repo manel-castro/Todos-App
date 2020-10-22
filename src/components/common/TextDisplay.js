@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+//import { useEventListener } from "../_helpers/hooks";
 import PropTypes from "prop-types";
 
 export function TextDisplayChild({
@@ -11,7 +12,9 @@ export function TextDisplayChild({
   handleOpen,
   open,
   validate,
+  inputWidth,
 }) {
+  console.log("COMPONENT RERENDERED");
   const handleFocus = () => {
     handleColor(true);
   };
@@ -19,24 +22,55 @@ export function TextDisplayChild({
     handleColor(false);
     validate();
   };
+
+  const textArea = useRef(null);
+
+  //here i use useEffect
+  useEffect(() => {
+    console.log(textArea.current.scrollHeight);
+    //autosize(textArea.current);
+    setTimeout(() => {
+      textArea.current.style.height = "0px";
+      textArea.current.style.height = textArea.current.scrollHeight + "px";
+    }, 0);
+  }, [text]);
+
+  // --------------
+  // the following code is useful when we want to manage keypress behaviors, to navigate between todos...
+  // function autosize() {
+  //   var el = this;
+  //   console.log("rendered:");
+  //   setTimeout(() => {
+  //     el.style.height = "0px";
+  //     el.style.height = el.scrollHeight + "px";
+  //   }, 0);
+  // }
+  // useEventListener(textArea, "keydown", autosize);
+  // ---------------
   return (
     <div style={{ cursor: "text" }}>
       {true ? (
-        <div>
-          <input
+        <div style={{ width: "100%" }}>
+          <textarea
             style={{
               color: color,
               fontSize: fontSize,
               border: "none",
               outline: "none",
+              resize: "none",
+              width: "100%",
+              overflow: "hidden",
+              maxWidth: "100%",
+              paddingRight: "10px",
             }}
-            autoFocus
-            onChange={handleChange}
+            ref={textArea}
+            type="textarea"
+            required
             value={text}
+            onChange={handleChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            autoComplete="off"
-          ></input>{" "}
+          ></textarea>
           <small style={{ color: "red" }}>{error}</small>
         </div>
       ) : (
@@ -62,12 +96,18 @@ function TextDisplay({
   const [open, setOpen] = useState(false);
   const [color, setColor] = useState(colorOff);
   const [value, setValue] = useState(text);
+  const [inputWidth, setInputWidth] = useState(text.length);
   const [error, setError] = useState("");
   let initialValue = text;
 
   const handleChange = (e) => {
+    handleInputWidth();
     if (checkErrors) setError(checkErrors(e.target.value));
     setValue(e.target.value);
+  };
+
+  const handleInputWidth = () => {
+    setInputWidth(value.length);
   };
 
   const handleOpen = () => {
@@ -108,6 +148,7 @@ function TextDisplay({
         handleOpen={handleOpen}
         handleColor={handleColor}
         color={color}
+        inputWidth={inputWidth}
       />
     </div>
   );

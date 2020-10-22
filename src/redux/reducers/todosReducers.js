@@ -13,11 +13,13 @@ export default function todosReducer(state = initialState.todos, action) {
       //     return;
       //   });
       // });
-      console.log("----SNAPSHOT: ", action.todos);
+    //  console.log("----SNAPSHOT: ", action.todos);
       return [...action.todos];
 
-    //	case types.MODIFIED_TODO_BACK_END:
-    //	state[action.id]
+    case types.MODIFIED_TODO_BACK_END:
+      return state.map((todo) => {
+        return todo.id === action.id ? { ...todo, ...action.todo } : todo;
+      });
 
     case types.ADD_TODO_SUCCESS:
       return [...state];

@@ -54,17 +54,18 @@ export function getTodos() {
       .where("userId", "==", userUid)
       .orderBy("timestamp", "desc")
       .onSnapshot((serverUpdate) => {
-        //  serverUpdate.docChanges().forEach((change) => {
-        //    if (change.type === "modified") {
-        //      console.log("ALERt: ", change.doc.id, change.doc.data());
-        //      dispatch(modifiedTodoBackEnd(change.doc.id, change.doc.data()));
-        //      breaker = true;
-        //    }
-        //  });
-        //  if (breaker) {
-        //    breaker = false;
-        //    return;
-        //  }
+        serverUpdate.docChanges().forEach((change) => {
+          if (change.type === "modified") {
+            console.log("ALERt: ", change.doc.id, change.doc.data());
+            dispatch(modifiedTodoBackEnd(change.doc.id, change.doc.data()));
+            breaker = true;
+          }
+        });
+        if (breaker) {
+          breaker = false;
+          return;
+        }
+        console.log("ALL SNAPSHOT");
         const todos = serverUpdate.docs.map(
           (todo) => {
             const data = todo.data();
