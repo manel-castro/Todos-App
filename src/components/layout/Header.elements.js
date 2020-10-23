@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { BasicLink } from "../../globalStyles";
 
 export const StyledHeader = styled.header`
   background: #333;
@@ -20,12 +20,6 @@ export const NavBar = styled.div`
   justify-content: flex-end;
 `;
 
-export const StyledLink = styled(Link)`
+export const StyledLink = styled(BasicLink)`
   color: #fff;
-  text-decoration: none;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
 `;

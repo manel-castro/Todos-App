@@ -79,14 +79,17 @@ class TodosLayout extends Component<Props, never> {
   };
   render() {
     const { todoIds = [] } = this.props;
-    console.log("TODOSSSSS");
-    console.log(todoIds);
+    const todosExist = todoIds.length !== 0;
 
     return (
       <>
-        <AddTodo onSubmit={this.handleAddTodoSubmit} />
+        <AddTodo onSubmit={this.handleAddTodoSubmit} todosExist={todosExist} />
         <div
-          style={{ overflowY: "auto", height: "84vh", paddingBottom: "10px" }}
+          style={{
+            overflowY: "auto",
+            marginBottom: "5px",
+            paddingBottom: "10px",
+          }}
         >
           <TodoList
             todoIds={todoIds}

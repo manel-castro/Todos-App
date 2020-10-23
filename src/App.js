@@ -18,18 +18,19 @@ import { Spinner } from "./globalStyles";
 import GlobalStyle, {
   Container,
   FooterContainer,
+  FooterWrap,
   FooterText,
+  BasicLink,
 } from "./globalStyles";
 // import uuid from 'uuid';
-
 
 const App = (props) => {
   const { loggedIn } = props;
 
   return (
-    <Container>
-      <Router history={history}>
-        <GlobalStyle />
+    <Router history={history}>
+      <GlobalStyle />
+      <Container>
         <Header />
         <Switch>
           <Route path="/about" render={() => <About history={history} />} />
@@ -65,12 +66,18 @@ const App = (props) => {
           ) : null}
           <Route component={NotFoundPage} />
         </Switch>
-      </Router>
 
-      <FooterContainer>
-        <FooterText>Designed by Manel.</FooterText>
-      </FooterContainer>
-    </Container>
+        <FooterContainer>
+          <FooterWrap>
+            <FooterText>
+              <BasicLink>About</BasicLink>
+            </FooterText>
+            <FooterText>~</FooterText>
+            <FooterText>Designed by Manel.</FooterText>
+          </FooterWrap>
+        </FooterContainer>
+      </Container>
+    </Router>
   );
 };
 
