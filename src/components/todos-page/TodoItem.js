@@ -11,7 +11,6 @@ import SubItemLayout from "./SubItemLayout";
 import TextDisplay from "../common/TextDisplay";
 
 export class TodoItem extends PureComponent {
-  shouldComponentUpdate;
   componentDidMount() {
     console.log("TODO ITEM RERENDERED");
   }

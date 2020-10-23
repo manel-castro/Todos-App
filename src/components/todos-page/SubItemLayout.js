@@ -16,12 +16,28 @@ function SubItemLayout({
   currentLevel,
   addSubItem,
   modifySubItem,
+  deleteSubItem,
 }) {
-  useEffect(() => {
-    console.log("SUBITEM LAYOUT RERENDERED");
-  }, []);
   const [expand, setExpand] = useState(false);
   const [openedLevel, setOpenedLevel] = useState({});
+
+  const subItem = todo.subItems;
+  const existSubItemFunc = () => {
+    return Object.keys(subItem).length !== 0;
+  };
+
+  let existSubItem = existSubItemFunc();
+
+  useEffect(() => {
+    console.log("SUBITEM LAYOUT RERENDERED");
+    console.log("EXIST SUBITEM: ", existSubItem);
+    // if (Object.keys(subItem).length === 0) handleExpand(false);
+  }, []);
+
+  //  useEffect(() => {
+  //    existSubItem = Object.keys(subItem).length;
+  //  }, [subItem]);
+
   const handleExpand = (status = false) => {
     if (status) {
       setExpand(status);
@@ -29,8 +45,7 @@ function SubItemLayout({
       setExpand(!expand);
     }
   };
-  const subItem = todo.subItems;
-  const existSubItem = Object.keys(subItem).length;
+
   const handleOpenLevel = (key, action) => {
     setOpenedLevel((prevState) => ({ ...prevState, [key]: action }));
     //openLevel(todo.id, key, action);
@@ -52,6 +67,21 @@ function SubItemLayout({
   const handleModifySubItem = (subItemId, subItemText) => {
     try {
       modifySubItem(todo, subItemId, subItemText);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleDeleteSubItem = async (
+    subItemId,
+    subItemLevel,
+    subItemChildrenList
+  ) => {
+    try {
+      deleteSubItem(todo, subItemId);
+      handleOpenLevel(subItemId, false);
+      if (subItemLevel === 1 && Object.keys(subItemChildrenList).length === 1)
+        setExpand(false);
     } catch (err) {
       console.log(err);
     }
@@ -87,6 +117,7 @@ function SubItemLayout({
               level={level}
               handleNewSubItem={handleNewSubItem}
               handleModifySubItem={handleModifySubItem}
+              handleDeleteSubItem={handleDeleteSubItem}
             />
           </SubItemLayoutExpandedWrap>
         </>
@@ -123,6 +154,7 @@ export const mapDispatchToProps = {
   openLevel: todosActions.openSubItemLevel,
   addSubItem: todosActions.addSubItem,
   modifySubItem: todosActions.modifySubItem,
+  deleteSubItem: todosActions.deleteSubItem,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SubItemLayout);

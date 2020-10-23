@@ -40,6 +40,10 @@ export function modifySubItemSuccess() {
   return { type: types.MODIFY_SUB_ITEM_SUCCESS };
 }
 
+export function deleteSubItemSuccess() {
+  return { type: types.DELETE_SUB_ITEM_SUCCESS };
+}
+
 //
 //THUNKS
 
@@ -126,6 +130,7 @@ export function modifyTodo(todoId, title) {
   };
 }
 
+//DEPRECATED
 export function markTodoCompleted(todo) {
   return function (dispatch, getState) {
     dispatch(markTodoCompletedOptimistic(todo));
@@ -167,13 +172,43 @@ export const addSubItem = (
   const { id } = todo;
 
   let firebaseObjectPath = "subItems";
+  let orderCount;
 
+  //Set subItemPath and backEnd path
+  let subItemPath;
   if (subItemParentId) {
-    const subItemPath = subItemPathFunc(subItemParentId, todo);
-    subItemPath.map((item) => {
+    subItemPath = subItemPathFunc(subItemParentId, todo);
+    subItemPath.forEach((item) => {
       firebaseObjectPath = firebaseObjectPath + "." + item;
     });
   }
+
+  console.log("TODO SUB COUNTER");
+
+  const getCounter = (subItemPath) => {
+    let currentOrderCount = 0;
+    let counterPath = todo.subItems;
+
+    subItemPath.forEach((item) => {
+      counterPath = counterPath[item];
+    });
+
+    Object.keys(counterPath).forEach((key) => {
+      if (typeof counterPath[key] === "object") currentOrderCount++;
+    });
+    currentOrderCount++;
+
+    return currentOrderCount;
+  };
+
+  //Set orderCount-
+  //  //Used for keeping order of subItems.
+  if (subItemParentId) {
+    orderCount = getCounter(subItemPath);
+  } else {
+    orderCount = Object.keys(todo.subItems).length + 1;
+  }
+  console.log("ORDER COUNT IS: ", orderCount);
 
   let newSubItemId = uuid().substring(0, 13);
 
@@ -191,7 +226,7 @@ export const addSubItem = (
     .update({
       [firebaseObjectPath]: {
         title: subItemText,
-        timestamp: 1,
+        orderCount: orderCount,
       },
     })
     .then(() => {
@@ -236,7 +271,39 @@ export const modifySubItem = (todo, subItemId, subItemText) => async (
       throw err;
     });
 };
+
 //Delete field in map firestore
 //.update({
-//  "subItem.subItem2": firebase.firestore.FieldValue.delete(),
 //})
+
+export const deleteSubItem = (todo, subItemId) => async (dispatch) => {
+  const { id } = todo;
+
+  let firebaseObjectPath = "subItems";
+
+  const subItemPath = subItemPathFunc(subItemId, todo);
+  subItemPath.forEach((item) => {
+    firebaseObjectPath = firebaseObjectPath + "." + item;
+  });
+
+  console.log("localPath", subItemPath);
+
+  console.log("firebase is: ", firebaseObjectPath);
+
+  //.update({
+  //  "subItem.subItem2": firebase.firestore.FieldValue.delete(),
+  //})
+  await firebase
+    .firestore()
+    .collection("todos")
+    .doc(id)
+    .update({
+      [firebaseObjectPath]: firebase.firestore.FieldValue.delete(),
+    })
+    .then(() => {
+      dispatch(deleteSubItemSuccess());
+    })
+    .catch((err) => {
+      throw err;
+    });
+};

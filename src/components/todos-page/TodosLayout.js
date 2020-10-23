@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as todosActions from "../../redux/actions/todosActions";
@@ -6,7 +6,7 @@ import * as todosActions from "../../redux/actions/todosActions";
 import AddTodo from "./AddTodo";
 import TodoList from "./TodoList";
 
-class TodosLayout extends PureComponent<Props, never> {
+class TodosLayout extends Component<Props, never> {
   shouldComponentUpdate(nextProps: props) {
     function isEqual(arr1, arr2) {
       let equal = true;
@@ -85,7 +85,9 @@ class TodosLayout extends PureComponent<Props, never> {
     return (
       <>
         <AddTodo onSubmit={this.handleAddTodoSubmit} />
-        <div style={{ overflowY: "auto", height: "84vh" }}>
+        <div
+          style={{ overflowY: "auto", height: "84vh", paddingBottom: "10px" }}
+        >
           <TodoList
             todoIds={todoIds}
             delTodo={this.handleDeleteTodo}

@@ -16,7 +16,7 @@ export const hasChildren = (nestedObj) => {
     let a = nestedObj[key];
     let count = 0;
 
-    if (key === "title" || key === "timestamp") return;
+    if (key === "title" || key === "timestamp" || key === "orderCount") return;
 
     Object.keys(a).map((k) => {
       if (typeof a[k] === "object") {
@@ -29,6 +29,7 @@ export const hasChildren = (nestedObj) => {
     childrens[key] = {
       title: a.title,
       timestamp: a.timestamp,
+      orderCount: a.orderCount,
       hasChildren: exist,
     };
     exist = false;

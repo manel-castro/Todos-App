@@ -29,10 +29,12 @@ export function TextDisplayChild({
   useEffect(() => {
     console.log(textArea.current.scrollHeight);
     //autosize(textArea.current);
-    setTimeout(() => {
+    const timer = setTimeout(() => {
+      console.log("SETTIMEOUT FIRED");
       textArea.current.style.height = "0px";
       textArea.current.style.height = textArea.current.scrollHeight + "px";
     }, 0);
+    return () => clearTimeout(timer);
   }, [text]);
 
   // --------------

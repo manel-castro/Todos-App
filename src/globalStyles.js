@@ -7,10 +7,10 @@ const GlobalStyle = createGlobalStyle`
 			padding: 0;
 			font-family: arial, sans-serif;
 			::selection {
-				background: rgb(170, 170, 170);
+				background: rgb(200, 200, 200);
 			}
 			::-moz-selection {
-				background: rgb(170, 170, 170);
+				background: rgb(200, 200, 200);
 			}
 		}
 		

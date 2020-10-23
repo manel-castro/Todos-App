@@ -7,8 +7,11 @@ import {
   SubItemsContainer,
   ListItem,
   SubLevelButton,
+  DeleteSubLevel,
 } from "./SubItemLevel.elements.js";
 // this is a recursive component, with conditions in order to skew the behavior.
+
+///// ANY CHANGE IN THE DATABASE STRUCTURE MUST BE REFLECTED IN REDUX ACTIONS AAAAND HASCHILDREN FUNCTION.
 
 function SubItemLevel({
   subItem,
@@ -16,101 +19,113 @@ function SubItemLevel({
   openedSubItems = {},
   handleNewSubItem,
   handleModifySubItem,
+  handleDeleteSubItem,
   level,
 }) {
   const childrenList = hasChildren(subItem);
   //  console.log(openedSubItems);
   if (level < 5) level++;
-  console.log(Math.log(level));
+  console.log("LEVEL IS: ", level);
+  let inputSize = 1 - (0.8 * Math.log(level)) / 5 + "rem";
+  console.log("INPUTSIZE: ", inputSize);
   return (
     <>
       <SubItemsContainer>
-        {Object.keys(childrenList).map((key) => {
-          const isSubOpened =
-            openedSubItems[key] !== undefined && openedSubItems[key] !== false;
+        {Object.keys(childrenList)
+          .sort((a, b) => {
+            console.log("SORT", a);
+            console.log(`OrderCount in ${a}`);
+            console.log(childrenList[a]);
+            return childrenList[b].orderCount - childrenList[a].orderCount;
+          })
+          .map((key) => {
+            console.log("CHILDREN LIST: ", childrenList);
+            const isSubOpened =
+              openedSubItems[key] !== undefined &&
+              openedSubItems[key] !== false;
 
-          return (
-            <div key={key}>
-              <ListItem styleLevel={level}>
-                <div>
-                  <TextDisplay
-                    text={childrenList[key].title}
-                    fontSize={"15px"}
-                    getNewValue={handleModifySubItem}
-                    todoId={key}
-                    checkErrors={() => {}}
-                  />
-                </div>
-                <ButtonWrap>
-                  <>
-                    {isSubOpened || !childrenList[key].hasChildren ? (
-                      <ButtonWrap
-                        display={"flex-start"}
-                        mobileDisplay={"flex-end"}
-                      >
-                        <SubLevelButton
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleNewSubItem(key);
-                          }}
-                        >
-                          Add
-                        </SubLevelButton>
-                      </ButtonWrap>
-                    ) : null}
-                  </>
-                  <>
-                    {childrenList[key].hasChildren ? (
-                      !isSubOpened ? (
-                        <ButtonWrap
-                          display={"flex-start"}
-                          mobileDisplay={"flex-end"}
-                        >
+            return (
+              <div key={key}>
+                <ListItem styleLevel={level}>
+                  <div style={{ width: "100%" }}>
+                    <TextDisplay
+                      text={childrenList[key].title}
+                      fontSize={inputSize}
+                      getNewValue={handleModifySubItem}
+                      todoId={key}
+                      checkErrors={() => {}}
+                    />
+                  </div>
+                  <ButtonWrap display={"flex-start"} mobileDisplay={"flex-end"}>
+                    <>
+                      {isSubOpened || !childrenList[key].hasChildren ? (
+                        <ButtonWrap>
                           <SubLevelButton
                             onClick={(e) => {
                               e.preventDefault();
-                              handleOpenLevel(key, true);
+                              handleNewSubItem(key);
                             }}
                           >
-                            Expand
+                            Add
                           </SubLevelButton>
                         </ButtonWrap>
-                      ) : (
-                        <>
-                          <ButtonWrap
-                            display={"flex-start"}
-                            mobileDisplay={"flex-end"}
-                          >
+                      ) : null}
+                    </>
+                    <>
+                      {childrenList[key].hasChildren ? (
+                        !isSubOpened ? (
+                          <ButtonWrap>
                             <SubLevelButton
                               onClick={(e) => {
                                 e.preventDefault();
-                                handleOpenLevel(key, false);
+                                handleOpenLevel(key, true);
                               }}
                             >
-                              Contract
+                              Expand
                             </SubLevelButton>
                           </ButtonWrap>
-                        </>
-                      )
-                    ) : null}
+                        ) : (
+                          <>
+                            <ButtonWrap>
+                              <SubLevelButton
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleOpenLevel(key, false);
+                                }}
+                              >
+                                Contract
+                              </SubLevelButton>
+                            </ButtonWrap>
+                          </>
+                        )
+                      ) : null}
+                      <ButtonWrap>
+                        <DeleteSubLevel
+                          style={{ fontSize: 20, marginLeft: "7px" }}
+                          onClick={() =>
+                            handleDeleteSubItem(key, level, childrenList)
+                          }
+                        />
+                      </ButtonWrap>
+                    </>
+                  </ButtonWrap>
+                </ListItem>
+                {isSubOpened ? (
+                  <>
+                    <SubItemLevel
+                      subItem={subItem[key]}
+                      handleOpenLevel={handleOpenLevel}
+                      openedSubItems={openedSubItems}
+                      handleNewSubItem={handleNewSubItem}
+                      handleModifySubItem={handleModifySubItem}
+                      handleDeleteSubItem={handleDeleteSubItem}
+                      level={level}
+                    />
                   </>
-                </ButtonWrap>
-              </ListItem>
-              {isSubOpened ? (
-                <>
-                  <SubItemLevel
-                    subItem={subItem[key]}
-                    handleOpenLevel={handleOpenLevel}
-                    openedSubItems={openedSubItems}
-                    handleNewSubItem={handleNewSubItem}
-                    handleModifySubItem={handleModifySubItem}
-                    level={level}
-                  />
-                </>
-              ) : null}
-            </div>
-          );
-        })}
+                ) : null}
+              </div>
+            );
+          })}
       </SubItemsContainer>
     </>
   );
