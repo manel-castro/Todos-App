@@ -16,7 +16,6 @@ const AddTodo = ({ onSubmit, todosExist }) => {
   const handleMouse = (state) => {
     setAddIcon(state);
   };
-
   return (
     <AddNoteButtonWrap todosExist={todosExist}>
       {todosExist ? (

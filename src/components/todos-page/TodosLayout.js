@@ -26,9 +26,11 @@ class TodosLayout extends Component<Props, never> {
     console.log(isEqual(this.props.todoIds, nextProps.todoIds));
     return !isEqual(this.props.todoIds, nextProps.todoIds);
   }
+
   componentDidMount() {
-    console.log("TODOS LAYOUT MOUNTED");
+    console.log("ComponentMounted TODOS LAYOUT");
   }
+
   isNewTodoValid = (title) => {
     const regEx = /^[A-Za-z]/;
     if (title === "" || !regEx.test(title)) {
@@ -78,8 +80,7 @@ class TodosLayout extends Component<Props, never> {
     }
   };
   render() {
-    const { todoIds = [] } = this.props;
-    const todosExist = todoIds.length !== 0;
+    const { todoIds, todosExist } = this.props;
 
     return (
       <>
@@ -88,7 +89,7 @@ class TodosLayout extends Component<Props, never> {
           style={{
             overflowY: "auto",
             marginBottom: "5px",
-            paddingBottom: "10px",
+            paddingBottom: "70px",
           }}
         >
           <TodoList
@@ -113,8 +114,10 @@ TodosLayout.propTypes = {
 };
 
 export function mapStateToProps(state, ownProps) {
+  let todoIds = state.todos.map((todo) => todo.id);
   return {
-    todoIds: state.todos.map((todo) => todo.id),
+    todoIds: todoIds,
+    todosExist: todoIds.length !== 0,
   };
 }
 

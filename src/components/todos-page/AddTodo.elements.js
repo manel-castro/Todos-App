@@ -12,9 +12,8 @@ export const AddNoteButtonWrap = styled.div`
   ${({ todosExist }) =>
     todosExist === false &&
     css`
-      bottom: auto;
+      bottom: 100px;
       left: calc(50% - 75px);
-      top: 100px;
     `}
 `;
 

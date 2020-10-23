@@ -6,6 +6,7 @@ import { history } from "./components/_helpers/history";
 import { Router } from "react-router-dom";
 
 import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
 import TodosLayout from "./components/todos-page/TodosLayout";
 import LoginPage from "./components/login-page/LoginPage";
 import About from "./components/about/About";
@@ -15,13 +16,7 @@ import PrivateRoute from "./components/common/PrivateRoute";
 import PublicRoute from "./components/common/PublicRoute";
 import { Spinner } from "./globalStyles";
 
-import GlobalStyle, {
-  Container,
-  FooterContainer,
-  FooterWrap,
-  FooterText,
-  BasicLink,
-} from "./globalStyles";
+import GlobalStyle, { Container } from "./globalStyles";
 // import uuid from 'uuid';
 
 const App = (props) => {
@@ -66,16 +61,7 @@ const App = (props) => {
           ) : null}
           <Route component={NotFoundPage} />
         </Switch>
-
-        <FooterContainer>
-          <FooterWrap>
-            <FooterText>
-              <BasicLink>About</BasicLink>
-            </FooterText>
-            <FooterText>~</FooterText>
-            <FooterText>Designed by Manel.</FooterText>
-          </FooterWrap>
-        </FooterContainer>
+        <Footer />
       </Container>
     </Router>
   );
