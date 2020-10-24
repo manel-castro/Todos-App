@@ -51,7 +51,7 @@ export function TextDisplayChild({
   // ---------------
   return (
     <div style={{ cursor: "text" }}>
-      {true ? (
+      {true ? ( //eslint-disable-line
         <div style={{ width: "100%" }}>
           <textarea
             style={{
