@@ -1,4 +1,5 @@
 import styled, { createGlobalStyle } from "styled-components";
+import { Link } from "react-router-dom";
 
 const GlobalStyle = createGlobalStyle`
 	* {
@@ -7,15 +8,15 @@ const GlobalStyle = createGlobalStyle`
 			padding: 0;
 			font-family: arial, sans-serif;
 			::selection {
-				background: rgb(170, 170, 170);
+				background: rgb(200, 200, 200);
 			}
 			::-moz-selection {
-				background: rgb(170, 170, 170);
+				background: rgb(200, 200, 200);
 			}
 		}
 		
 	body {
-			background-color: rgb(239, 240, 240);
+		background-color: rgb(239, 240, 240);
 	}
 	
 `;
@@ -28,6 +29,17 @@ export const Container = styled.div`
   height: 100vh;
   margin-left: auto;
   margin-right: auto;
+  padding: 0;
+`;
+
+export const BasicLink = styled(Link)`
+  cursor: pointer;
+  text-decoration: none;
+  color: rgb(140, 150, 150);
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 export const Button = styled.button`
@@ -40,6 +52,15 @@ background-color: {({primary}) => (primary ? "#293740" : "#435969")};
 border: none; 
 outline: none;
 cursor: pointer;
+`;
+
+export const ButtonWrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: ${({ display }) => display};
+  @media screen and (max-width: 500px) {
+    justify-content: ${({ mobileDisplay }) => mobileDisplay};
+  }
 `;
 
 export const Spinner = styled.div`
@@ -97,17 +118,23 @@ export const Spinner = styled.div`
 `;
 
 export const FooterContainer = styled.div`
+  position: absolute;
+  bottom: 0px;
+`;
+
+export const FooterWrap = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   width: 100vw;
-  height: 7vh;
+  height: 30px;
   background-color: white;
 `;
 
 export const FooterText = styled.p`
   color: rgb(140, 150, 150);
+  margin-left: 10px;
 `;
 
 export default GlobalStyle;

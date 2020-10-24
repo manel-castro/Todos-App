@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as todosActions from "../../redux/actions/todosActions";
@@ -6,88 +6,118 @@ import * as todosActions from "../../redux/actions/todosActions";
 import AddTodo from "./AddTodo";
 import TodoList from "./TodoList";
 
-const TodosLayout = ({ addTodo, todos, markComplete, delTodo }) => {
-  const [newTodoTitle, setNewTodoTitle] = useState("");
-  const [newTodoError, setNewTodoError] = useState("Add todo..."); //I'll use errors directly as placeholder until I have other solution.
+class TodosLayout extends Component<Props, never> {
+  shouldComponentUpdate(nextProps: props) {
+    function isEqual(arr1, arr2) {
+      let equal = true;
+      //      console.log("ARR1 length", arr1.length);
+      //      console.log("ARR2 length", arr2.length);
+      if (arr1.length !== arr2.length) {
+        return false;
+      }
+      arr2.forEach((key, index) => {
+        if (arr2[index] !== arr1[index]) {
+          equal = false;
+          return equal;
+        }
+      });
+      return equal;
+    }
+    console.log(isEqual(this.props.todoIds, nextProps.todoIds));
+    return !isEqual(this.props.todoIds, nextProps.todoIds);
+  }
 
-  const handleAddTodoChange = (e) => {
-    setNewTodoTitle(e.target.value);
-  };
+  componentDidMount() {
+    console.log("ComponentMounted TODOS LAYOUT");
+  }
 
-  const isNewTodoValid = (title) => {
+  isNewTodoValid = (title) => {
     const regEx = /^[A-Za-z]/;
     if (title === "" || !regEx.test(title)) {
-      setNewTodoError("We need some letters");
-      setNewTodoTitle("");
-      return false;
+      return "We need some letters";
     }
     if (title.length > 100) {
-      setNewTodoError("Title too long");
-      setNewTodoTitle("");
-      return false;
+      return "Text too long";
     }
-    return true;
+    return "";
   };
 
-  const handleAddTodoSubmit = async (e) => {
-    e.preventDefault();
-    const validation = await isNewTodoValid(newTodoTitle);
-    if (!validation) return;
-
-    addTodo({ title: newTodoTitle });
-    setNewTodoTitle("");
-    setNewTodoError("Add todo...");
-  };
-
-  const handleMarkCompleted = async (todo) => {
+  handleAddTodoSubmit = async () => {
     try {
-      await markComplete(todo);
+      this.props.addTodo();
     } catch (err) {
-      alert("Server error: Todo haven't been marked");
+      console.log("addTodo failed", err);
     }
   };
 
-  const handleDeleteTodo = async (todo) => {
+  handleChangeTodo = async (todoId, title) => {
+    this.props.modifyTodo(todoId, title);
+  };
+
+  //  handleMarkCompleted = async (todo) => {
+  //   try {
+  //     await markComplete(todo);
+  //   } catch (err) {
+  //     alert("Server error: Todo haven't been marked");
+  //   }
+  // };
+
+  handleDeleteTodo = async (todo) => {
     if (window.confirm("Are you sure to delete this note?")) {
       try {
-        await delTodo(todo);
+        await this.props.delTodo(todo);
       } catch (err) {
         alert("Server error: Todo haven't been deleted");
       }
     }
   };
 
-  return (
-    <>
-      <AddTodo
-        onChange={handleAddTodoChange}
-        onSubmit={handleAddTodoSubmit}
-        title={newTodoTitle}
-        errors={newTodoError}
-        placeholder={newTodoError}
-      />
-      <div style={{ overflowY: "scroll", height: "84vh" }}>
-        <TodoList
-          todos={todos}
-          markComplete={handleMarkCompleted}
-          delTodo={handleDeleteTodo}
-        />
-      </div>
-    </>
-  );
-};
+  handleAddSubItem = async (todo) => {
+    try {
+      await this.props.addSubItem(todo);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  render() {
+    const { todoIds, todosExist } = this.props;
+
+    return (
+      <>
+        <AddTodo onSubmit={this.handleAddTodoSubmit} todosExist={todosExist} />
+        <div
+          style={{
+            overflowY: "auto",
+            marginBottom: "5px",
+            paddingBottom: "70px",
+          }}
+        >
+          <TodoList
+            todoIds={todoIds}
+            delTodo={this.handleDeleteTodo}
+            addSubItem={this.handleAddSubItem}
+            getNewValue={this.handleChangeTodo}
+            checkErrors={this.isNewTodoValid}
+          />
+        </div>
+      </>
+    );
+  }
+}
 
 //PropTypes (Good Practice)
 TodosLayout.propTypes = {
-  todos: PropTypes.array.isRequired,
+  todoIds: PropTypes.array.isRequired,
   markComplete: PropTypes.func.isRequired,
   delTodo: PropTypes.func.isRequired,
   addTodo: PropTypes.func.isRequired,
 };
 
 export function mapStateToProps(state, ownProps) {
+  let todoIds = state.todos.map((todo) => todo.id);
   return {
-    todos: state.todos,
+    todoIds: todoIds,
+    todosExist: todoIds.length !== 0,
   };
 }
 
@@ -95,6 +125,8 @@ export const mapDispatchToProps = {
   addTodo: todosActions.addTodo,
   markComplete: todosActions.markTodoCompleted,
   delTodo: todosActions.deleteTodo,
+  addSubItem: todosActions.addSubItem,
+  modifyTodo: todosActions.modifyTodo,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodosLayout);

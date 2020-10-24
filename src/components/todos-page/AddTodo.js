@@ -1,25 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
+import {
+  AddNoteButtonWrap,
+  AddNoteButton,
+  LargeAddNoteButton,
+  IconWrap,
+  PencilIcon,
+  AddIcon,
+  ButtonText,
+} from "./AddTodo.elements.js";
 
-const AddTodo = ({ onChange, onSubmit, title, placeholder }) => {
+const AddTodo = ({ onSubmit, todosExist }) => {
+  const [addIcon, setAddIcon] = useState(false);
+
+  const handleMouse = (state) => {
+    setAddIcon(state);
+  };
   return (
-    <form onSubmit={onSubmit} style={{ display: "flex" }}>
-      <input
-        type="text"
-        name="title"
-        style={{ flex: "10", padding: "5px" }}
-        placeholder={placeholder}
-        value={title}
-        onChange={onChange}
-        autoComplete="off"
-      />
-      <input
-        type="submit"
-        value="Submit"
-        className="btn"
-        style={{ flex: "1" }}
-      />
-    </form>
+    <AddNoteButtonWrap todosExist={todosExist}>
+      {todosExist ? (
+        <AddNoteButton
+          onClick={onSubmit}
+          onMouseEnter={() => handleMouse(true)}
+          onMouseLeave={() => handleMouse(false)}
+        >
+          {addIcon ? <AddIcon /> : <PencilIcon />}
+        </AddNoteButton>
+      ) : (
+        <LargeAddNoteButton
+          onClick={onSubmit}
+          onMouseEnter={() => handleMouse(true)}
+          onMouseLeave={() => handleMouse(false)}
+        >
+          <IconWrap>{addIcon ? <AddIcon /> : <PencilIcon />}</IconWrap>
+          <ButtonText>Add note</ButtonText>
+        </LargeAddNoteButton>
+      )}
+    </AddNoteButtonWrap>
   );
 };
 
