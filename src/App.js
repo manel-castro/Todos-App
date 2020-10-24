@@ -1,9 +1,13 @@
 import React, { useEffect } from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
+import {
+  Switch,
+  Route,
+  Redirect,
+  BrowserRouter as Router,
+} from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { history } from "./components/_helpers/history";
-import { Router } from "react-router-dom";
 
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
@@ -21,9 +25,9 @@ import GlobalStyle, { Container } from "./globalStyles";
 
 const App = (props) => {
   const { loggedIn } = props;
-
+  console.log(loggedIn);
   return (
-    <Router history={history}>
+    <Router>
       <GlobalStyle />
       <Container>
         <Header />
@@ -59,7 +63,7 @@ const App = (props) => {
               )}
             />
           ) : null}
-          <Route component={NotFoundPage} />
+          {loggedIn !== null ? <Route render={() => <NotFoundPage />} /> : null}
         </Switch>
         <Footer />
       </Container>

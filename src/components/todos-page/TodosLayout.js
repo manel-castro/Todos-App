@@ -5,8 +5,9 @@ import * as todosActions from "../../redux/actions/todosActions";
 
 import AddTodo from "./AddTodo";
 import TodoList from "./TodoList";
-
+//eslint-disable-next-line
 class TodosLayout extends Component<Props, never> {
+  //eslint-disable-next-line
   shouldComponentUpdate(nextProps: props) {
     function isEqual(arr1, arr2) {
       let equal = true;

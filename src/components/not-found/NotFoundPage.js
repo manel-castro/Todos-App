@@ -11,7 +11,7 @@ function NotFoundPage() {
   }, [timeToRedirect]);
   return (
     <>
-      <h2>Oops! There's nothing here</h2>
+      <h2>Oops! There&#39;s nothing here</h2>
       <h4>Redirecting in {timeToRedirect}...</h4>
       {timeToRedirect === 0 && <Redirect to="/" />}
     </>

@@ -77,7 +77,7 @@ function LoginForm({
           <CrossContainer onClick={modalPassReset}>
             <CloseModalCross />
           </CrossContainer>
-          <p> You'll recive an email with a link to reset your password.</p>
+          <p> You&#39;ll recive an email with a link to reset your password.</p>
           <PasswordResetInputWrapper>
             <PasswordResetInput
               placeholder="Email address"
