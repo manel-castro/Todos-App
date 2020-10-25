@@ -28,6 +28,9 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "src/index.html",
       favicon: "src/favicon.ico",
+      templateParameters: {
+        foo: "",
+      },
       minify: {
         // see https://github.com/kangax/html-minifier#options-quick-reference
         removeComments: true,

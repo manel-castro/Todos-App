@@ -27,6 +27,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "src/index.html",
       favicon: "src/favicon.ico",
+      templateParameters: {
+        foo:
+          "<script>window.__REACT_DEVTOOLS_GLOBAL_HOOK__.inject = function () {}</script>",
+      },
       minify: {
         // see https://github.com/kangax/html-minifier#options-quick-reference
         removeComments: true,

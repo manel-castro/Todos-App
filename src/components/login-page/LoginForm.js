@@ -103,9 +103,9 @@ LoginForm.propTypes = {
   handleSignup: PropTypes.func.isRequired,
   handlePasswordReset: PropTypes.func.isRequired,
   isPasswordReset: PropTypes.bool.isRequired,
-  modalPassReset: PropTypes.bool.isRequired,
+  modalPassReset: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
-  saving: PropTypes.bool.isRequired,
+  saving: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
 };
 

@@ -66,7 +66,7 @@ const App = (props) => {
 };
 
 App.propTypes = {
-  loggedIn: PropTypes.any.isRequired,
+  loggedIn: PropTypes.any,
 };
 
 function mapStateToProps(state) {
