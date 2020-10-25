@@ -69,9 +69,15 @@ const LoginPage = ({ userLogin, userSignup, resetPassword }) => {
       setErrors({ signup: err.message });
       setSaving({});
     }
+    setUser({
+      email: "",
+      password: "",
+      emailPassReset: "",
+    });
   };
 
   const handleLogin = async (e) => {
+    debugger;
     e.preventDefault();
     setSaving({ login: true });
 
@@ -85,12 +91,19 @@ const LoginPage = ({ userLogin, userSignup, resetPassword }) => {
     }
 
     try {
+      debugger;
       await userLogin({ email, password });
       setSaving({});
     } catch (err) {
       setErrors({ login: err.message });
       setSaving({});
     }
+
+    setUser({
+      email: "",
+      password: "",
+      emailPassReset: "",
+    });
   };
 
   const modalPassReset = () => {
