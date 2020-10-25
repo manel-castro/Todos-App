@@ -8,8 +8,8 @@
   "description": "",
   "private": true,
   "scripts": {
-    "start": "webpack --config webpack.config.prod.js",
-    "prestart": "rimraf ./build && mkdir build",
+    "start": "node server.js",
+    "heroku-postbuild": "webpack --config webpack.config.prod.js",
     "start:dev": "webpack serve --config webpack.config.dev.js --port 3000",
     "prestart:api": "node tools/createMockDb.js",
     "start:api": "node tools/apiServer.js",
@@ -23,13 +23,12 @@
     "prestage": "run-p clean:stage",
     "poststage": "run-p map:stage serve:stage",
     "serve:stage": "http-server ./stage",
-    "map:stage": "source-map-explorer ./stage/bundle.js",
-    "heroku-postbuild": "http-server ./build"
+    "map:stage": "source-map-explorer ./stage/bundle.js"
   },
   "dependencies": {
     "axios": "^0.21.0",
     "babel-plugin-styled-components": "^1.11.1",
-    "bootstrap": "^4.5.2",
+    "express": "^4.17.1",
     "firebase": "^7.20.0",
     "firebase-tools": "^8.10.0",
     "firebaseui": "^4.6.1",
