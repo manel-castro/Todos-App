@@ -11,7 +11,7 @@
     "build": "webpack --config webpack.config.prod.js",
     "clean:build": "rimraf ./build && mkdir build",
     "prebuild": "run-p clean:build",
-    "postbuild": "run-p serve:build",
+    "postbutild": "run-p serve:build",
     "serve:build": "http-server ./build",
     "stage": "webpack --config webpack.config.stage.js",
     "clean:stage": "rimraf ./stage && mkdir stage",
