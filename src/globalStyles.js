@@ -23,6 +23,7 @@ const GlobalStyle = createGlobalStyle`
 
 export const Container = styled.div`
   display: flex;
+  position: relative;
   flex-direction: column;
   z-index: 1;
   width: 100%;
@@ -30,6 +31,7 @@ export const Container = styled.div`
   margin-left: auto;
   margin-right: auto;
   padding: 0;
+  overflow-x: hidden;
 `;
 
 export const BasicLink = styled(Link)`
