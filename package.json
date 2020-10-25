@@ -18,7 +18,8 @@
     "prestage": "run-p clean:stage",
     "poststage": "run-p map:stage serve:stage",
     "serve:stage": "http-server ./stage",
-    "map:stage": "source-map-explorer ./stage/bundle.js"
+    "map:stage": "source-map-explorer ./stage/bundle.js",
+    "heroku-postbuild": "webpack -p --config ./webpack.config.prod.js --progress"
   },
   "dependencies": {
     "axios": "^0.21.0",
