@@ -8,7 +8,8 @@
   "description": "",
   "private": true,
   "scripts": {
-    "start": "run-p start:api start:dev",
+    "start": "webpack --config webpack.config.prod.js",
+    "prestart": "rimraf ./build && mkdir build",
     "start:dev": "webpack serve --config webpack.config.dev.js --port 3000",
     "prestart:api": "node tools/createMockDb.js",
     "start:api": "node tools/apiServer.js",
@@ -23,7 +24,7 @@
     "poststage": "run-p map:stage serve:stage",
     "serve:stage": "http-server ./stage",
     "map:stage": "source-map-explorer ./stage/bundle.js",
-    "heroku-postbuild": "webpack --config webpack.config.prod.js --progress"
+    "heroku-postbuild": "http-server ./build"
   },
   "dependencies": {
     "axios": "^0.21.0",
