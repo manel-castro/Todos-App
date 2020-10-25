@@ -1,6 +1,10 @@
 {
   "name": "TodosApp-webpack",
   "version": "1.0.0",
+  "engines": {
+    "node": "12.18.4",
+    "yarn": "1.22.10"
+  },
   "description": "",
   "private": true,
   "scripts": {
@@ -19,7 +23,7 @@
     "poststage": "run-p map:stage serve:stage",
     "serve:stage": "http-server ./stage",
     "map:stage": "source-map-explorer ./stage/bundle.js",
-    "heroku-postbuild": "webpack -p --config ./webpack.config.prod.js --progress"
+    "heroku-postbuild": "webpack --config webpack.config.prod.js --progress"
   },
   "dependencies": {
     "axios": "^0.21.0",
