@@ -142,15 +142,13 @@ const LoginPage = ({ userLogin, userSignup, resetPassword }) => {
 LoginPage.propTypes = {
   userLogin: PropTypes.func.isRequired,
   userSignup: PropTypes.func.isRequired,
+  resetPassword: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state, ownProps) => {
-  return {};
-};
 const mapDispatchToProps = {
   userLogin: userActions.userLogin,
   userSignup: userActions.userSignup,
   resetPassword: userActions.resetPassword,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
+export default connect(null, mapDispatchToProps)(LoginPage);

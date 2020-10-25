@@ -109,12 +109,11 @@ class TodosLayout extends Component<Props, never> {
 //PropTypes (Good Practice)
 TodosLayout.propTypes = {
   todoIds: PropTypes.array.isRequired,
-  markComplete: PropTypes.func.isRequired,
   delTodo: PropTypes.func.isRequired,
   addTodo: PropTypes.func.isRequired,
 };
 
-export function mapStateToProps(state, ownProps) {
+export function mapStateToProps(state) {
   let todoIds = state.todos.map((todo) => todo.id);
   return {
     todoIds: todoIds,
@@ -124,7 +123,6 @@ export function mapStateToProps(state, ownProps) {
 
 export const mapDispatchToProps = {
   addTodo: todosActions.addTodo,
-  markComplete: todosActions.markTodoCompleted,
   delTodo: todosActions.deleteTodo,
   addSubItem: todosActions.addSubItem,
   modifyTodo: todosActions.modifyTodo,

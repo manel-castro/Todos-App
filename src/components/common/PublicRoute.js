@@ -1,5 +1,6 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function PublicRoute({
   component: Component,
@@ -19,3 +20,8 @@ export default function PublicRoute({
     />
   );
 }
+
+PublicRoute.propTypes = {
+  component: PropTypes.object.isRequired,
+  authenticated: PropTypes.any.isRequired,
+};

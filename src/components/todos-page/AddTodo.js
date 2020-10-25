@@ -41,10 +41,8 @@ const AddTodo = ({ onSubmit, todosExist }) => {
 };
 
 AddTodo.propTypes = {
-  onChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  placeholder: PropTypes.string.isRequired,
+  todosExist: PropTypes.bool.isRequired,
 };
 
 export default AddTodo;

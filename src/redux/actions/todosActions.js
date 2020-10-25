@@ -1,5 +1,7 @@
+import * as firebase from "firebase/app";
+import "firebase/firestore";
+
 import * as types from "./actionTypes";
-import firebase from "firebase";
 
 import { v4 as uuid } from "uuid";
 import { subItemPath as subItemPathFunc } from "../redux-helpers/subItemPath";
@@ -20,8 +22,12 @@ export function modifyTodoSuccess() {
   return { type: types.MODIFY_TODO_SUCCESS };
 }
 
+{
+  /* Potentially useful for labeling notes
 export function markTodoCompletedOptimistic(todo) {
   return { type: types.MARK_TODO_COMPLETED_OPTIMISTIC, todo };
+}
+*/
 }
 
 export function deleteTodoOptimistic(todo) {
@@ -85,7 +91,7 @@ export function getTodos() {
   };
 }
 
-export function addTodo(todo) {
+export function addTodo() {
   return function (dispatch, getState) {
     const userUid = getState().user.uid;
     console.log("addTodo fired");
@@ -110,6 +116,7 @@ export function addTodo(todo) {
 }
 
 export function modifyTodo(todoId, title) {
+  //eslint-disable-next-line
   return function (dispatch, getState) {
     //const userUid = getState().user.uid;
     console.log("modifyTodo fired");
@@ -130,9 +137,11 @@ export function modifyTodo(todoId, title) {
   };
 }
 
-//DEPRECATED
+//DEPRECATED potentially useful for labeling
+{
+  /*
 export function markTodoCompleted(todo) {
-  return function (dispatch, getState) {
+  return function (dispatch) {
     dispatch(markTodoCompletedOptimistic(todo));
     firebase
       .firestore()
@@ -146,10 +155,11 @@ export function markTodoCompleted(todo) {
       });
   };
 }
+*/
+}
 
-//need to implement pendant:
 export function deleteTodo(todo) {
-  return function (dispatch, getState) {
+  return function (dispatch) {
     dispatch(deleteTodoOptimistic(todo));
     setTimeout(() => {
       firebase

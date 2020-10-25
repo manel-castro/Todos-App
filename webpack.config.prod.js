@@ -2,14 +2,13 @@ const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const webpackBundleAnalyzer = require("webpack-bundle-analyzer");
+//const webpackBundleAnalyzer = require("webpack-bundle-analyzer");
 
 process.env.NODE_ENV = "production"; //this is important for babel to know that we are using produciton mode, it also allows us to conditionally render dependencies by creating clones of files and exporting them.
 
 module.exports = {
   mode: "production",
   target: "web",
-  devtool: "source-map", //this lets us see the original code that we wrote in the browser, it's a bit expensiver but brings better quality
   entry: "./src/index",
   output: {
     path: path.resolve(__dirname, "build"),
@@ -17,8 +16,6 @@ module.exports = {
     filename: "bundle.js",
   },
   plugins: [
-    new webpackBundleAnalyzer.BundleAnalyzerPlugin({ mode: "static" }),
-
     new MiniCssExtractPlugin({
       filename: "[name].[contenthash].css",
     }),

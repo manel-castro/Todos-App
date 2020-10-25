@@ -15,7 +15,7 @@ export class TodoItem extends PureComponent {
     console.log("TODO ITEM RERENDERED");
   }
   render() {
-    const { id, todo, delTodo, getNewValue, checkErrors } = this.props;
+    const { todo, delTodo, getNewValue, checkErrors } = this.props;
     return (
       <TodoItemWrap>
         <TodoTitleWrap>
@@ -43,6 +43,8 @@ export class TodoItem extends PureComponent {
 TodoItem.propTypes = {
   todo: PropTypes.object.isRequired,
   delTodo: PropTypes.func.isRequired,
+  getNewValue: PropTypes.func.isRequired,
+  checkErrors: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state, ownState) {

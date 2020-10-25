@@ -1,8 +1,8 @@
-import * as types from "./actionTypes";
+import * as firebase from "firebase/app";
+import "firebase/auth";
 import { config } from "../../firebaseConfig";
-import firebase from "firebase";
+import * as types from "./actionTypes";
 import * as todosActions from "./todosActions";
-require("firebase/firestore");
 
 firebase.initializeApp(config);
 
@@ -28,6 +28,7 @@ export function resetPasswordSuccess() {
 //Thunks
 
 export function userLogin(user) {
+  //eslint-disable-next-line
   return function (dispatch, getState) {
     const { email, password } = user;
     return firebase

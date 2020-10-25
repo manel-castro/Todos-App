@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { IoMdClose } from "react-icons/io";
+import { BsFillXCircleFill } from "react-icons/bs";
 
 export const LoginContainer = styled.div`
   display: flex;
@@ -193,10 +193,10 @@ export const CrossContainer = styled.div`
   cursor: pointer;
 `;
 
-export const CloseModalCross = styled(IoMdClose)`
-  color: white;
+export const CloseModalCross = styled(BsFillXCircleFill)`
+  
   font-size: 20px;
-  background-color: rgb(50, 50, 50);
+  
 `;
 
 export const PasswordResetButton = styled(SignInButton)`

@@ -131,6 +131,14 @@ function SubItemLevel({
   );
 }
 
-SubItemLevel.propTypes = {};
+SubItemLevel.propTypes = {
+  subItem: PropTypes.object.isRequired,
+  handleOpenLevel: PropTypes.func.isRequired,
+  openedSubItems: PropTypes.object.isRequired,
+  handleNewSubItem: PropTypes.func.isRequired,
+  handleModifySubItem: PropTypes.func.isRequired,
+  handleDeleteSubItem: PropTypes.func.isRequired,
+  level: PropTypes.number.isRequired,
+};
 
 export default SubItemLevel;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import * as todosActions from "../../redux/actions/todosActions";
 import { connect } from "react-redux";
 import { ButtonWrap } from "../../globalStyles.js";
@@ -9,15 +10,7 @@ import {
   SubItemButton,
 } from "./SubItemLayout.elements";
 
-function SubItemLayout({
-  todo,
-  openLevel,
-  openedSubItems,
-  currentLevel,
-  addSubItem,
-  modifySubItem,
-  deleteSubItem,
-}) {
+function SubItemLayout({ todo, addSubItem, modifySubItem, deleteSubItem }) {
   const [expand, setExpand] = useState(false);
   const [openedLevel, setOpenedLevel] = useState({});
 
@@ -48,7 +41,6 @@ function SubItemLayout({
 
   const handleOpenLevel = (key, action) => {
     setOpenedLevel((prevState) => ({ ...prevState, [key]: action }));
-    //openLevel(todo.id, key, action);
   };
 
   const handleNewSubItem = (subItemParentId = false) => {
@@ -140,18 +132,23 @@ function SubItemLayout({
   );
 }
 
+SubItemLayout.propTypes = {
+  todo: PropTypes.object.isRequired,
+  addSubItem: PropTypes.func.isRequired,
+  modifySubItem: PropTypes.func.isRequired,
+  deleteSubItem: PropTypes.func.isRequired,
+};
+
 export function mapStateToProps(state, ownState) {
   return {
     subItem: ownState.todo.subItems,
     openedSubItems: ownState.todo.openedKeys ? ownState.todo.openedKeys : {},
-    currentLevel: ownState.todo.currentLevel ? ownState.todo.currentLevel : 0,
   };
 }
 
 export const mapDispatchToProps = {
   //  //  getSubItemLevel: todosActions.getSubItemLevel,
   //  //  addSubItem: todosActions.addSubItem,
-  openLevel: todosActions.openSubItemLevel,
   addSubItem: todosActions.addSubItem,
   modifySubItem: todosActions.modifySubItem,
   deleteSubItem: todosActions.deleteSubItem,

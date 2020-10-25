@@ -1,9 +1,10 @@
+import React from "react";
+import PropTypes from "prop-types";
 import {
   LoginContainer,
   LoginFormWrap,
   LoginTitle,
   LoginInputWrapper,
-  LoginTextInput,
   LoginInput,
   LoginButton,
   LoginErrors,
@@ -20,7 +21,6 @@ import {
   PasswordResetInput,
 } from "./LoginForm.elements.js";
 import { Spinner } from "../../globalStyles";
-import React, { useRef, useEffect } from "react";
 
 function LoginForm({
   onChange,
@@ -96,5 +96,17 @@ function LoginForm({
     </LoginContainer>
   );
 }
+
+LoginForm.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  handleLogin: PropTypes.func.isRequired,
+  handleSignup: PropTypes.func.isRequired,
+  handlePasswordReset: PropTypes.func.isRequired,
+  isPasswordReset: PropTypes.bool.isRequired,
+  modalPassReset: PropTypes.bool.isRequired,
+  user: PropTypes.object.isRequired,
+  saving: PropTypes.bool.isRequired,
+  errors: PropTypes.object.isRequired,
+};
 
 export default LoginForm;

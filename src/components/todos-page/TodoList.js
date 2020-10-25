@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import TodoItem from "./TodoItem";
 import PropTypes from "prop-types";
 import { TodosListContainer, TodosListWrap } from "./TodoList.elements";
@@ -42,9 +42,10 @@ const TodoList = ({
 
 TodoList.propTypes = {
   todoIds: PropTypes.array.isRequired,
-  markComplete: PropTypes.func.isRequired,
   delTodo: PropTypes.func.isRequired,
   addSubItem: PropTypes.func.isRequired,
+  getNewValue: PropTypes.func.isRequired,
+  checkErrors: PropTypes.func.isRequired,
 };
 
 export default TodoList;

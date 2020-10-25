@@ -9,10 +9,7 @@ export function TextDisplayChild({
   handleChange,
   handleColor,
   color,
-  handleOpen,
-  open,
   validate,
-  inputWidth,
 }) {
   console.log("COMPONENT RERENDERED");
   const handleFocus = () => {
@@ -51,40 +48,40 @@ export function TextDisplayChild({
   // ---------------
   return (
     <div style={{ cursor: "text" }}>
-      {true ? ( //eslint-disable-line
-        <div style={{ width: "100%" }}>
-          <textarea
-            style={{
-              color: color,
-              fontSize: fontSize,
-              border: "none",
-              outline: "none",
-              resize: "none",
-              width: "100%",
-              overflow: "hidden",
-              maxWidth: "100%",
-              paddingRight: "10px",
-            }}
-            ref={textArea}
-            type="textarea"
-            required
-            value={text}
-            onChange={handleChange}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-          ></textarea>
-          <small style={{ color: "red" }}>{error}</small>
-        </div>
-      ) : (
-        <div onClick={() => handleOpen()} style={{ fontSize: fontSize }}>
-          {text}
-        </div>
-      )}
+      <textarea
+        style={{
+          color: color,
+          fontSize: fontSize,
+          border: "none",
+          outline: "none",
+          resize: "none",
+          width: "100%",
+          overflow: "hidden",
+          maxWidth: "100%",
+          paddingRight: "10px",
+        }}
+        ref={textArea}
+        type="textarea"
+        required
+        value={text}
+        onChange={handleChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+      ></textarea>
+      <small style={{ color: "red" }}>{error}</small>
     </div>
   );
 }
 
-TextDisplayChild.propTypes = {};
+TextDisplayChild.propTypes = {
+  text: PropTypes.string.isRequired,
+  fontSize: PropTypes.string.isRequired,
+  error: PropTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  handleColor: PropTypes.func.isRequired,
+  color: PropTypes.string.isRequired,
+  validate: PropTypes.func.isRequired,
+};
 
 function TextDisplay({
   todoId,
@@ -95,25 +92,14 @@ function TextDisplay({
   checkErrors = false,
   getNewValue,
 }) {
-  const [open, setOpen] = useState(false);
   const [color, setColor] = useState(colorOff);
   const [value, setValue] = useState(text);
-  const [inputWidth, setInputWidth] = useState(text.length);
   const [error, setError] = useState("");
   let initialValue = text;
 
   const handleChange = (e) => {
-    handleInputWidth();
     if (checkErrors) setError(checkErrors(e.target.value));
     setValue(e.target.value);
-  };
-
-  const handleInputWidth = () => {
-    setInputWidth(value.length);
-  };
-
-  const handleOpen = () => {
-    setOpen(true);
   };
 
   const handleColor = (active) => {
@@ -135,7 +121,6 @@ function TextDisplay({
       console.log("firestore");
       //			initialValue = value;
     }
-    setOpen(false);
   };
 
   return (
@@ -145,17 +130,22 @@ function TextDisplay({
         fontSize={fontSize}
         error={error}
         handleChange={handleChange}
-        open={open}
         validate={validate}
-        handleOpen={handleOpen}
         handleColor={handleColor}
         color={color}
-        inputWidth={inputWidth}
       />
     </div>
   );
 }
 
-TextDisplay.propTypes = {};
+TextDisplay.propTypes = {
+  todoId: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+  fontSize: PropTypes.string,
+  colorOff: PropTypes.string,
+  colorActive: PropTypes.string,
+  checkErrors: PropTypes.func,
+  getNewValue: PropTypes.func.isRequired,
+};
 
 export default TextDisplay;

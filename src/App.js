@@ -1,10 +1,5 @@
-import React, { useEffect } from "react";
-import {
-  Switch,
-  Route,
-  Redirect,
-  BrowserRouter as Router,
-} from "react-router-dom";
+import React from "react";
+import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { history } from "./components/_helpers/history";
@@ -18,9 +13,8 @@ import NotFoundPage from "./components/not-found/NotFoundPage";
 
 import PrivateRoute from "./components/common/PrivateRoute";
 import PublicRoute from "./components/common/PublicRoute";
-import { Spinner } from "./globalStyles";
 
-import GlobalStyle, { Container } from "./globalStyles";
+import GlobalStyle, { Container, Spinner } from "./globalStyles";
 // import uuid from 'uuid';
 
 const App = (props) => {
@@ -75,7 +69,7 @@ App.propTypes = {
   loggedIn: PropTypes.any.isRequired,
 };
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   return {
     loggedIn: state.user.loggedIn,
   };

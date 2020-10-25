@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import { BsTrash } from 'react-icons/bs'
 
 export const TodoItemContainer = styled.div``;
 
@@ -19,9 +19,10 @@ export const TodoTitleWrap = styled.div`
   justify-content: space-between;
 `;
 
-export const DeleteTodo = styled(DeleteForeverIcon)`
+export const DeleteTodo = styled(BsTrash)`
   color: pink;
   cursor: pointer;
+  font-size: 23px;
 
   &:hover {
     color: red;

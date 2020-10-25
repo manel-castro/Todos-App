@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { StyledHeader, Title, NavBar, StyledLink } from "./Header.elements";
@@ -22,14 +21,12 @@ const Header = ({ userLogout, loggedIn }) => {
   );
 };
 
-const headerStyle = {};
-
 Header.propTypes = {
   loggedIn: PropTypes.bool.isRequired,
   userLogout: PropTypes.func.isRequired,
 };
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   return {
     loggedIn: state.user.loggedIn === null ? false : state.user.loggedIn,
   };
