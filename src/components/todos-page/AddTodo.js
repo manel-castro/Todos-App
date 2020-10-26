@@ -12,7 +12,6 @@ import {
 
 const AddTodo = ({ onSubmit, todosExist }) => {
   const [addIcon, setAddIcon] = useState(false);
-
   const handleMouse = (state) => {
     setAddIcon(state);
   };

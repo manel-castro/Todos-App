@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 export function TextDisplayChild({
   text,
+  isNew = false,
   fontSize,
   error,
   handleChange,
@@ -22,7 +23,7 @@ export function TextDisplayChild({
 
   const textArea = useRef(null);
 
-  //here i use useEffect
+  // The next code is made to autosize the input area.
   useEffect(() => {
     console.log(textArea.current.scrollHeight);
     //autosize(textArea.current);
@@ -34,6 +35,12 @@ export function TextDisplayChild({
     return () => clearTimeout(timer);
   }, [text]);
 
+  // The next code is made to autofocus when a todo is new.
+  if (isNew) {
+    useEffect(() => {
+      textArea.current.focus();
+    }, []);
+  }
   // --------------
   // the following code is useful when we want to manage keypress behaviors, to navigate between todos...
   // function autosize() {
@@ -86,6 +93,7 @@ TextDisplayChild.propTypes = {
 function TextDisplay({
   todoId,
   text,
+  isNew,
   fontSize = "16px",
   colorOff = "black",
   colorActive = "grey",
@@ -117,7 +125,7 @@ function TextDisplay({
       return;
     }
     if (initialValue !== value) {
-      getNewValue(todoId, value);
+      getNewValue(todoId, value, isNew);
       console.log("firestore");
       //			initialValue = value;
     }
@@ -127,6 +135,7 @@ function TextDisplay({
     <div>
       <TextDisplayChild
         text={value}
+        isNew={isNew}
         fontSize={fontSize}
         error={error}
         handleChange={handleChange}
@@ -146,6 +155,7 @@ TextDisplay.propTypes = {
   colorActive: PropTypes.string,
   checkErrors: PropTypes.func,
   getNewValue: PropTypes.func.isRequired,
+  isNew: PropTypes.bool.isRequired,
 };
 
 export default TextDisplay;

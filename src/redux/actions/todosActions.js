@@ -103,6 +103,7 @@ export function addTodo() {
         subItems: {},
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         userId: userUid,
+        isNew: true,
       })
       .catch((err) => {
         throw err;
@@ -115,18 +116,29 @@ export function addTodo() {
   };
 }
 
-export function modifyTodo(todoId, title) {
+export function modifyTodo(todoId, title, isNew) {
   //eslint-disable-next-line
   return function (dispatch, getState) {
     //const userUid = getState().user.uid;
-    console.log("modifyTodo fired");
+    console.log("modifyTodo fired", isNew);
+    let dataUpdate = {};
+    if (isNew === true) {
+      dataUpdate = {
+        isNew: firebase.firestore.FieldValue.delete(),
+        title: title,
+      };
+    } else {
+      dataUpdate = {
+        title: title,
+      };
+    }
+    console.log(dataUpdate);
+
     firebase
       .firestore()
       .collection("todos")
       .doc(todoId)
-      .update({
-        title: title,
-      })
+      .update(dataUpdate)
       .catch((err) => {
         throw err;
       });

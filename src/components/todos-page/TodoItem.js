@@ -16,12 +16,14 @@ export class TodoItem extends PureComponent {
   }
   render() {
     const { todo, delTodo, getNewValue, checkErrors } = this.props;
+    let isNew = todo.isNew ? todo.isNew : false;
     return (
       <TodoItemWrap>
         <TodoTitleWrap>
           <div style={{ cursor: "pointer", width: "100%" }}>
             <TextDisplay
               text={todo.title}
+              isNew={isNew}
               fontSize={"20px"}
               getNewValue={getNewValue}
               todoId={todo.id}

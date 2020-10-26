@@ -7,6 +7,10 @@ import AddTodo from "./AddTodo";
 import TodoList from "./TodoList";
 //eslint-disable-next-line
 class TodosLayout extends Component<Props, never> {
+  constructor(props) {
+    super(props);
+    this.containerRef = React.createRef();
+  }
   //eslint-disable-next-line
   shouldComponentUpdate(nextProps: props) {
     function isEqual(arr1, arr2) {
@@ -44,15 +48,19 @@ class TodosLayout extends Component<Props, never> {
   };
 
   handleAddTodoSubmit = async () => {
+    if (this.props.anyTodoExist) {
+      console.log("testing");
+    }
     try {
       this.props.addTodo();
     } catch (err) {
       console.log("addTodo failed", err);
     }
+    this.containerRef.current.scrollTop = 0;
   };
 
-  handleChangeTodo = async (todoId, title) => {
-    this.props.modifyTodo(todoId, title);
+  handleChangeTodo = async (todoId, title, isNew) => {
+    this.props.modifyTodo(todoId, title, isNew);
   };
 
   //  handleMarkCompleted = async (todo) => {
@@ -87,6 +95,7 @@ class TodosLayout extends Component<Props, never> {
       <>
         <AddTodo onSubmit={this.handleAddTodoSubmit} todosExist={todosExist} />
         <div
+          ref={this.containerRef}
           style={{
             overflowY: "scroll",
             marginBottom: "5px",
@@ -114,10 +123,15 @@ TodosLayout.propTypes = {
 };
 
 export function mapStateToProps(state) {
-  let todoIds = state.todos.map((todo) => todo.id);
+  let anyTodoIsNew = 0;
+  let todoIds = state.todos.map((todo) => {
+    if (todo.isNew) anyTodoIsNew++;
+    return todo.id;
+  });
   return {
     todoIds: todoIds,
     todosExist: todoIds.length !== 0,
+    anyTodoNew: anyTodoIsNew > 0 ? true : false,
   };
 }
 
