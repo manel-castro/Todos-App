@@ -2,17 +2,17 @@ import styled from "styled-components";
 import { BasicLink } from "../../globalStyles";
 
 export const StyledHeader = styled.header`
-  background: #333;
+  background: ${({ theme }) => theme.darkgrey};
   display: flex;
   flex-direction: column-reverse;
-  padding: 10px;
+  padding: 5px 10px;
   width: 100%;
   height: 70px;
   min-height: 70px;
 `;
 
 export const Title = styled.h1`
-  color: #fff;
+  color: white;
 `;
 
 export const NavBar = styled.div`
@@ -21,5 +21,10 @@ export const NavBar = styled.div`
 `;
 
 export const StyledLink = styled(BasicLink)`
-  color: #fff;
+  color: white;
+  font-size: 1.1rem;
+
+  @media screen and (max-width: 960px) {
+    text-decoration: underline;
+  }
 `;

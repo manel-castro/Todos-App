@@ -16,10 +16,15 @@ export const FooterWrap = styled.div`
 `;
 
 export const FooterText = styled.p`
-  color: rgb(140, 150, 150);
+  color: ${({ theme }) => theme.midgrey};
   margin-left: 10px;
+  font-size: 0.9rem;
 `;
 
 export const FooterLink = styled.a`
-  color: rgb(140, 150, 150);
+  color: ${({ theme }) => theme.midgrey};
+
+  &:hover {
+    color: ${({ theme }) => theme.hardgrey};
+  }
 `;

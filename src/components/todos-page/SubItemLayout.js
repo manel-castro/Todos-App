@@ -80,6 +80,7 @@ function SubItemLayout({ todo, addSubItem, modifySubItem, deleteSubItem }) {
   };
 
   let level = 0;
+  let isMaxLevel = false;
 
   return (
     <SubItemLayoutContainer>
@@ -107,6 +108,7 @@ function SubItemLayout({ todo, addSubItem, modifySubItem, deleteSubItem }) {
               handleOpenLevel={handleOpenLevel}
               openedSubItems={openedLevel}
               level={level}
+              isMaxLevel={isMaxLevel}
               handleNewSubItem={handleNewSubItem}
               handleModifySubItem={handleModifySubItem}
               handleDeleteSubItem={handleDeleteSubItem}

@@ -13,7 +13,7 @@ export default function todosReducer(state = initialState.todos, action) {
       //     return;
       //   });
       // });
-    //  console.log("----SNAPSHOT: ", action.todos);
+      //  console.log("----SNAPSHOT: ", action.todos);
       return [...action.todos];
 
     case types.MODIFIED_TODO_BACK_END:

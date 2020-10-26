@@ -8,15 +8,20 @@ const GlobalStyle = createGlobalStyle`
 			padding: 0;
 			font-family: arial, sans-serif;
 			::selection {
-				background: rgb(200, 200, 200);
+				background: ${({ theme }) => theme.lightgrey};
 			}
 			::-moz-selection {
-				background: rgb(200, 200, 200);
+				background: ${({ theme }) => theme.lightgrey};
 			}
 		}
 		
+	:root {
+		font-size: 17px;
+		background-color: ${({ theme }) => theme.softwhite}
+	}
 	body {
-		background-color: rgb(239, 240, 240);
+		background-color: ${(props) => props.theme.softwhite}  
+		overflow: hidden;
 	}
 	
 `;
@@ -32,6 +37,7 @@ export const Container = styled.div`
   margin-right: auto;
   padding: 0;
   overflow-x: hidden;
+  overflow-y: hidden;
 `;
 
 export const BasicLink = styled(Link)`
@@ -60,7 +66,7 @@ export const ButtonWrap = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: ${({ display }) => display};
-  @media screen and (max-width: 500px) {
+  @media screen and (max-width: 960px) {
     justify-content: ${({ mobileDisplay }) => mobileDisplay};
   }
 `;
@@ -118,25 +124,4 @@ export const Spinner = styled.div`
     }
   }
 `;
-
-export const FooterContainer = styled.div`
-  position: absolute;
-  bottom: 0px;
-`;
-
-export const FooterWrap = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  width: 100vw;
-  height: 30px;
-  background-color: white;
-`;
-
-export const FooterText = styled.p`
-  color: rgb(140, 150, 150);
-  margin-left: 10px;
-`;
-
 export default GlobalStyle;

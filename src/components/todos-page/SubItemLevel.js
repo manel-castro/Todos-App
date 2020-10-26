@@ -21,11 +21,14 @@ function SubItemLevel({
   handleModifySubItem,
   handleDeleteSubItem,
   level,
+  isMaxLevel,
 }) {
   const childrenList = hasChildren(subItem);
   //  console.log(openedSubItems);
-  if (level < 5) level++;
+  if (level < 4) level++;
+  isMaxLevel = level < 4;
   console.log("LEVEL IS: ", level);
+  console.log("isMax", isMaxLevel);
   let inputSize = 1 - (0.8 * Math.log(level)) / 5 + "rem";
   console.log("INPUTSIZE: ", inputSize);
   return (
@@ -58,7 +61,8 @@ function SubItemLevel({
                   </div>
                   <ButtonWrap display={"flex-start"} mobileDisplay={"flex-end"}>
                     <>
-                      {isSubOpened || !childrenList[key].hasChildren ? (
+                      {(isSubOpened || !childrenList[key].hasChildren) &&
+                      isMaxLevel ? (
                         <ButtonWrap>
                           <SubLevelButton
                             onClick={(e) => {
@@ -101,7 +105,6 @@ function SubItemLevel({
                       ) : null}
                       <ButtonWrap>
                         <DeleteSubLevel
-                          style={{ fontSize: 20, marginLeft: "7px" }}
                           onClick={() =>
                             handleDeleteSubItem(key, level, childrenList)
                           }
@@ -110,7 +113,7 @@ function SubItemLevel({
                     </>
                   </ButtonWrap>
                 </ListItem>
-                {isSubOpened ? (
+                {isSubOpened && isMaxLevel ? (
                   <>
                     <SubItemLevel
                       subItem={subItem[key]}
@@ -120,6 +123,7 @@ function SubItemLevel({
                       handleModifySubItem={handleModifySubItem}
                       handleDeleteSubItem={handleDeleteSubItem}
                       level={level}
+                      isMaxLevel={isMaxLevel}
                     />
                   </>
                 ) : null}

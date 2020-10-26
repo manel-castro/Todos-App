@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const TodosListContainer = styled.div`
   margin-left: 5vw;
   margin-right: 5vw;
-  margin-top: 3vh;
+  margin-top: 1vh;
 `;
 
 export const TodosListWrap = styled.div`

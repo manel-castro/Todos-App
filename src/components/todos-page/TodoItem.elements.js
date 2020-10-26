@@ -1,11 +1,10 @@
 import styled from "styled-components";
-import { BsTrash } from 'react-icons/bs'
+import { BsTrash } from "react-icons/bs";
 
 export const TodoItemContainer = styled.div``;
 
 export const TodoItemWrap = styled.div`
   margin-top: 10px;
-  margin-right: 10px;
   display: flex;
   flex-direction: column;
   padding: 15px;
@@ -30,5 +29,6 @@ export const DeleteTodo = styled(BsTrash)`
 `;
 
 export const SubItemsContainer = styled.div`
-  margin-bottom: 0px;
+  margin-top: 7px;
+  margin-bottom: 5px;
 `;

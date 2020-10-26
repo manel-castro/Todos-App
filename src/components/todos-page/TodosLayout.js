@@ -88,7 +88,7 @@ class TodosLayout extends Component<Props, never> {
         <AddTodo onSubmit={this.handleAddTodoSubmit} todosExist={todosExist} />
         <div
           style={{
-            overflowY: "auto",
+            overflowY: "scroll",
             marginBottom: "5px",
             paddingBottom: "70px",
           }}

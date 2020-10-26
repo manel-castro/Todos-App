@@ -4,4 +4,7 @@ export default {
     uid: null,
   },
   todos: [],
+  colors: {
+    darkgrey: "#333",
+  },
 };

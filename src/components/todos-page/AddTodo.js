@@ -23,6 +23,7 @@ const AddTodo = ({ onSubmit, todosExist }) => {
           onClick={onSubmit}
           onMouseEnter={() => handleMouse(true)}
           onMouseLeave={() => handleMouse(false)}
+          onTouchStart={() => handleMouse(false)}
         >
           {addIcon ? <AddIcon /> : <PencilIcon />}
         </AddNoteButton>
@@ -31,6 +32,7 @@ const AddTodo = ({ onSubmit, todosExist }) => {
           onClick={onSubmit}
           onMouseEnter={() => handleMouse(true)}
           onMouseLeave={() => handleMouse(false)}
+          onTouchStart={() => handleMouse(false)}
         >
           <IconWrap>{addIcon ? <AddIcon /> : <PencilIcon />}</IconWrap>
           <ButtonText>Add note</ButtonText>

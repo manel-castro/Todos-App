@@ -6,10 +6,6 @@ export const LoginContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   height: 100%;
-
-  @media screen and (max-width: 500px) {
-    padding: 5px;
-  }
 `;
 
 export const LoginFormWrap = styled.form`
@@ -17,6 +13,7 @@ export const LoginFormWrap = styled.form`
   flex-direction: column;
   align-items: center;
   padding: 10px;
+  padding-bottom: 0px;
   margin: 0 auto;
   background-color: white;
   border-radius: 8px;
@@ -26,7 +23,9 @@ export const LoginFormWrap = styled.form`
 
   @media screen and (max-width: 500px) {
     padding: 5px;
-    width: 95vw;
+    width: 100%;
+    height: 100%;
+    border-radius: 0px;
   }
 `;
 
@@ -90,7 +89,7 @@ export const LoginInput = styled.input`
 
 export const LoginButton = styled.button`
   border-radius: 8px;
-  background-color: rgb(70, 70, 70);
+  background-color: ${({ theme }) => theme.darkgrey};
   color: white;
   width: 100%;
   height: 50px;
@@ -98,13 +97,14 @@ export const LoginButton = styled.button`
   outline: none;
   border: none;
   transition: all 0.15s ease;
+  opacity: 1;
 
   @media screen and (max-width: 500px) {
     width: 75vw;
   }
 
   &:hover {
-    background-color: rgb(85, 85, 85);
+    opacity: 0.9;
     cursor: pointer;
   }
 `;
@@ -127,12 +127,14 @@ export const LoginDivider = styled.hr`
 
 export const SignInButton = styled(LoginButton)`
   background-color: #fff;
-  border: 1px solid rgb(150, 150, 150);
-  color: rgb(80, 80, 80);
+  border: 1px solid ${({ theme }) => theme.darkgrey};
+  color: ${({ theme }) => theme.darkgrey};
+  opacity: 0.8;
   width: 60%;
-  margin-bottom: 0px;
+  margin: 5px auto;
   &:hover {
-    background-color: rgb(240, 240, 240);
+    opacity: 1;
+    background-color: ${({ theme }) => theme.softwhite};
   }
 `;
 
@@ -144,7 +146,7 @@ export const PasswordResetWrap = styled.a`
 export const PasswordResetLink = styled.p`
   text-decoration: none;
   font-size: 14px;
-  color: rgb(70, 70, 70);
+  color: ${({ theme }) => theme.hardgrey};
   text-align: center;
 
   &:hover {
@@ -176,7 +178,7 @@ export const PasswordResetModalContent = styled.div`
 	align-items: center;
 	margin: 100px auto;
   padding: 20px;
-  border: 1px solid #888;
+	border: 1px solid ${({ theme }) => theme.midgrey};
 	width: 370px;
 	height: 230px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -194,9 +196,7 @@ export const CrossContainer = styled.div`
 `;
 
 export const CloseModalCross = styled(BsFillXCircleFill)`
-  
   font-size: 20px;
-  
 `;
 
 export const PasswordResetButton = styled(SignInButton)`

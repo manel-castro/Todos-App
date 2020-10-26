@@ -77,7 +77,6 @@ const LoginPage = ({ userLogin, userSignup, resetPassword }) => {
   };
 
   const handleLogin = async (e) => {
-    debugger;
     e.preventDefault();
     setSaving({ login: true });
 
@@ -91,7 +90,6 @@ const LoginPage = ({ userLogin, userSignup, resetPassword }) => {
     }
 
     try {
-      debugger;
       await userLogin({ email, password });
       setSaving({});
     } catch (err) {

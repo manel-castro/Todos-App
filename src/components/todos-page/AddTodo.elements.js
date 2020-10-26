@@ -21,12 +21,12 @@ export const AddNoteButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 50px;
-  width: 50px;
+  height: 70px;
+  width: 70px;
   border-radius: 50%;
   outline: none;
   border: none;
-  background: #333;
+  background: ${({ theme }) => theme.darkgrey};
   color: white;
   cursor: pointer;
 
@@ -36,20 +36,19 @@ export const AddNoteButton = styled.button`
 `;
 
 export const LargeAddNoteButton = styled(AddNoteButton)`
-  width: 100px;
   border-radius: 20%;
-  width: 150px;
-  height: 50px;
+  width: 200px;
+  height: 70px;
 `;
 
 export const IconWrap = styled.div`
-  width: 30px;
+  width: 50px;
   margin-right: 5px;
 `;
 
 export const PencilIcon = styled(BsPen)`
   color: white;
-  font-size: 20px;
+  font-size: 30px;
 `;
 
 export const AddIcon = styled(BsPlus)`
@@ -59,4 +58,5 @@ export const AddIcon = styled(BsPlus)`
 
 export const ButtonText = styled.h4`
   color: white;
+  font-size: 1.1rem;
 `;

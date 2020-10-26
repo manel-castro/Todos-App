@@ -8,6 +8,7 @@ export const SubItemLayoutExpandedWrap = styled.div`
   padding-left: 5px;
   margin-top: -0.3rem;
   margin-bottom: 0.7rem;
+  padding-top: 15px;
 
   @media screen and (max-width: 500px) {
     margin-top: -1rem;
@@ -22,11 +23,18 @@ export const SubItemButton = styled.button`
   background-color: white;
   outline: none;
   border: none;
-  font-size: 12px;
+  font-size: 0.9rem;
   opacity: 0.3;
   cursor: pointer;
 
   &:hover {
     opacity: 1;
+  }
+
+  @media screen and (max-width: 960px) {
+    opacity: 0.5;
+    &:hover {
+      opacity: 0.5;
+    }
   }
 `;
