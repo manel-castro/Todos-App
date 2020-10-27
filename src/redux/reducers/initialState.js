@@ -4,6 +4,9 @@ export default {
     uid: null,
   },
   todos: [],
+  todosExtra: {
+    isAnyNewTodoCount: "",
+  },
   colors: {
     darkgrey: "#333",
   },

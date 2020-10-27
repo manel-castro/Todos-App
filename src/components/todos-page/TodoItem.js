@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
+import * as todosExtraActions from "../../redux/actions/todosExtraActions";
 import PropTypes from "prop-types";
 import {
   TodoItemWrap,
@@ -15,8 +16,21 @@ export class TodoItem extends PureComponent {
     console.log("TODO ITEM RERENDERED");
   }
   render() {
-    const { todo, delTodo, getNewValue, checkErrors } = this.props;
-    let isNew = todo.isNew ? todo.isNew : false;
+    const {
+      todo,
+      delTodo,
+      getNewValue,
+      checkErrors,
+      markNewTodoCount,
+    } = this.props;
+
+    let isNew = false;
+    if (todo.isNew) {
+      markNewTodoCount(todo.id);
+      isNew = todo.isNew;
+    } else {
+      isNew = false;
+    }
     return (
       <TodoItemWrap>
         <TodoTitleWrap>
@@ -47,6 +61,7 @@ TodoItem.propTypes = {
   delTodo: PropTypes.func.isRequired,
   getNewValue: PropTypes.func.isRequired,
   checkErrors: PropTypes.func.isRequired,
+  markNewTodoCount: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state, ownState) {
@@ -57,4 +72,8 @@ function mapStateToProps(state, ownState) {
   };
 }
 
-export default connect(mapStateToProps)(TodoItem);
+const mapDispatchToProps = {
+  markNewTodoCount: todosExtraActions.markNewTodoCount,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoItem);

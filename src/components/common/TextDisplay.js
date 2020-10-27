@@ -11,11 +11,13 @@ export function TextDisplayChild({
   handleColor,
   color,
   validate,
+  saved = null,
+  todoId,
 }) {
-  console.log("COMPONENT RERENDERED");
   const handleFocus = () => {
     handleColor(true);
   };
+
   const handleBlur = () => {
     handleColor(false);
     validate();
@@ -24,35 +26,34 @@ export function TextDisplayChild({
   const textArea = useRef(null);
 
   // The next code is made to autosize the input area.
-  useEffect(() => {
-    console.log(textArea.current.scrollHeight);
-    //autosize(textArea.current);
-    const timer = setTimeout(() => {
-      console.log("SETTIMEOUT FIRED");
-      textArea.current.style.height = "0px";
-      textArea.current.style.height = textArea.current.scrollHeight + "px";
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [text]);
+  useEffect(
+    function () {
+      const sizeTimer = setTimeout(() => {
+        //      console.log("SETTIMEOUT FIRED");
+        textArea.current.style.height = "0px";
+        textArea.current.style.height = textArea.current.scrollHeight + "px";
+      }, 0);
 
-  // The next code is made to autofocus when a todo is new.
+      const validateTimer = setTimeout(() => {
+        textArea.current.addEventListener("keypress", validate());
+      }, 2000);
+      return function () {
+        //    console.log("CleanedTimeout");
+        console.log("ClearedTIMEOUT");
+        clearTimeout(sizeTimer);
+        clearTimeout(validateTimer);
+      };
+    },
+    [text]
+  );
+
+  //  The next code is made to autofocus when a todo is new.
   if (isNew) {
-    useEffect(() => {
+    useEffect(function () {
       textArea.current.focus();
     }, []);
   }
-  // --------------
-  // the following code is useful when we want to manage keypress behaviors, to navigate between todos...
-  // function autosize() {
-  //   var el = this;
-  //   console.log("rendered:");
-  //   setTimeout(() => {
-  //     el.style.height = "0px";
-  //     el.style.height = el.scrollHeight + "px";
-  //   }, 0);
-  // }
-  // useEventListener(textArea, "keydown", autosize);
-  // ---------------
+
   return (
     <div style={{ cursor: "text" }}>
       <textarea
@@ -67,6 +68,7 @@ export function TextDisplayChild({
           maxWidth: "100%",
           paddingRight: "10px",
         }}
+        id={todoId + "textDisplayArea"}
         ref={textArea}
         type="textarea"
         required
@@ -76,6 +78,8 @@ export function TextDisplayChild({
         onBlur={handleBlur}
       ></textarea>
       <small style={{ color: "red" }}>{error}</small>
+      {/* ADd component here to say when saved
+       */}
     </div>
   );
 }
@@ -88,6 +92,7 @@ TextDisplayChild.propTypes = {
   handleColor: PropTypes.func.isRequired,
   color: PropTypes.string.isRequired,
   validate: PropTypes.func.isRequired,
+  isNew: PropTypes.bool.isRequired,
 };
 
 function TextDisplay({
@@ -127,7 +132,6 @@ function TextDisplay({
     if (initialValue !== value) {
       getNewValue(todoId, value, isNew);
       console.log("firestore");
-      //			initialValue = value;
     }
   };
 
@@ -142,6 +146,7 @@ function TextDisplay({
         validate={validate}
         handleColor={handleColor}
         color={color}
+        todoId={todoId}
       />
     </div>
   );

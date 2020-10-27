@@ -2,6 +2,7 @@ import * as firebase from "firebase/app";
 import "firebase/firestore";
 
 import * as types from "./actionTypes";
+import * as todosExtraActions from "./todosExtraActions";
 
 import { v4 as uuid } from "uuid";
 import { subItemPath as subItemPathFunc } from "../redux-helpers/subItemPath";
@@ -20,6 +21,14 @@ export function addTodoSuccess() {
 
 export function modifyTodoSuccess() {
   return { type: types.MODIFY_TODO_SUCCESS };
+}
+
+export function markTodoIsNew(todoId) {
+  return { type: types.MARK_TODO_IS_NEW, todoId };
+}
+
+export function dismarkTodoIsNew(todoId) {
+  return { type: types.DISMARK_TODO_IS_NEW, todoId };
 }
 
 {
@@ -57,7 +66,7 @@ export function getTodos() {
   return function (dispatch, getState) {
     const userUid = getState().user.uid;
     let breaker = false;
-
+    console.log("todos getted");
     firebase
       .firestore()
       .collection("todos")
@@ -95,6 +104,7 @@ export function addTodo() {
   return function (dispatch, getState) {
     const userUid = getState().user.uid;
     console.log("addTodo fired");
+
     firebase
       .firestore()
       .collection("todos")
@@ -105,6 +115,7 @@ export function addTodo() {
         userId: userUid,
         isNew: true,
       })
+      .then((docRef) => dispatch(markTodoIsNew(docRef)))
       .catch((err) => {
         throw err;
       });
@@ -117,10 +128,13 @@ export function addTodo() {
 }
 
 export function modifyTodo(todoId, title, isNew) {
-  //eslint-disable-next-line
   return function (dispatch, getState) {
     //const userUid = getState().user.uid;
-    console.log("modifyTodo fired", isNew);
+    const { todosExtra } = getState();
+    if (todosExtra.isAnyNewTodoCount === todoId) {
+      dispatch(todosExtraActions.dismarkNewTodoCount());
+    }
+    //The next code is made to handle the property of New in each TODO document. which only exist when it's created, and then here it's deleted at first modification
     let dataUpdate = {};
     if (isNew === true) {
       dataUpdate = {
@@ -171,8 +185,12 @@ export function markTodoCompleted(todo) {
 }
 
 export function deleteTodo(todo) {
-  return function (dispatch) {
+  return function (dispatch, getState) {
     dispatch(deleteTodoOptimistic(todo));
+    const { todosExtra } = getState();
+    if (todosExtra.isAnyNewTodoCount === todo.id) {
+      dispatch(todosExtraActions.dismarkNewTodoCount());
+    }
     setTimeout(() => {
       firebase
         .firestore()

@@ -48,8 +48,13 @@ class TodosLayout extends Component<Props, never> {
   };
 
   handleAddTodoSubmit = async () => {
-    if (this.props.anyTodoExist) {
-      console.log("testing");
+    if (Object.keys(this.props.anyTodoNew).length > 0) {
+      this.containerRef.current.scrollTop = 0;
+      const elementDOM = document.getElementById(
+        this.props.anyTodoNew + "textDisplayArea"
+      );
+      if (elementDOM) elementDOM.focus();
+      return;
     }
     try {
       this.props.addTodo();
@@ -120,18 +125,15 @@ TodosLayout.propTypes = {
   todoIds: PropTypes.array.isRequired,
   delTodo: PropTypes.func.isRequired,
   addTodo: PropTypes.func.isRequired,
+  anyTodoNew: PropTypes.string.isRequired,
 };
 
 export function mapStateToProps(state) {
-  let anyTodoIsNew = 0;
-  let todoIds = state.todos.map((todo) => {
-    if (todo.isNew) anyTodoIsNew++;
-    return todo.id;
-  });
+  let todoIds = state.todos.map((todo) => todo.id);
   return {
     todoIds: todoIds,
     todosExist: todoIds.length !== 0,
-    anyTodoNew: anyTodoIsNew > 0 ? true : false,
+    anyTodoNew: state.todosExtra.isAnyNewTodoCount,
   };
 }
 
