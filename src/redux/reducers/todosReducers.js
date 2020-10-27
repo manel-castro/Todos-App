@@ -4,16 +4,6 @@ import initialState from "./initialState";
 export default function todosReducer(state = initialState.todos, action) {
   switch (action.type) {
     case types.GET_TODOS_SUCCESS:
-      //trying to optimize rerenders of every todo.
-      //It should only update the key whose info has been updated
-      //Not working for now
-      // const newArray = state.map((todo) => {
-      //   return action.todos.map((aTodo) => {
-      //     if (todo.id === aTodo.id) return { ...todo, ...aTodo };
-      //     return;
-      //   });
-      // });
-      //  console.log("----SNAPSHOT: ", action.todos);
       return [...action.todos];
 
     //--- Used to manage snapshot and avoid full rerenders on all TodoItems.
@@ -72,7 +62,42 @@ export default function todosReducer(state = initialState.todos, action) {
             }
           : todo;
       });
+    case types.ADD_SUB_ITEM_SUCCESS:
+      console.log(action.subItemPath);
+      state.map((todo) => {
+        if (todo.id === action.todoId) {
+          if (action.subItemPath === false) {
+            return {
+              ...todo,
+              subItems: { ...action.todoData, ...todo.subItems },
+            };
+          } else {
+            let { subItems } = todo;
+            let newObj = subItems;
+            let level = action.subItemPath.length;
+            let interation = (obj, addItem = false, id = null) => {
+              return addItem ? { ...obj, [id]: { ...addItem } } : { ...obj };
+            };
+            action.subItemPath.forEach((item) => {
+              level--;
+              const iterationOne = iteration(newObj);
 
+              if (level === 0) {
+                newObj[item] = {
+                  ...newObj[item],
+                  ...action.todoData,
+                };
+                newObj[item] = { ...newObj[item] };
+              }
+            });
+            console.log("NEW OBJ");
+            console.log(newObj);
+            return newObj;
+          }
+        }
+      });
+      //console.log("NEW TODO REDUX IS: ", newTodo);
+      return state;
     default:
       return state;
   }

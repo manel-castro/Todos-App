@@ -27,22 +27,15 @@ function SubItemLevel({
   //  console.log(openedSubItems);
   if (level < 4) level++;
   isMaxLevel = level < 4;
-  console.log("LEVEL IS: ", level);
-  console.log("isMax", isMaxLevel);
   let inputSize = 1 - (0.8 * Math.log(level)) / 5 + "rem";
-  console.log("INPUTSIZE: ", inputSize);
   return (
     <>
       <SubItemsContainer>
         {Object.keys(childrenList)
           .sort((a, b) => {
-            console.log("SORT", a);
-            console.log(`OrderCount in ${a}`);
-            console.log(childrenList[a]);
             return childrenList[b].orderCount - childrenList[a].orderCount;
           })
           .map((key) => {
-            console.log("CHILDREN LIST: ", childrenList);
             const isSubOpened =
               openedSubItems[key] !== undefined &&
               openedSubItems[key] !== false;

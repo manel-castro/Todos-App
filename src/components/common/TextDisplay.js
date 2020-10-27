@@ -98,7 +98,7 @@ TextDisplayChild.propTypes = {
 function TextDisplay({
   todoId,
   text,
-  isNew,
+  isNew = false,
   fontSize = "16px",
   colorOff = "black",
   colorActive = "grey",

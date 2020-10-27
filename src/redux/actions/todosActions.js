@@ -55,8 +55,8 @@ export function openSubItemLevel(todoId, key, action) {
   return { type: types.OPEN_SUB_ITEM_LEVEL, todoId, key, action };
 }
 
-export function addSubItemSuccess() {
-  return { type: types.ADD_SUB_ITEM_SUCCESS };
+export function addSubItemSuccess(todoData, todoId, subItemPath) {
+  return { type: types.ADD_SUB_ITEM_SUCCESS, todoData, todoId, subItemPath };
 }
 
 export function modifySubItemSuccess() {
@@ -250,21 +250,19 @@ export const addSubItem = (
   subItemParentId = false,
   subItemText = "Edit your sub-item"
 ) => async (dispatch) => {
-  const { id } = todo;
+  const todoId = todo.id;
 
   let firebaseObjectPath = "subItems";
   let orderCount;
 
   //Set subItemPath and backEnd path
-  let subItemPath;
+  let subItemPath = false;
   if (subItemParentId) {
     subItemPath = subItemPathFunc(subItemParentId, todo);
     subItemPath.forEach((item) => {
       firebaseObjectPath = firebaseObjectPath + "." + item;
     });
   }
-
-  console.log("TODO SUB COUNTER");
 
   const getCounter = (subItemPath) => {
     let currentOrderCount = 0;
@@ -289,33 +287,39 @@ export const addSubItem = (
   } else {
     orderCount = Object.keys(todo.subItems).length + 1;
   }
-  console.log("ORDER COUNT IS: ", orderCount);
 
   let newSubItemId = uuid().substring(0, 13);
+  let localSubItemData = {
+    [newSubItemId]: {
+      title: subItemText,
+      orderCount: orderCount,
+    },
+  };
 
+  dispatch(addSubItemSuccess(localSubItemData, todoId, subItemPath));
   firebaseObjectPath = firebaseObjectPath + "." + newSubItemId;
 
   //  subItemPath = "subItems." + newSubItemId;
 
-  //.update({
-  //  "subItem.subItem2": firebase.firestore.FieldValue.delete(),
-  //})
-  await firebase
-    .firestore()
-    .collection("todos")
-    .doc(id)
-    .update({
-      [firebaseObjectPath]: {
-        title: subItemText,
-        orderCount: orderCount,
-      },
-    })
-    .then(() => {
-      dispatch(addSubItemSuccess());
-    })
-    .catch((err) => {
-      throw err;
-    });
+  // .update({
+  //   "subItem.subItem2": firebase.firestore.FieldValue.delete(),
+  // })
+  // await firebase
+  //   .firestore()
+  //   .collection("todos")
+  //   .doc(todoId)
+  //   .update({
+  //     [firebaseObjectPath]: {
+  //       title: subItemText,
+  //       orderCount: orderCount,
+  //     },
+  //   })
+  //   .then(() => {
+  //     dispatch(addSubItemSuccess());
+  //   })
+  //   .catch((err) => {
+  //     throw err;
+  //   });
 };
 
 export const modifySubItem = (todo, subItemId, subItemText) => async (
@@ -330,27 +334,24 @@ export const modifySubItem = (todo, subItemId, subItemText) => async (
     firebaseObjectPath = firebaseObjectPath + "." + item;
   });
 
-  console.log(subItemPath);
   firebaseObjectPath = firebaseObjectPath + ".title";
-
-  console.log("firebase is: ", firebaseObjectPath);
 
   //.update({
   //  "subItem.subItem2": firebase.firestore.FieldValue.delete(),
   //})
-  await firebase
-    .firestore()
-    .collection("todos")
-    .doc(id)
-    .update({
-      [firebaseObjectPath]: subItemText,
-    })
-    .then(() => {
-      dispatch(modifySubItemSuccess());
-    })
-    .catch((err) => {
-      throw err;
-    });
+  //  await firebase
+  //    .firestore()
+  //    .collection("todos")
+  //    .doc(id)
+  //    .update({
+  //      [firebaseObjectPath]: subItemText,
+  //    })
+  //    .then(() => {
+  //      dispatch(modifySubItemSuccess());
+  //    })
+  //    .catch((err) => {
+  //      throw err;
+  //    });
 };
 
 //Delete field in map firestore
@@ -367,24 +368,22 @@ export const deleteSubItem = (todo, subItemId) => async (dispatch) => {
     firebaseObjectPath = firebaseObjectPath + "." + item;
   });
 
-  console.log("localPath", subItemPath);
-
   console.log("firebase is: ", firebaseObjectPath);
 
   //.update({
   //  "subItem.subItem2": firebase.firestore.FieldValue.delete(),
   //})
-  await firebase
-    .firestore()
-    .collection("todos")
-    .doc(id)
-    .update({
-      [firebaseObjectPath]: firebase.firestore.FieldValue.delete(),
-    })
-    .then(() => {
-      dispatch(deleteSubItemSuccess());
-    })
-    .catch((err) => {
-      throw err;
-    });
+  //  await firebase
+  //    .firestore()
+  //    .collection("todos")
+  //    .doc(id)
+  //    .update({
+  //      [firebaseObjectPath]: firebase.firestore.FieldValue.delete(),
+  //    })
+  //    .then(() => {
+  //      dispatch(deleteSubItemSuccess());
+  //    })
+  //    .catch((err) => {
+  //      throw err;
+  //    });
 };

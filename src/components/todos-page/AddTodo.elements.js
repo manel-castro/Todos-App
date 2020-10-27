@@ -13,7 +13,7 @@ export const AddNoteButtonWrap = styled.div`
     todosExist === false &&
     css`
       bottom: 100px;
-      left: calc(50% - 75px);
+      left: calc(50% - 100px);
     `}
 `;
 
