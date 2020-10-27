@@ -22,7 +22,8 @@ export default function todosReducer(state = initialState.todos, action) {
       });
 
     case types.ADD_TODO_SUCCESS:
-      return [...state];
+      return [{ ...action.todo }, ...state];
+
     case types.MARK_TODO_IS_NEW:
       return state.map((todo) => {
         todo.id === action.todoId ? { ...state, isNew: true } : todo;

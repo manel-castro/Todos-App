@@ -15,8 +15,8 @@ export function modifiedTodoBackEnd(id, todo) {
   return { type: types.MODIFIED_TODO_BACK_END, id, todo };
 }
 
-export function addTodoSuccess() {
-  return { type: types.ADD_TODO_SUCCESS };
+export function addTodoSuccess(todo) {
+  return { type: types.ADD_TODO_SUCCESS, todo };
 }
 
 export function modifyTodoSuccess() {
@@ -72,60 +72,72 @@ export function getTodos() {
       .collection("todos")
       .where("userId", "==", userUid)
       .orderBy("timestamp", "desc")
-      .onSnapshot((serverUpdate) => {
-        serverUpdate.docChanges().forEach((change) => {
-          if (change.type === "modified") {
-            console.log("ALERt: ", change.doc.id, change.doc.data());
-            dispatch(modifiedTodoBackEnd(change.doc.id, change.doc.data()));
-            breaker = true;
-          }
+      .get()
+      .then((querySnapshot) => {
+        const todos = querySnapshot.docs.map((doc) => {
+          const data = doc.data();
+          data["id"] = doc.id;
+          return data;
         });
-        if (breaker) {
-          breaker = false;
-          return;
-        }
-        console.log("ALL SNAPSHOT");
-        const todos = serverUpdate.docs.map(
-          (todo) => {
-            const data = todo.data();
-            data["id"] = todo.id;
-            return data;
-          },
-          (err) => {
-            throw err;
-          }
-        );
+
+        //  .onSnapshot((serverUpdate) => {
+        //    serverUpdate.docChanges().forEach((change) => {
+        //      if (change.type === "modified") {
+        //        console.log("ALERt: ", change.doc.id, change.doc.data());
+        //        dispatch(modifiedTodoBackEnd(change.doc.id, change.doc.data()));
+        //        breaker = true;
+        //      }
+        //    });
+        //    if (breaker) {
+        //      breaker = false;
+        //      return;
+        //    }
+        //    console.log("ALL SNAPSHOT");
+        //    const todos = serverUpdate.docs.map(
+        //      (todo) => {
+        //        const data = todo.data();
+        //        data["id"] = todo.id;
+        //        return data;
+        //      },
+        //      (err) => {
+        //        throw err;
+        //      }
+        //    );
         dispatch(getTodosSuccess(todos));
       });
   };
 }
 
-export function addTodo() {
-  return function (dispatch, getState) {
-    const userUid = getState().user.uid;
-    console.log("addTodo fired");
-
-    firebase
-      .firestore()
-      .collection("todos")
-      .add({
-        title: "Enter your title here...",
-        subItems: {},
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        userId: userUid,
-        isNew: true,
-      })
-      .then((docRef) => dispatch(markTodoIsNew(docRef)))
-      .catch((err) => {
-        throw err;
-      });
-
-    //need to update store to avoid fire Snapshot.
-    dispatch(addTodoSuccess());
-
-    return;
+export const addTodo = () => async (dispatch, getState) => {
+  const userUid = getState().user.uid;
+  console.log("addTodo fired");
+  let newDocRef;
+  let newTodoData = {
+    title: "Enter your title here...",
+    subItems: {},
+    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    userId: userUid,
+    isNew: true,
   };
-}
+  await firebase
+    .firestore()
+    .collection("todos")
+    .add(newTodoData)
+    .then((docRef) => {
+      console.log("Docref is: ", docRef.id);
+      newDocRef = docRef.id;
+      newTodoData["id"] = newDocRef;
+      console.log(newTodoData);
+      dispatch(addTodoSuccess(newTodoData));
+      // dispatch(markTodoIsNew(newDocRef));
+    })
+    .catch((err) => {
+      throw err;
+    });
+  //need to update store to avoid fire Snapshot.
+
+  return;
+};
 
 export function modifyTodo(todoId, title, isNew) {
   return function (dispatch, getState) {
