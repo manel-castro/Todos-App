@@ -157,14 +157,16 @@ export const addTodo = () => async (dispatch, getState) => {
 
   firebase
     .firestore()
-    .collection("todos")
+    .collection("todoss")
     .doc(newId)
     .set(newTodoData)
     .catch((err) => {
       dispatch(deleteTodoOptimistic(newTodoLocalData));
       dispatch(todosExtraActions.dismarkNewTodoCount());
+      dispatch(callsInProgressActions.endActionCall("add todo"));
       throw err;
     });
+  dispatch(callsInProgressActions.endActionCall("add todo"));
   //need to update store to avoid fire Snapshot.
 
   return;

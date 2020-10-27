@@ -9,12 +9,14 @@ import {
   AddIcon,
   ButtonText,
 } from "./AddTodo.elements.js";
+import { Spinner } from "../../globalStyles";
 
-const AddTodo = ({ onSubmit, todosExist }) => {
+const AddTodo = ({ onSubmit, todosExist, inProgress = [] }) => {
   const [addIcon, setAddIcon] = useState(false);
   const handleMouse = (state) => {
     setAddIcon(state);
   };
+
   return (
     <AddNoteButtonWrap todosExist={todosExist}>
       {todosExist ? (
@@ -24,7 +26,13 @@ const AddTodo = ({ onSubmit, todosExist }) => {
           onMouseLeave={() => handleMouse(false)}
           onTouchStart={() => handleMouse(false)}
         >
-          {addIcon ? <AddIcon /> : <PencilIcon />}
+          {inProgress.includes("add todo") ? (
+            <Spinner fontSize="5px" size="8em" />
+          ) : addIcon ? (
+            <AddIcon />
+          ) : (
+            <PencilIcon />
+          )}
         </AddNoteButton>
       ) : (
         <LargeAddNoteButton
@@ -44,6 +52,7 @@ const AddTodo = ({ onSubmit, todosExist }) => {
 AddTodo.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   todosExist: PropTypes.bool.isRequired,
+  inProgress: PropTypes.array.isRequired,
 };
 
 export default AddTodo;

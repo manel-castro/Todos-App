@@ -95,11 +95,15 @@ class TodosLayout extends Component<Props, never> {
     }
   };
   render() {
-    const { todoIds, todosExist } = this.props;
+    const { todoIds, todosExist, inProgress } = this.props;
 
     return (
       <>
-        <AddTodo onSubmit={this.handleAddTodoSubmit} todosExist={todosExist} />
+        <AddTodo
+          onSubmit={this.handleAddTodoSubmit}
+          todosExist={todosExist}
+          inProgress={inProgress}
+        />
         <div
           ref={this.containerRef}
           style={{
@@ -135,6 +139,7 @@ export function mapStateToProps(state) {
     todoIds: todoIds,
     todosExist: todoIds.length !== 0,
     anyTodoNew: state.todosExtra.isAnyNewTodoCount,
+    inProgress: state.callsInProgress,
   };
 }
 

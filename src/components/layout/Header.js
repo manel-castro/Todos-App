@@ -8,15 +8,15 @@ import { deleteAllTodos } from "../../redux/actions/todosActions";
 const Header = ({ userLogout, loggedIn, deleteAllTodos }) => {
   return (
     <StyledHeader>
-      <Title>TodoList</Title>
+      <Title>mindTree</Title>
       <NavBar>
         {loggedIn ? (
           <>
             <StyledLink onClick={userLogout} to="/">
               Logout
             </StyledLink>
-            <>{"  "}</>
-            <p onClick={() => deleteAllTodos()}>Delete All</p>
+            {/* <>{"  "}</>
+						<p onClick={() => deleteAllTodos()}>Delete All</p>*/}
           </>
         ) : null}
       </NavBar>
