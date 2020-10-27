@@ -3,8 +3,9 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { StyledHeader, Title, NavBar, StyledLink } from "./Header.elements";
 import { userLogout } from "../../redux/actions/userActions";
+import { deleteAllTodos } from "../../redux/actions/todosActions";
 
-const Header = ({ userLogout, loggedIn }) => {
+const Header = ({ userLogout, loggedIn, deleteAllTodos }) => {
   return (
     <StyledHeader>
       <Title>TodoList</Title>
@@ -14,6 +15,8 @@ const Header = ({ userLogout, loggedIn }) => {
             <StyledLink onClick={userLogout} to="/">
               Logout
             </StyledLink>
+            <>{"  "}</>
+            <p onClick={() => deleteAllTodos()}>Delete All</p>
           </>
         ) : null}
       </NavBar>
@@ -34,6 +37,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   userLogout: userLogout,
+  deleteAllTodos: deleteAllTodos,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

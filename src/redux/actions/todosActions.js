@@ -3,28 +3,36 @@ import "firebase/firestore";
 
 import * as types from "./actionTypes";
 import * as todosExtraActions from "./todosExtraActions";
+import * as callsInProgressActions from "./callsInProgressActions";
 
 import { v4 as uuid } from "uuid";
 import { subItemPath as subItemPathFunc } from "../redux-helpers/subItemPath";
 
+//DEVELOPMENT ACTIONS
+export function deleteAllTodosSuccess() {
+  return { type: types.DELETE_ALL_TODOS_SUCCESS };
+}
+
+// ----------------
 export function getTodosSuccess(todos) {
   return { type: types.GET_TODOS_SUCCESS, todos };
 }
 
-export function modifiedTodoBackEnd(id, todo) {
-  return { type: types.MODIFIED_TODO_BACK_END, id, todo };
-}
+//USED TO MANAGE FIREBASE ON SNAPSHOT, TO AVOID RERENDERING FULL INDIVIDUAL ITEMS
+//export function modifiedTodoBackEnd(id, todo) {
+//  return { type: types.MODIFIED_TODO_BACK_END, id, todo };
+//}
 
 export function addTodoSuccess(todo) {
   return { type: types.ADD_TODO_SUCCESS, todo };
 }
 
-export function modifyTodoSuccess() {
-  return { type: types.MODIFY_TODO_SUCCESS };
+export function modifyTodoSuccess(dataUpdate, todoId, isNew) {
+  return { type: types.MODIFY_TODO_SUCCESS, dataUpdate, todoId, isNew };
 }
 
-export function markTodoIsNew(todoId) {
-  return { type: types.MARK_TODO_IS_NEW, todoId };
+export function markTodoIsNewSuccess(todoId) {
+  return { type: types.MARK_TODO_IS_NEW_SUCCESS, todoId };
 }
 
 export function dismarkTodoIsNew(todoId) {
@@ -61,6 +69,23 @@ export function deleteSubItemSuccess() {
 
 //
 //THUNKS
+
+//Development thunks...
+export function deleteAllTodos() {
+  return function (dispatch, getState) {
+    const { todos } = getState();
+    todos.forEach((todo) => {
+      dispatch(deleteTodo(todo));
+    });
+  };
+}
+//---------------
+export const markTodoIsNew = (todoId) => (dispatch, getState) => {
+  const { todosExtra } = getState();
+
+  if (todosExtra.isAnyNewTodoCount.length > 0) return;
+  dispatch(markTodoIsNewSuccess(todoId));
+};
 
 export function getTodos() {
   return function (dispatch, getState) {
@@ -109,9 +134,14 @@ export function getTodos() {
 }
 
 export const addTodo = () => async (dispatch, getState) => {
+  dispatch(callsInProgressActions.startActionCall("add todo"));
+  const { todosExtra } = getState();
+  if (todosExtra.isAnyNewTodoCount.length > 0) {
+    console.log(todosExtra.isAnyNewTodoCount.length);
+    /// END API CALL
+    throw "Todo already created.";
+  }
   const userUid = getState().user.uid;
-  console.log("addTodo fired");
-  let newDocRef;
   let newTodoData = {
     title: "Enter your title here...",
     subItems: {},
@@ -119,19 +149,20 @@ export const addTodo = () => async (dispatch, getState) => {
     userId: userUid,
     isNew: true,
   };
-  await firebase
+  let newTodoLocalData = newTodoData;
+  console.log("TODO ADDED");
+  let newId = uuid().substring(0, 11);
+  newTodoLocalData["id"] = newId;
+  dispatch(addTodoSuccess(newTodoLocalData));
+
+  firebase
     .firestore()
     .collection("todos")
-    .add(newTodoData)
-    .then((docRef) => {
-      console.log("Docref is: ", docRef.id);
-      newDocRef = docRef.id;
-      newTodoData["id"] = newDocRef;
-      console.log(newTodoData);
-      dispatch(addTodoSuccess(newTodoData));
-      // dispatch(markTodoIsNew(newDocRef));
-    })
+    .doc(newId)
+    .set(newTodoData)
     .catch((err) => {
+      dispatch(deleteTodoOptimistic(newTodoLocalData));
+      dispatch(todosExtraActions.dismarkNewTodoCount());
       throw err;
     });
   //need to update store to avoid fire Snapshot.
@@ -139,41 +170,39 @@ export const addTodo = () => async (dispatch, getState) => {
   return;
 };
 
-export function modifyTodo(todoId, title, isNew) {
-  return function (dispatch, getState) {
-    //const userUid = getState().user.uid;
-    const { todosExtra } = getState();
-    if (todosExtra.isAnyNewTodoCount === todoId) {
-      dispatch(todosExtraActions.dismarkNewTodoCount());
-    }
-    //The next code is made to handle the property of New in each TODO document. which only exist when it's created, and then here it's deleted at first modification
-    let dataUpdate = {};
-    if (isNew === true) {
-      dataUpdate = {
-        isNew: firebase.firestore.FieldValue.delete(),
-        title: title,
-      };
-    } else {
-      dataUpdate = {
-        title: title,
-      };
-    }
-    console.log(dataUpdate);
+export const modifyTodo = (todoId, title, isNew = false) => async (
+  dispatch,
+  getState
+) => {
+  const { todosExtra } = getState();
+  if (todosExtra.isAnyNewTodoCount === todoId) {
+    dispatch(todosExtraActions.dismarkNewTodoCount());
+  }
+  //const userUid = getState().user.uid;
+  //The next code is made to handle the property of New in each TODO document. which only exist when it's created, and then here it's deleted at first modification
+  let dataUpdate = {};
+  if (isNew === true) {
+    dataUpdate = {
+      isNew: firebase.firestore.FieldValue.delete(),
+      title: title,
+    };
+  } else {
+    dataUpdate = {
+      title: title,
+    };
+  }
 
-    firebase
-      .firestore()
-      .collection("todos")
-      .doc(todoId)
-      .update(dataUpdate)
-      .catch((err) => {
-        throw err;
-      });
-    //need to update store to avoid fire Snapshot.
-    dispatch(modifyTodoSuccess());
-
-    return;
-  };
-}
+  firebase
+    .firestore()
+    .collection("todos")
+    .doc(todoId)
+    .update(dataUpdate)
+    .catch((err) => {
+      throw err;
+    });
+  //need to update store to avoid fire Snapshot.
+  await dispatch(modifyTodoSuccess(title, todoId, isNew));
+};
 
 //DEPRECATED potentially useful for labeling
 {
@@ -203,16 +232,14 @@ export function deleteTodo(todo) {
     if (todosExtra.isAnyNewTodoCount === todo.id) {
       dispatch(todosExtraActions.dismarkNewTodoCount());
     }
-    setTimeout(() => {
-      firebase
-        .firestore()
-        .collection("todos")
-        .doc(todo.id)
-        .delete()
-        .catch((err) => {
-          throw err;
-        });
-    }, 2000);
+    firebase
+      .firestore()
+      .collection("todos")
+      .doc(todo.id)
+      .delete()
+      .catch((err) => {
+        throw err;
+      });
   };
 }
 

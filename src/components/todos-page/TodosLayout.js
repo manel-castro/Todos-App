@@ -48,20 +48,21 @@ class TodosLayout extends Component<Props, never> {
   };
 
   handleAddTodoSubmit = async () => {
-    if (Object.keys(this.props.anyTodoNew).length > 0) {
-      this.containerRef.current.scrollTop = 0;
+    this.containerRef.current.scrollTop = 0;
+    if (this.props.anyTodoNew.length > 0) {
+      console.log("ANY TODO NEW", this.props.anyTodoNew);
       const elementDOM = document.getElementById(
         this.props.anyTodoNew + "textDisplayArea"
       );
       if (elementDOM) elementDOM.focus();
       return;
+    } else {
+      try {
+        this.props.addTodo();
+      } catch (err) {
+        console.log("addTodo failed", err);
+      }
     }
-    try {
-      this.props.addTodo();
-    } catch (err) {
-      console.log("addTodo failed", err);
-    }
-    this.containerRef.current.scrollTop = 0;
   };
 
   handleChangeTodo = async (todoId, title, isNew) => {

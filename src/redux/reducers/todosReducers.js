@@ -16,15 +16,31 @@ export default function todosReducer(state = initialState.todos, action) {
       //  console.log("----SNAPSHOT: ", action.todos);
       return [...action.todos];
 
-    case types.MODIFIED_TODO_BACK_END:
+    //--- Used to manage snapshot and avoid full rerenders on all TodoItems.
+    // case types.MODIFIED_TODO_BACK_END:
+    //   return state.map((todo) => {
+    //     return todo.id === action.id ? { ...todo, ...action.todo } : todo;
+    //   });
+    case types.MODIFY_TODO_SUCCESS:
       return state.map((todo) => {
-        return todo.id === action.id ? { ...todo, ...action.todo } : todo;
+        if (todo.id === action.todoId) {
+          if (action.isNew) {
+            const { isNew, ...rest } = todo;
+            console.log("HERE IS");
+            console.log({ ...rest });
+            return { ...rest, title: action.dataUpdate };
+          } else {
+            return { ...todo, title: action.dataUpdate };
+          }
+        } else {
+          return todo;
+        }
       });
 
     case types.ADD_TODO_SUCCESS:
       return [{ ...action.todo }, ...state];
 
-    case types.MARK_TODO_IS_NEW:
+    case types.MARK_TODO_IS_NEW_SUCCESS:
       return state.map((todo) => {
         todo.id === action.todoId ? { ...state, isNew: true } : todo;
       });

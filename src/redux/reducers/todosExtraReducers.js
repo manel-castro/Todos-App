@@ -1,7 +1,7 @@
 import * as types from "../actions/actionTypes";
 import initialState from "./initialState";
 
-export default function todosExtraReducer(
+export default function todosExtraReducers(
   state = initialState.todosExtra,
   action
 ) {

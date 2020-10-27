@@ -7,7 +7,7 @@ process.env.NODE_ENV = "development"; //this is important for babel to know that
 module.exports = {
   mode: "development",
   target: "web",
-  devtool: "cheap-module-source-map", //this lets us see the original code that we wrote in the browser
+  devtool: "source-map",
   entry: "./src/index",
   output: {
     path: path.resolve(__dirname, "build"),

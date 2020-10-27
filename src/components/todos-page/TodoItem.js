@@ -14,7 +14,14 @@ import TextDisplay from "../common/TextDisplay";
 export class TodoItem extends PureComponent {
   componentDidMount() {
     console.log("TODO ITEM RERENDERED");
+    if (this.state.isNew) {
+      this.props.markNewTodoCount(this.props.todo.id);
+      //isNew = todo.isNew;
+    }
   }
+  state = {
+    isNew: this.props.todo.isNew,
+  };
   render() {
     const {
       todo,
@@ -24,20 +31,13 @@ export class TodoItem extends PureComponent {
       markNewTodoCount,
     } = this.props;
 
-    let isNew = false;
-    if (todo.isNew) {
-      markNewTodoCount(todo.id);
-      isNew = todo.isNew;
-    } else {
-      isNew = false;
-    }
     return (
       <TodoItemWrap>
         <TodoTitleWrap>
           <div style={{ cursor: "pointer", width: "100%" }}>
             <TextDisplay
               text={todo.title}
-              isNew={isNew}
+              isNew={this.state.isNew}
               fontSize={"20px"}
               getNewValue={getNewValue}
               todoId={todo.id}

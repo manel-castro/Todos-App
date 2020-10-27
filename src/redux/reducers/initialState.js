@@ -10,4 +10,5 @@ export default {
   colors: {
     darkgrey: "#333",
   },
+  callsInProgress: [],
 };
