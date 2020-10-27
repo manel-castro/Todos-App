@@ -157,7 +157,7 @@ export const addTodo = () => async (dispatch, getState) => {
 
   firebase
     .firestore()
-    .collection("todoss")
+    .collection("todos")
     .doc(newId)
     .set(newTodoData)
     .catch((err) => {

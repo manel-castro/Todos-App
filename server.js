@@ -8,5 +8,5 @@ app.use(express.static(__dirname + "/build"));
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "index.html"));
 });
-app.listen(port);
+app.listen(port, "192.168.1.42");
 console.log("Listening on port ", port);
