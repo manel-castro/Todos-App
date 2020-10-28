@@ -1,3 +1,6 @@
+// THIS DOCUMENT HAS OBJECT MANAGERS AND MODIFIERS.
+//
+//	- Normally is necessary to deep-clone the objects. The fastest package at this moment is: "rfdc"
 export const subItemPath = (subItemId, todo) => {
   const { subItems } = todo;
   const path = [];
@@ -28,7 +31,7 @@ export const subItemPath = (subItemId, todo) => {
   return path;
 };
 
-export const modifyAndReturnAllObj = (obj, path, changeToMake) => {
+export const modifyAndReturnAllObj = (obj, path, newItemId, newItemData) => {
   let currentNode = path[0];
   let localPath = [...path];
   if (localPath.length > 0) {
@@ -36,7 +39,8 @@ export const modifyAndReturnAllObj = (obj, path, changeToMake) => {
     const final = modifyAndReturnAllObj(
       obj[currentNode],
       localPath,
-      changeToMake
+      newItemId,
+      newItemData
     );
     if (localPath.length === 0) {
       obj[currentNode] = final;
@@ -44,6 +48,10 @@ export const modifyAndReturnAllObj = (obj, path, changeToMake) => {
     }
     return obj;
   } else {
-    return { ...obj, ...changeToMake };
+    if (obj[newItemId] === undefined) {
+      return { ...obj, [newItemId]: { ...newItemData } };
+    } else {
+      return { ...obj[newItemId], ...newItemData };
+    }
   }
 };

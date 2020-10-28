@@ -78,10 +78,13 @@ export default function todosReducer(state = initialState.todos, action) {
             };
           } else {
             const funcSubItems = clone(todo.subItems); // very important to use clone on deeply nested objects, to avoid keep references beyond the first level.
+            const newItemId = Object.keys(action.todoData)[0];
+            const newItemData = action.todoData[newItemId];
             let newSubItems = modifyAndReturnAllObj(
               funcSubItems,
               action.subItemPath,
-              action.todoData
+              newItemData,
+              newItemId
             );
             return {
               ...todo,
@@ -92,21 +95,34 @@ export default function todosReducer(state = initialState.todos, action) {
       });
     }
     case types.MODIFY_SUB_ITEM_SUCCESS: {
+      console.log("ISNESTED", action.isDeepNested);
+      console.log("SUBITEM PATH FROM REDUCER: ", action.subItemPath);
+      const todoData = action.todoData;
       return state.map((todo) => {
+        const subItemId = Object.keys(todoData)[0];
         if (todo.id !== action.todoId) {
           return todo;
         } else {
           if (action.isDeepNested === false) {
             return {
               ...todo,
-              subItems: { ...action.todoData, ...todo.subItems },
+              subItems: {
+                ...todo.subItems,
+                [subItemId]: {
+                  ...todo.subItems[subItemId],
+                  ...action.todoData[subItemId],
+                },
+              },
             };
           } else {
             const funcSubItems = clone(todo.subItems); // very important to use clone on deeply nested objects, to avoid keep references beyond the first level.
+            const newItemId = Object.keys(action.todoData)[0];
+            const newItemData = action.todoData[newItemId];
             let newSubItems = modifyAndReturnAllObj(
               funcSubItems,
               action.subItemPath,
-              action.todoData
+              newItemId,
+              newItemData
             );
             return {
               ...todo,

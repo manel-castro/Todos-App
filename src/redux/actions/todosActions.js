@@ -72,7 +72,7 @@ export function modifySubItemSuccess(
   isDeepNested
 ) {
   return {
-    type: types.ADD_SUB_ITEM_SUCCESS,
+    type: types.MODIFY_SUB_ITEM_SUCCESS,
     todoData,
     todoId,
     subItemPath,
@@ -362,8 +362,12 @@ export const modifySubItem = (todo, subItemId, subItemText) => async (
       title: subItemText,
     },
   };
+  console.log("SUB ITEM PATH FROM MODIFY", subItemPath);
   let isDeepNested = false;
-  if (subItemPath.length > 0) isDeepNested = true;
+  subItemPath.pop();
+  if (subItemPath.length > 0) {
+    isDeepNested = true;
+  }
   dispatch(modifySubItemSuccess(todoData, id, subItemPath, isDeepNested));
 
   //.update({
