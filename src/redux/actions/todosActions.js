@@ -55,12 +55,29 @@ export function openSubItemLevel(todoId, key, action) {
   return { type: types.OPEN_SUB_ITEM_LEVEL, todoId, key, action };
 }
 
-export function addSubItemSuccess(todoData, todoId, subItemPath) {
-  return { type: types.ADD_SUB_ITEM_SUCCESS, todoData, todoId, subItemPath };
+export function addSubItemSuccess(todoData, todoId, subItemPath, isDeepNested) {
+  return {
+    type: types.ADD_SUB_ITEM_SUCCESS,
+    todoData,
+    todoId,
+    subItemPath,
+    isDeepNested,
+  };
 }
 
-export function modifySubItemSuccess() {
-  return { type: types.MODIFY_SUB_ITEM_SUCCESS };
+export function modifySubItemSuccess(
+  todoData,
+  todoId,
+  subItemPath,
+  isDeepNested
+) {
+  return {
+    type: types.ADD_SUB_ITEM_SUCCESS,
+    todoData,
+    todoId,
+    subItemPath,
+    isDeepNested,
+  };
 }
 
 export function deleteSubItemSuccess() {
@@ -256,8 +273,10 @@ export const addSubItem = (
   let orderCount;
 
   //Set subItemPath and backEnd path
-  let subItemPath = false;
+  let subItemPath = {};
+  let isDeepNested = false;
   if (subItemParentId) {
+    isDeepNested = true;
     subItemPath = subItemPathFunc(subItemParentId, todo);
     subItemPath.forEach((item) => {
       firebaseObjectPath = firebaseObjectPath + "." + item;
@@ -296,7 +315,9 @@ export const addSubItem = (
     },
   };
 
-  dispatch(addSubItemSuccess(localSubItemData, todoId, subItemPath));
+  dispatch(
+    addSubItemSuccess(localSubItemData, todoId, subItemPath, isDeepNested)
+  );
   firebaseObjectPath = firebaseObjectPath + "." + newSubItemId;
 
   //  subItemPath = "subItems." + newSubItemId;
@@ -330,11 +351,20 @@ export const modifySubItem = (todo, subItemId, subItemText) => async (
   let firebaseObjectPath = "subItems";
 
   const subItemPath = subItemPathFunc(subItemId, todo);
+
   subItemPath.forEach((item) => {
     firebaseObjectPath = firebaseObjectPath + "." + item;
   });
 
   firebaseObjectPath = firebaseObjectPath + ".title";
+  const todoData = {
+    [subItemId]: {
+      title: subItemText,
+    },
+  };
+  let isDeepNested = false;
+  if (subItemPath.length > 0) isDeepNested = true;
+  dispatch(modifySubItemSuccess(todoData, id, subItemPath, isDeepNested));
 
   //.update({
   //  "subItem.subItem2": firebase.firestore.FieldValue.delete(),

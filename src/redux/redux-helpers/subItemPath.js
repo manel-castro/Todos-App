@@ -44,6 +44,6 @@ export const modifyAndReturnAllObj = (obj, path, changeToMake) => {
     }
     return obj;
   } else {
-    return { ...changeToMake, ...obj };
+    return { ...obj, ...changeToMake };
   }
 };

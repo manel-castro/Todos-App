@@ -1,6 +1,7 @@
 import * as types from "../actions/actionTypes";
 import initialState from "./initialState";
 import { modifyAndReturnAllObj } from "../redux-helpers/subItemPath";
+const clone = require("rfdc")();
 
 export default function todosReducer(state = initialState.todos, action) {
   switch (action.type) {
@@ -29,6 +30,8 @@ export default function todosReducer(state = initialState.todos, action) {
       });
 
     case types.ADD_TODO_SUCCESS:
+      console.log("ACTION.TODO ADD TODO: ", { ...action.todo });
+      console.log("STATE: ", ...state);
       return [{ ...action.todo }, ...state];
 
     case types.MARK_TODO_IS_NEW_SUCCESS:
@@ -63,39 +66,56 @@ export default function todosReducer(state = initialState.todos, action) {
             }
           : todo;
       });
-    case types.ADD_SUB_ITEM_SUCCESS:
-      console.log(action.subItemPath);
+    case types.ADD_SUB_ITEM_SUCCESS: {
       return state.map((todo) => {
         if (todo.id !== action.todoId) {
           return todo;
         } else {
-          if (action.subItemPath === false) {
+          if (action.isDeepNested === false) {
             return {
               ...todo,
               subItems: { ...action.todoData, ...todo.subItems },
             };
           } else {
-            const funcItemPath = [...action.subItemPath];
-            const funcSubItems = todo.subItems;
-            const funcTodoData = { ...action.todoData };
-            const newSubItems = Object.assign(
-              {},
-              modifyAndReturnAllObj(funcSubItems, funcItemPath, funcTodoData)
+            const funcSubItems = clone(todo.subItems); // very important to use clone on deeply nested objects, to avoid keep references beyond the first level.
+            let newSubItems = modifyAndReturnAllObj(
+              funcSubItems,
+              action.subItemPath,
+              action.todoData
             );
-            const reduxFailure = { ...newSubItems[action.subItemPath[0]] };
-            console.log("subItempath", action.subItemPath[0]);
-            console.log("newsubitems: ", newSubItems);
-            console.log("redux: ", reduxFailure);
             return {
               ...todo,
-              subItems: {
-                ...newSubItems,
-                ...todo.subItems,
-              },
+              subItems: { ...newSubItems },
             };
           }
         }
       });
+    }
+    case types.MODIFY_SUB_ITEM_SUCCESS: {
+      return state.map((todo) => {
+        if (todo.id !== action.todoId) {
+          return todo;
+        } else {
+          if (action.isDeepNested === false) {
+            return {
+              ...todo,
+              subItems: { ...action.todoData, ...todo.subItems },
+            };
+          } else {
+            const funcSubItems = clone(todo.subItems); // very important to use clone on deeply nested objects, to avoid keep references beyond the first level.
+            let newSubItems = modifyAndReturnAllObj(
+              funcSubItems,
+              action.subItemPath,
+              action.todoData
+            );
+            return {
+              ...todo,
+              subItems: { ...newSubItems },
+            };
+          }
+        }
+      });
+    }
     default:
       return state;
   }
