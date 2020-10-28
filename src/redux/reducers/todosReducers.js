@@ -1,5 +1,6 @@
 import * as types from "../actions/actionTypes";
 import initialState from "./initialState";
+import { modifyAndReturnAllObj } from "../redux-helpers/subItemPath";
 
 export default function todosReducer(state = initialState.todos, action) {
   switch (action.type) {
@@ -64,40 +65,37 @@ export default function todosReducer(state = initialState.todos, action) {
       });
     case types.ADD_SUB_ITEM_SUCCESS:
       console.log(action.subItemPath);
-      state.map((todo) => {
-        if (todo.id === action.todoId) {
+      return state.map((todo) => {
+        if (todo.id !== action.todoId) {
+          return todo;
+        } else {
           if (action.subItemPath === false) {
             return {
               ...todo,
               subItems: { ...action.todoData, ...todo.subItems },
             };
           } else {
-            let { subItems } = todo;
-            let newObj = subItems;
-            let level = action.subItemPath.length;
-            let interation = (obj, addItem = false, id = null) => {
-              return addItem ? { ...obj, [id]: { ...addItem } } : { ...obj };
+            const funcItemPath = [...action.subItemPath];
+            const funcSubItems = todo.subItems;
+            const funcTodoData = { ...action.todoData };
+            const newSubItems = Object.assign(
+              {},
+              modifyAndReturnAllObj(funcSubItems, funcItemPath, funcTodoData)
+            );
+            const reduxFailure = { ...newSubItems[action.subItemPath[0]] };
+            console.log("subItempath", action.subItemPath[0]);
+            console.log("newsubitems: ", newSubItems);
+            console.log("redux: ", reduxFailure);
+            return {
+              ...todo,
+              subItems: {
+                ...newSubItems,
+                ...todo.subItems,
+              },
             };
-            action.subItemPath.forEach((item) => {
-              level--;
-              const iterationOne = iteration(newObj);
-
-              if (level === 0) {
-                newObj[item] = {
-                  ...newObj[item],
-                  ...action.todoData,
-                };
-                newObj[item] = { ...newObj[item] };
-              }
-            });
-            console.log("NEW OBJ");
-            console.log(newObj);
-            return newObj;
           }
         }
       });
-      //console.log("NEW TODO REDUX IS: ", newTodo);
-      return state;
     default:
       return state;
   }

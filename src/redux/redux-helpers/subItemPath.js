@@ -27,3 +27,23 @@ export const subItemPath = (subItemId, todo) => {
   path.push(subItemId);
   return path;
 };
+
+export const modifyAndReturnAllObj = (obj, path, changeToMake) => {
+  let currentNode = path[0];
+  let localPath = [...path];
+  if (localPath.length > 0) {
+    localPath = localPath.slice(1, localPath.length);
+    const final = modifyAndReturnAllObj(
+      obj[currentNode],
+      localPath,
+      changeToMake
+    );
+    if (localPath.length === 0) {
+      obj[currentNode] = final;
+      localPath[0] = "";
+    }
+    return obj;
+  } else {
+    return { ...changeToMake, ...obj };
+  }
+};
