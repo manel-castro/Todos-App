@@ -8,7 +8,7 @@ export const SubItemLayoutExpandedWrap = styled.div`
   padding-left: 5px;
   margin-top: -0.3rem;
   margin-bottom: 0.7rem;
-  padding-top: 15px;
+  padding-top: 0px;
 
   @media screen and (max-width: 500px) {
     margin-top: -1rem;

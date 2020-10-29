@@ -321,23 +321,23 @@ export const addSubItem = (
   );
   firebaseObjectPath = firebaseObjectPath + "." + newSubItemId;
 
-  //  await firebase
-  //    .firestore()
-  //    .collection("todos")
-  //    .doc(todoId)
-  //    .update({
-  //      [firebaseObjectPath]: {
-  //        title: subItemText,
-  //        orderCount: orderCount,
-  //      },
-  //    })
-  //    .then(() => {
-  //      // STop api call redux
-  //    })
-  //    .catch((err) => {
-  //      // throw errors redux
-  //      throw err;
-  //    });
+  await firebase
+    .firestore()
+    .collection("todos")
+    .doc(todoId)
+    .update({
+      [firebaseObjectPath]: {
+        title: subItemText,
+        orderCount: orderCount,
+      },
+    })
+    .then(() => {
+      // STop api call redux
+    })
+    .catch((err) => {
+      // throw errors redux
+      throw err;
+    });
 };
 
 export const modifySubItem = (todo, subItemId, subItemText) => async (
@@ -366,20 +366,20 @@ export const modifySubItem = (todo, subItemId, subItemText) => async (
   }
   dispatch(modifySubItemSuccess(todoData, id, subItemPath, isDeepNested));
 
-  //  await firebase
-  //    .firestore()
-  //    .collection("todos")
-  //    .doc(id)
-  //    .update({
-  //      [firebaseObjectPath]: subItemText,
-  //    })
-  //    .then(() => {
-  //      // Stop api call redux
-  //    })
-  //    .catch((err) => {
-  //      // throw error redux
-  //      throw err;
-  //    });
+  await firebase
+    .firestore()
+    .collection("todos")
+    .doc(id)
+    .update({
+      [firebaseObjectPath]: subItemText,
+    })
+    .then(() => {
+      // Stop api call redux
+    })
+    .catch((err) => {
+      // throw error redux
+      throw err;
+    });
 };
 
 export const deleteSubItem = (todo, subItemId) => async (dispatch) => {
@@ -400,18 +400,18 @@ export const deleteSubItem = (todo, subItemId) => async (dispatch) => {
   //.update({
   //  "subItem.subItem2": firebase.firestore.FieldValue.delete(),
   //})
-  //  await firebase
-  //    .firestore()
-  //    .collection("todos")
-  //    .doc(id)
-  //    .update({
-  //      [firebaseObjectPath]: firebase.firestore.FieldValue.delete(),
-  //    })
-  //    .then(() => {
-  //      // Stop api call redux
-  //    })
-  //    .catch((err) => {
-  //      //Throw error redux
-  //      throw err;
-  //    });
+  await firebase
+    .firestore()
+    .collection("todos")
+    .doc(id)
+    .update({
+      [firebaseObjectPath]: firebase.firestore.FieldValue.delete(),
+    })
+    .then(() => {
+      // Stop api call redux
+    })
+    .catch((err) => {
+      //Throw error redux
+      throw err;
+    });
 };
