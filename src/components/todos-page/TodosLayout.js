@@ -101,7 +101,7 @@ class TodosLayout extends Component<Props, never> {
         <div
           ref={this.containerRef}
           style={{
-            overflowY: "scroll",
+            overflowY: "auto",
             marginBottom: "5px",
             paddingBottom: "70px",
           }}
