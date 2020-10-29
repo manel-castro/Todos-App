@@ -80,10 +80,14 @@ export function modifySubItemSuccess(
   };
 }
 
-export function deleteSubItemSuccess() {
-  return { type: types.DELETE_SUB_ITEM_SUCCESS };
+export function deleteSubItemSuccess(todoId, subItemPath, isDeepNested) {
+  return {
+    type: types.DELETE_SUB_ITEM_SUCCESS,
+    todoId,
+    subItemPath,
+    isDeepNested,
+  };
 }
-
 //
 //THUNKS
 
@@ -107,7 +111,6 @@ export const markTodoIsNew = (todoId) => (dispatch, getState) => {
 export function getTodos() {
   return function (dispatch, getState) {
     const userUid = getState().user.uid;
-    console.log("todos getted");
     firebase
       .firestore()
       .collection("todos")
@@ -153,7 +156,6 @@ export const addTodo = () => async (dispatch, getState) => {
   dispatch(callsInProgressActions.startActionCall("add todo"));
   const { todosExtra } = getState();
   if (todosExtra.isAnyNewTodoCount.length > 0) {
-    console.log(todosExtra.isAnyNewTodoCount.length);
     /// END API CALL
     throw "Todo already created.";
   }
@@ -166,7 +168,6 @@ export const addTodo = () => async (dispatch, getState) => {
     isNew: true,
   };
   let newTodoLocalData = newTodoData;
-  console.log("TODO ADDED");
   let newId = uuid().substring(0, 11);
   newTodoLocalData["id"] = newId;
   dispatch(addTodoSuccess(newTodoLocalData));
@@ -209,7 +210,7 @@ export const modifyTodo = (todoId, title, isNew = false) => async (
       title: title,
     };
   }
-
+  /// ------------
   firebase
     .firestore()
     .collection("todos")
@@ -319,27 +320,23 @@ export const addSubItem = (
   );
   firebaseObjectPath = firebaseObjectPath + "." + newSubItemId;
 
-  //  subItemPath = "subItems." + newSubItemId;
-
-  // .update({
-  //   "subItem.subItem2": firebase.firestore.FieldValue.delete(),
-  // })
-  // await firebase
-  //   .firestore()
-  //   .collection("todos")
-  //   .doc(todoId)
-  //   .update({
-  //     [firebaseObjectPath]: {
-  //       title: subItemText,
-  //       orderCount: orderCount,
-  //     },
-  //   })
-  //   .then(() => {
-  //     dispatch(addSubItemSuccess());
-  //   })
-  //   .catch((err) => {
-  //     throw err;
-  //   });
+  await firebase
+    .firestore()
+    .collection("todos")
+    .doc(todoId)
+    .update({
+      [firebaseObjectPath]: {
+        title: subItemText,
+        orderCount: orderCount,
+      },
+    })
+    .then(() => {
+      // STop api call redux
+    })
+    .catch((err) => {
+      // throw errors redux
+      throw err;
+    });
 };
 
 export const modifySubItem = (todo, subItemId, subItemText) => async (
@@ -361,35 +358,28 @@ export const modifySubItem = (todo, subItemId, subItemText) => async (
       title: subItemText,
     },
   };
-  console.log("SUB ITEM PATH FROM MODIFY", subItemPath);
   let isDeepNested = false;
-  subItemPath.pop();
-  if (subItemPath.length > 0) {
+
+  if (subItemPath.length - 1 > 0) {
     isDeepNested = true;
   }
   dispatch(modifySubItemSuccess(todoData, id, subItemPath, isDeepNested));
 
-  //.update({
-  //  "subItem.subItem2": firebase.firestore.FieldValue.delete(),
-  //})
-  //  await firebase
-  //    .firestore()
-  //    .collection("todos")
-  //    .doc(id)
-  //    .update({
-  //      [firebaseObjectPath]: subItemText,
-  //    })
-  //    .then(() => {
-  //      dispatch(modifySubItemSuccess());
-  //    })
-  //    .catch((err) => {
-  //      throw err;
-  //    });
+  await firebase
+    .firestore()
+    .collection("todos")
+    .doc(id)
+    .update({
+      [firebaseObjectPath]: subItemText,
+    })
+    .then(() => {
+      // Stop api call redux
+    })
+    .catch((err) => {
+      // throw error redux
+      throw err;
+    });
 };
-
-//Delete field in map firestore
-//.update({
-//})
 
 export const deleteSubItem = (todo, subItemId) => async (dispatch) => {
   const { id } = todo;
@@ -400,23 +390,28 @@ export const deleteSubItem = (todo, subItemId) => async (dispatch) => {
   subItemPath.forEach((item) => {
     firebaseObjectPath = firebaseObjectPath + "." + item;
   });
+  console.log("SUBITEM PATH ON DELETE: ", subItemPath);
 
-  console.log("firebase is: ", firebaseObjectPath);
+  let isDeepNested = false;
+  if (subItemPath.length > 1) isDeepNested = true;
+
+  dispatch(deleteSubItemSuccess(id, subItemPath, isDeepNested));
 
   //.update({
   //  "subItem.subItem2": firebase.firestore.FieldValue.delete(),
   //})
-  //  await firebase
-  //    .firestore()
-  //    .collection("todos")
-  //    .doc(id)
-  //    .update({
-  //      [firebaseObjectPath]: firebase.firestore.FieldValue.delete(),
-  //    })
-  //    .then(() => {
-  //      dispatch(deleteSubItemSuccess());
-  //    })
-  //    .catch((err) => {
-  //      throw err;
-  //    });
+  await firebase
+    .firestore()
+    .collection("todos")
+    .doc(id)
+    .update({
+      [firebaseObjectPath]: firebase.firestore.FieldValue.delete(),
+    })
+    .then(() => {
+      // Stop api call redux
+    })
+    .catch((err) => {
+      //Throw error redux
+      throw err;
+    });
 };

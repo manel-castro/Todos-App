@@ -1,7 +1,11 @@
 import * as types from "../actions/actionTypes";
 import initialState from "./initialState";
-import { modifyAndReturnAllObj } from "../redux-helpers/subItemPath";
-const clone = require("rfdc")();
+import {
+  modifyPropertyAndReturnAllObj,
+  addObjAndReturnAllObj,
+  deleteObjAndReturnAllObj,
+} from "../redux-helpers/subItemPath";
+const clone = require("rfdc")(); // very important libary to fast clonning deep nested objects. Important to preserve inmutability. Common operators do shallow-copies.
 
 export default function todosReducer(state = initialState.todos, action) {
   switch (action.type) {
@@ -18,8 +22,6 @@ export default function todosReducer(state = initialState.todos, action) {
         if (todo.id === action.todoId) {
           if (action.isNew) {
             const { isNew, ...rest } = todo;
-            console.log("HERE IS");
-            console.log({ ...rest });
             return { ...rest, title: action.dataUpdate };
           } else {
             return { ...todo, title: action.dataUpdate };
@@ -30,8 +32,6 @@ export default function todosReducer(state = initialState.todos, action) {
       });
 
     case types.ADD_TODO_SUCCESS:
-      console.log("ACTION.TODO ADD TODO: ", { ...action.todo });
-      console.log("STATE: ", ...state);
       return [{ ...action.todo }, ...state];
 
     case types.MARK_TODO_IS_NEW_SUCCESS:
@@ -77,14 +77,11 @@ export default function todosReducer(state = initialState.todos, action) {
               subItems: { ...action.todoData, ...todo.subItems },
             };
           } else {
-            const funcSubItems = clone(todo.subItems); // very important to use clone on deeply nested objects, to avoid keep references beyond the first level.
-            const newItemId = Object.keys(action.todoData)[0];
-            const newItemData = action.todoData[newItemId];
-            let newSubItems = modifyAndReturnAllObj(
+            const funcSubItems = clone(todo.subItems);
+            let newSubItems = addObjAndReturnAllObj(
               funcSubItems,
               action.subItemPath,
-              newItemData,
-              newItemId
+              action.todoData
             );
             return {
               ...todo,
@@ -95,10 +92,9 @@ export default function todosReducer(state = initialState.todos, action) {
       });
     }
     case types.MODIFY_SUB_ITEM_SUCCESS: {
-      console.log("ISNESTED", action.isDeepNested);
-      console.log("SUBITEM PATH FROM REDUCER: ", action.subItemPath);
       const todoData = action.todoData;
       return state.map((todo) => {
+        console.log("MODIFIEDDD-------: ", todoData);
         const subItemId = Object.keys(todoData)[0];
         if (todo.id !== action.todoId) {
           return todo;
@@ -115,14 +111,47 @@ export default function todosReducer(state = initialState.todos, action) {
               },
             };
           } else {
-            const funcSubItems = clone(todo.subItems); // very important to use clone on deeply nested objects, to avoid keep references beyond the first level.
+            const funcSubItems = clone(todo.subItems);
             const newItemId = Object.keys(action.todoData)[0];
             const newItemData = action.todoData[newItemId];
-            let newSubItems = modifyAndReturnAllObj(
+            let newSubItems = modifyPropertyAndReturnAllObj(
               funcSubItems,
               action.subItemPath,
-              newItemId,
               newItemData
+            );
+            return {
+              ...todo,
+              subItems: { ...newSubItems },
+            };
+          }
+        }
+      });
+    }
+    case types.DELETE_SUB_ITEM_SUCCESS: {
+      const todoData = action.todoData;
+      return state.map((todo) => {
+        const subItemId = action.subItemPath[action.subItemPath.length - 1];
+        console.log("SUBITEMID from delete: ", subItemId);
+        if (todo.id !== action.todoId) {
+          return todo;
+        } else {
+          if (action.isDeepNested === false) {
+            const newSubItems = clone(todo.subItems);
+            delete newSubItems[subItemId];
+            console.log("NEW SUB ITEMS from delete: ", newSubItems);
+            return {
+              ...todo,
+              subItems: {
+                ...newSubItems,
+              },
+            };
+          } else {
+            const funcSubItems = clone(todo.subItems);
+            const newItemId = action.subItemPath[action.subItemPath.length - 1];
+            let newSubItems = deleteObjAndReturnAllObj(
+              funcSubItems,
+              action.subItemPath,
+              newItemId
             );
             return {
               ...todo,

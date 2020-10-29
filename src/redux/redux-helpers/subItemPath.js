@@ -31,15 +31,34 @@ export const subItemPath = (subItemId, todo) => {
   return path;
 };
 
-export const modifyAndReturnAllObj = (obj, path, newItemId, newItemData) => {
+export const addObjAndReturnAllObj = (obj, path, newObj) => {
   let currentNode = path[0];
   let localPath = [...path];
   if (localPath.length > 0) {
     localPath = localPath.slice(1, localPath.length);
-    const final = modifyAndReturnAllObj(
+    const final = addObjAndReturnAllObj(obj[currentNode], localPath, newObj);
+    if (localPath.length === 0) {
+      obj[currentNode] = final;
+      localPath[0] = "";
+    }
+    return obj;
+  } else {
+    return { ...obj, ...newObj };
+  }
+};
+
+export const modifyPropertyAndReturnAllObj = (
+  obj,
+  pathToObj, // must include object Id attempting to modify
+  newItemData
+) => {
+  let localPath = [...pathToObj];
+  let currentNode = localPath[0];
+  if (localPath.length > 0) {
+    localPath = localPath.slice(1, localPath.length);
+    const final = modifyPropertyAndReturnAllObj(
       obj[currentNode],
       localPath,
-      newItemId,
       newItemData
     );
     if (localPath.length === 0) {
@@ -48,10 +67,32 @@ export const modifyAndReturnAllObj = (obj, path, newItemId, newItemData) => {
     }
     return obj;
   } else {
-    if (obj[newItemId] === undefined) {
-      return { ...obj, [newItemId]: { ...newItemData } };
-    } else {
-      return { ...obj[newItemId], ...newItemData };
+    return { ...obj, ...newItemData };
+  }
+};
+
+export const deleteObjAndReturnAllObj = (
+  obj,
+  pathToObj, // must include object Id attempting to modify
+  newItemId
+) => {
+  let localPath = [...pathToObj];
+  let currentNode = localPath[0];
+  if (localPath.length > 0) {
+    localPath = localPath.slice(1, localPath.length);
+    const final = deleteObjAndReturnAllObj(
+      obj[currentNode],
+      localPath,
+      newItemId
+    );
+    if (localPath.length === 0) {
+      console.log("OBJ CURRENT NODE ON DELETE: ", obj[currentNode]);
+      obj[currentNode] = final;
+      localPath[0] = "";
     }
+    return obj;
+  } else {
+    console.log("return last subitem obj: ", obj);
+    return { ...obj };
   }
 };

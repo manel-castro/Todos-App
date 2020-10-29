@@ -87,12 +87,12 @@ export function TextDisplayChild({
 TextDisplayChild.propTypes = {
   text: PropTypes.string.isRequired,
   fontSize: PropTypes.string.isRequired,
-  error: PropTypes.string.isRequired,
+  error: PropTypes.string,
   handleChange: PropTypes.func.isRequired,
   handleColor: PropTypes.func.isRequired,
   color: PropTypes.string.isRequired,
   validate: PropTypes.func.isRequired,
-  isNew: PropTypes.bool.isRequired,
+  isNew: PropTypes.bool,
 };
 
 function TextDisplay({
@@ -160,7 +160,7 @@ TextDisplay.propTypes = {
   colorActive: PropTypes.string,
   checkErrors: PropTypes.func,
   getNewValue: PropTypes.func.isRequired,
-  isNew: PropTypes.bool.isRequired,
+  isNew: PropTypes.bool,
 };
 
 export default TextDisplay;
