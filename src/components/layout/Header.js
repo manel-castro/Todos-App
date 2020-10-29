@@ -4,8 +4,9 @@ import PropTypes from "prop-types";
 import { StyledHeader, Title, NavBar, StyledLink } from "./Header.elements";
 import { userLogout } from "../../redux/actions/userActions";
 import { deleteAllTodos } from "../../redux/actions/todosActions";
+import { setColorPalette } from "../../redux/actions/colorActions";
 
-const Header = ({ userLogout, loggedIn, deleteAllTodos }) => {
+const Header = ({ userLogout, loggedIn, setColorPalette, deleteAllTodos }) => {
   return (
     <StyledHeader>
       <Title>mindTree</Title>
@@ -15,8 +16,12 @@ const Header = ({ userLogout, loggedIn, deleteAllTodos }) => {
             <StyledLink onClick={userLogout} to="/">
               Logout
             </StyledLink>
-            {/* <>{"  "}</>
-						<p onClick={() => deleteAllTodos()}>Delete All</p>*/}
+            <>{"  "}</>
+            <p onClick={() => deleteAllTodos()}>Delete All</p>
+            <>
+              {" "}
+              <p onClick={() => setColorPalette("blueMate")}>blue</p>
+            </>
           </>
         ) : null}
       </NavBar>
@@ -38,6 +43,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   userLogout: userLogout,
   deleteAllTodos: deleteAllTodos,
+  setColorPalette: setColorPalette,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

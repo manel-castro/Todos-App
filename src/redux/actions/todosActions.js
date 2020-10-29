@@ -107,7 +107,6 @@ export const markTodoIsNew = (todoId) => (dispatch, getState) => {
 export function getTodos() {
   return function (dispatch, getState) {
     const userUid = getState().user.uid;
-    let breaker = false;
     console.log("todos getted");
     firebase
       .firestore()

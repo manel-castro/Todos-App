@@ -7,7 +7,6 @@ export const SubItemsContainer = styled.div`
 `;
 
 export const ListItem = styled.div`
-  color: ${({ theme }) => theme.hardgrey};
   list-style: none;
   display: flex;
   margin-top: ${({ styleLevel }) => 1.22 - 0.8 * Math.log(styleLevel)}rem;

@@ -8,19 +8,19 @@ const GlobalStyle = createGlobalStyle`
 			padding: 0;
 			font-family: arial, sans-serif;
 			::selection {
-				background: ${({ theme }) => theme.lightgrey};
+				background: ${({ theme }) => theme.mouseSelection};
 			}
 			::-moz-selection {
-				background: ${({ theme }) => theme.lightgrey};
+				background: ${({ theme }) => theme.mouseSelection};
 			}
 		}
 		
 	:root {
 		font-size: 17px;
-		background-color: ${({ theme }) => theme.softwhite}
+		background-color: ${({ theme }) => theme.pageBackground}
 	}
 	body {
-		background-color: ${(props) => props.theme.softwhite}  
+		background-color: ${(props) => props.theme.pageBackground}  
 		overflow: hidden;
 	}
 	

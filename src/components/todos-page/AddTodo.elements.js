@@ -26,12 +26,19 @@ export const AddNoteButton = styled.button`
   border-radius: 50%;
   outline: none;
   border: none;
-  background: ${({ theme }) => theme.darkgrey};
+  background: ${({ theme }) => theme.primaryElements};
   color: white;
   cursor: pointer;
+  opacity: 1;
 
   &:hover {
-    background: #444;
+    opacity: 0.9;
+  }
+
+  @media screen and (max-width: 960px) {
+    &:hover {
+      opacity: 1;
+    }
   }
 `;
 

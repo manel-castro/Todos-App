@@ -8,7 +8,12 @@ export default {
     isAnyNewTodoCount: "",
   },
   colors: {
-    darkgrey: "#333",
+    primaryElements: "#333",
+    pageBackground: "#F0FFBE",
+    mouseSelection: "rgb(200,200,200)",
+    inputBorder: "rgb(150,150,150)",
+    footerText: "rgb(150,150,150)",
+    bodyText: "rgb(50, 50, 50)",
   },
   callsInProgress: [],
 };

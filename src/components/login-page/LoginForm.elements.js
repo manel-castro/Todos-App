@@ -89,7 +89,7 @@ export const LoginInput = styled.input`
 
 export const LoginButton = styled.button`
   border-radius: 8px;
-  background-color: ${({ theme }) => theme.darkgrey};
+  background-color: ${({ theme }) => theme.primaryElements};
   color: white;
   width: 100%;
   height: 50px;
@@ -127,14 +127,14 @@ export const LoginDivider = styled.hr`
 
 export const SignInButton = styled(LoginButton)`
   background-color: #fff;
-  border: 1px solid ${({ theme }) => theme.darkgrey};
-  color: ${({ theme }) => theme.darkgrey};
+  border: 1px solid ${({ theme }) => theme.primaryElements};
+  color: ${({ theme }) => theme.primaryElements};
   opacity: 0.8;
   width: 60%;
   margin: 5px auto;
   &:hover {
     opacity: 1;
-    background-color: ${({ theme }) => theme.softwhite};
+    background-color: ${({ theme }) => theme.pageBackground};
   }
 `;
 
@@ -146,7 +146,7 @@ export const PasswordResetWrap = styled.a`
 export const PasswordResetLink = styled.p`
   text-decoration: none;
   font-size: 14px;
-  color: ${({ theme }) => theme.hardgrey};
+  color: ${({ theme }) => theme.bodyText};
   text-align: center;
 
   &:hover {
@@ -178,7 +178,7 @@ export const PasswordResetModalContent = styled.div`
 	align-items: center;
 	margin: 100px auto;
   padding: 20px;
-	border: 1px solid ${({ theme }) => theme.midgrey};
+	border: 1px solid ${({ theme }) => theme.inputBorder};
 	width: 370px;
 	height: 230px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { BasicLink } from "../../globalStyles";
 
 export const StyledHeader = styled.header`
-  background: ${({ theme }) => theme.darkgrey};
+  background: ${({ theme }) => theme.primaryElements};
   display: flex;
   flex-direction: column-reverse;
   padding: 5px 10px;

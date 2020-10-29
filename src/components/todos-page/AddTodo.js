@@ -28,8 +28,6 @@ const AddTodo = ({ onSubmit, todosExist, inProgress = [] }) => {
         >
           {inProgress.includes("add todo") ? (
             <Spinner fontSize="5px" size="8em" />
-          ) : addIcon ? (
-            <AddIcon />
           ) : (
             <PencilIcon />
           )}
@@ -41,8 +39,16 @@ const AddTodo = ({ onSubmit, todosExist, inProgress = [] }) => {
           onMouseLeave={() => handleMouse(false)}
           onTouchStart={() => handleMouse(false)}
         >
-          <IconWrap>{addIcon ? <AddIcon /> : <PencilIcon />}</IconWrap>
-          <ButtonText>Add note</ButtonText>
+          {inProgress.includes("add todo") ? (
+            <Spinner fontSize="5px" size="10em" />
+          ) : (
+            <>
+              <IconWrap>
+                <PencilIcon />
+              </IconWrap>
+              <ButtonText>Add note</ButtonText>
+            </>
+          )}
         </LargeAddNoteButton>
       )}
     </AddNoteButtonWrap>
