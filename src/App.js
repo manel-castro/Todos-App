@@ -26,7 +26,6 @@ const App = (props) => {
 
   const container = useRef(null);
   const autosize = (ref) => {
-    console.log("resized");
     if (window.screen.width < 960) {
       ref.current.style.height = `${window.outerHeight}px`;
     }
@@ -91,7 +90,6 @@ App.propTypes = {
 };
 
 function mapStateToProps(state) {
-  console.log("from redux", state.colors);
   return {
     loggedIn: state.user.loggedIn,
     colors: state.colors,

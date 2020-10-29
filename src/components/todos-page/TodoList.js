@@ -15,26 +15,25 @@ const TodoList = ({
   //const completedTodos = todos.filter((todo) => {
   //  return todo.completed === true;
   //});
-  console.log("TODO ID IS: ", todoIds);
   return (
     <TodosListContainer>
       <TodosListWrap>
         {todoIds.length === 0
           ? null
           : todoIds
-              //.filter((todo) => {
-              //return todo.completed === false;
-              //})
-              .map((id) => (
-                <TodoItem
-                  key={id}
-                  id={id}
-                  delTodo={delTodo}
-                  addSubItem={addSubItem}
-                  getNewValue={getNewValue}
-                  checkErrors={checkErrors}
-                />
-              ))}
+            //.filter((todo) => {
+            //return todo.completed === false;
+            //})
+            .map((id) => (
+              <TodoItem
+                key={id}
+                id={id}
+                delTodo={delTodo}
+                addSubItem={addSubItem}
+                getNewValue={getNewValue}
+                checkErrors={checkErrors}
+              />
+            ))}
       </TodosListWrap>
     </TodosListContainer>
   );

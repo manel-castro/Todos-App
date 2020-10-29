@@ -1,9 +1,11 @@
 import * as types from "../actions/actionTypes";
 import initialState from "./initialState";
+// Import customized algorithms for the characteristics of our database. 
 import {
   modifyPropertyAndReturnAllObj,
   addObjAndReturnAllObj,
   deleteObjAndReturnAllObj,
+  deleteSubItemAndReorder,
 } from "../redux-helpers/subItemPath";
 const clone = require("rfdc")(); // very important libary to fast clonning deep nested objects. Important to preserve inmutability. Common operators do shallow-copies.
 
@@ -58,12 +60,12 @@ export default function todosReducer(state = initialState.todos, action) {
       return state.map((todo) => {
         return todo.id === action.todoId
           ? {
-              ...todo,
-              openedKeys: {
-                ...todo.openedKeys,
-                [action.key]: action.action,
-              },
-            }
+            ...todo,
+            openedKeys: {
+              ...todo.openedKeys,
+              [action.key]: action.action,
+            },
+          }
           : todo;
       });
     case types.ADD_SUB_ITEM_SUCCESS: {
@@ -74,7 +76,7 @@ export default function todosReducer(state = initialState.todos, action) {
           if (action.isDeepNested === false) {
             return {
               ...todo,
-              subItems: { ...action.todoData, ...todo.subItems },
+              subItems: { ...todo.subItems, ...action.todoData },
             };
           } else {
             const funcSubItems = clone(todo.subItems);
@@ -94,7 +96,6 @@ export default function todosReducer(state = initialState.todos, action) {
     case types.MODIFY_SUB_ITEM_SUCCESS: {
       const todoData = action.todoData;
       return state.map((todo) => {
-        console.log("MODIFIEDDD-------: ", todoData);
         const subItemId = Object.keys(todoData)[0];
         if (todo.id !== action.todoId) {
           return todo;
@@ -131,14 +132,13 @@ export default function todosReducer(state = initialState.todos, action) {
       const todoData = action.todoData;
       return state.map((todo) => {
         const subItemId = action.subItemPath[action.subItemPath.length - 1];
-        console.log("SUBITEMID from delete: ", subItemId);
         if (todo.id !== action.todoId) {
           return todo;
         } else {
           if (action.isDeepNested === false) {
-            const newSubItems = clone(todo.subItems);
-            delete newSubItems[subItemId];
-            console.log("NEW SUB ITEMS from delete: ", newSubItems);
+            const funcSubItems = clone(todo.subItems);
+            const newSubItems = deleteSubItemAndReorder(funcSubItems, subItemId);
+            console.log(newSubItems)
             return {
               ...todo,
               subItems: {
@@ -147,12 +147,14 @@ export default function todosReducer(state = initialState.todos, action) {
             };
           } else {
             const funcSubItems = clone(todo.subItems);
-            const newItemId = action.subItemPath[action.subItemPath.length - 1];
-            let newSubItems = deleteObjAndReturnAllObj(
-              funcSubItems,
-              action.subItemPath,
-              newItemId
-            );
+            const itemToDeleteId = action.subItemPath[action.subItemPath.length - 1];
+            let newSubItems =
+              deleteObjAndReturnAllObj(
+                funcSubItems,
+                action.subItemPath,
+                itemToDeleteId
+              );
+
             return {
               ...todo,
               subItems: { ...newSubItems },

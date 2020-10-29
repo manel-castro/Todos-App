@@ -28,12 +28,7 @@ class TodosLayout extends Component<Props, never> {
       });
       return equal;
     }
-    console.log(isEqual(this.props.todoIds, nextProps.todoIds));
     return !isEqual(this.props.todoIds, nextProps.todoIds);
-  }
-
-  componentDidMount() {
-    console.log("ComponentMounted TODOS LAYOUT");
   }
 
   isNewTodoValid = (title) => {
@@ -50,7 +45,6 @@ class TodosLayout extends Component<Props, never> {
   handleAddTodoSubmit = async () => {
     this.containerRef.current.scrollTop = 0;
     if (this.props.anyTodoNew.length > 0) {
-      console.log("ANY TODO NEW", this.props.anyTodoNew);
       const elementDOM = document.getElementById(
         this.props.anyTodoNew + "textDisplayArea"
       );

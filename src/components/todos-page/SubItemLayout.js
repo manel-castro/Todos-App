@@ -21,11 +21,7 @@ function SubItemLayout({ todo, addSubItem, modifySubItem, deleteSubItem }) {
 
   let existSubItem = existSubItemFunc();
 
-  useEffect(() => {
-    console.log("SUBITEM LAYOUT RERENDERED");
-    console.log("EXIST SUBITEM: ", existSubItem);
-    // if (Object.keys(subItem).length === 0) handleExpand(false);
-  }, []);
+
 
   //  useEffect(() => {
   //    existSubItem = Object.keys(subItem).length;
@@ -120,16 +116,16 @@ function SubItemLayout({ todo, addSubItem, modifySubItem, deleteSubItem }) {
           <SubItemButton onClick={handleExpand}>Expand</SubItemButton>
         </ButtonWrap>
       ) : (
-        <ButtonWrap display={"flex-start"} mobileDisplay={"center"}>
-          <SubItemButton
-            onClick={() => {
-              handleNewSubItem();
-            }}
-          >
-            Add sub-item
+            <ButtonWrap display={"flex-start"} mobileDisplay={"center"}>
+              <SubItemButton
+                onClick={() => {
+                  handleNewSubItem();
+                }}
+              >
+                Add sub-item
           </SubItemButton>
-        </ButtonWrap>
-      )}
+            </ButtonWrap>
+          )}
     </SubItemLayoutContainer>
   );
 }

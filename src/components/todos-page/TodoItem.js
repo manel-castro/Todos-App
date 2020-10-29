@@ -13,7 +13,6 @@ import TextDisplay from "../common/TextDisplay";
 
 export class TodoItem extends PureComponent {
   componentDidMount() {
-    console.log("TODO ITEM RERENDERED");
     if (this.state.isNew) {
       this.props.markNewTodoCount(this.props.todo.id);
       //isNew = todo.isNew;

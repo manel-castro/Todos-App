@@ -16,7 +16,6 @@ export const useEventListener = (
     if (currentTarget) {
       var timer = setTimeout(() => {
         currentTarget.addEventListener(type, listener, ...options);
-        console.log(...options);
         //        return () => clearTimeout(timer);
       }, time);
     }

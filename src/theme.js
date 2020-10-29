@@ -1,5 +1,4 @@
 export const themeGen = (colors) => {
-  console.log("colors", colors);
   return {
     pageBackground: colors.pageBackground,
     mouseSelection: colors.mouseSelection,

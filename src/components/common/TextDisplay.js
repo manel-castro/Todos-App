@@ -39,7 +39,6 @@ export function TextDisplayChild({
       }, 2000);
       return function () {
         //    console.log("CleanedTimeout");
-        console.log("ClearedTIMEOUT");
         clearTimeout(sizeTimer);
         clearTimeout(validateTimer);
       };
@@ -131,7 +130,6 @@ function TextDisplay({
     }
     if (initialValue !== value) {
       getNewValue(todoId, value, isNew);
-      console.log("firestore");
     }
   };
 
