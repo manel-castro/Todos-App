@@ -9,21 +9,29 @@ export function dragTodo(todoId) {
 
   //get initial container position
   const initialOffsetTop = containerRef.offsetTop;
-  console.log(initialOffsetTop, containerRef);
-  console.log(containerRef.style);
-  let array = [];
-  function ConsoleLogger(ref) {
-    console.log(ref, ref.offsetTop);
-  }
-  document.getElementById("todosLayout").onscroll = function () {
-    throttle(500, ConsoleLogger, containerRef);
-  };
+  //  console.log(initialOffsetTop, containerRef);
+  //  console.log(containerRef.style);
+  //  let array = [];
+  //  function ConsoleLogger(ref) {
+  //    console.log(ref, ref.offsetTop);
+  //  }
+  //  document.getElementById("todosLayout").onscroll = function () {
+  //    throttle(500, ConsoleLogger, containerRef);
+  //  };
   draggerRef.onmousedown = dragOnMouseDown;
 
   function dragOnMouseDown(e) {
     e = e || window.event; // for older IE
     e.preventDefault();
 
+    console.log("clientTop: ", containerRef.clientTop);
+    console.log("offsetTop: ", containerRef.offsetTop);
+    console.log("scrollTop: ", containerRef.scrollTop);
+    const offsetTop = containerRef.offsetTop;
+    //   console.log("position.... ", positionFromTop);
+
+    containerRef.style.cssText = `position:absolute;top:${offsetTop}px;z-index:99`;
+    //   containerRef.style.top = "500" + "px";
     pos1 = e.clientY; //just going to be vertical movement
     document.onmouseup = dragOnMouseUp;
 

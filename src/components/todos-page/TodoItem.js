@@ -28,9 +28,9 @@ export class TodoItem extends PureComponent {
       //isNew = todo.isNew;
     }
     const todo = this.props.todo;
-    //  const containerId = todo.id + "containerRef";
-    //  const draggerId = todo.id + "draggerRef";
-    //  dragTodo(todo.id);
+    // const containerId = todo.id + "containerRef";
+    // const draggerId = todo.id + "draggerRef";
+    dragTodo(todo.id);
     console.log("MOUNTED");
   }
   componentDidUpdate() {
@@ -38,6 +38,7 @@ export class TodoItem extends PureComponent {
   }
   state = {
     isNew: this.props.todo.isNew,
+    isItemDragged: this.props.isItemDragged || false,
   };
 
   render() {
@@ -56,38 +57,60 @@ export class TodoItem extends PureComponent {
     //   console.log("ABSOLUTE TOP: ", absoluteTop);
     //   //		document.getElementById(this.containerId)
     // };
+    const manageDragItem = (state) => {
+      this.setState({
+        isItemDragged: false, //------------Change
+      });
+    };
+
     return (
-      <TodoItemPlace id={todo.id + "containerRef"}>
-        <TodoItemContainer>
-          <DraggableContainer id={todo.id + "draggerRef"}>
-            <IconsWrap>
-              <UpIcon onClick={() => moveTodoOrder(todo, "up")} />
-              <DownIcon onClick={() => moveTodoOrder(todo, "down")} />
-            </IconsWrap>
-            <Separator />
-          </DraggableContainer>
-          <TodoItemWrap>
-            <TodoTitleWrap>
-              <div style={{ cursor: "pointer", width: "100%" }}>
-                <TextDisplay
-                  text={todo.title}
-                  isNew={this.state.isNew}
-                  fontSize={"20px"}
-                  getNewValue={getNewValue}
-                  todoId={todo.id}
-                  checkErrors={checkErrors}
-                />
-              </div>
-              <div>
-                <DeleteTodo onClick={() => delTodo(todo)} />
-              </div>
-            </TodoTitleWrap>
-            <SubItemsContainer>
-              <SubItemLayout todo={todo} />
-            </SubItemsContainer>
-          </TodoItemWrap>
-        </TodoItemContainer>
-      </TodoItemPlace>
+      <>
+        {this.state.isItemDragged ? (
+          <div
+            style={{
+              height: "150px",
+              backgroundColor: "white",
+              width: "100px",
+            }}
+          ></div>
+        ) : null}
+
+        <TodoItemPlace id={todo.id + "containerRef"}>
+          <TodoItemContainer>
+            <DraggableContainer
+              id={todo.id + "draggerRef"}
+              onMouseDown={() => manageDragItem(true)}
+              onMouseUp={() => manageDragItem(false)}
+            >
+              <IconsWrap>
+                <UpIcon onClick={() => moveTodoOrder(todo, "up")} />
+                <DownIcon onClick={() => moveTodoOrder(todo, "down")} />
+              </IconsWrap>
+              <Separator />
+            </DraggableContainer>
+            <TodoItemWrap>
+              <TodoTitleWrap>
+                <div style={{ cursor: "pointer", width: "100%" }}>
+                  <TextDisplay
+                    text={todo.title}
+                    isNew={this.state.isNew}
+                    fontSize={"20px"}
+                    getNewValue={getNewValue}
+                    todoId={todo.id}
+                    checkErrors={checkErrors}
+                  />
+                </div>
+                <div>
+                  <DeleteTodo onClick={() => delTodo(todo)} />
+                </div>
+              </TodoTitleWrap>
+              <SubItemsContainer>
+                <SubItemLayout todo={todo} />
+              </SubItemsContainer>
+            </TodoItemWrap>
+          </TodoItemContainer>
+        </TodoItemPlace>
+      </>
     );
   }
 }
