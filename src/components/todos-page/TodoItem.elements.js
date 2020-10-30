@@ -13,6 +13,9 @@ export const TodoItemPlace = styled.div`
   opacity: 1;
   z-index: 10;
   padding-top: 10px;
+   {
+    /*The space between items goes here, and must be padding*/
+  }
   padding-bottom: 10px;
 `;
 export const TodoItemContainer = styled.div`
@@ -54,6 +57,11 @@ export const Separator = styled.div`
   border-right: 1px solid rgb(199, 200, 200);
   border-bottom: 0px solid grey;
   margin-left: 10px;
+`;
+
+export const DragPlaceholder = styled.div`
+  display: "none";
+  width: 100%;
 `;
 
 export const TodoItemWrap = styled.div`

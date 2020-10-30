@@ -126,6 +126,8 @@ export const moveTodoOrder = (todo, action) => (dispatch, getState) => {
 
   dispatch(moveTodoOrderSuccess(newReduxTodos));
 
+  // firebase should be another action that it's only dispatched after certain time, and updates those documents that had changes on the order. We could also have the order separated in another document in a collection "extraDataTodos", so that we can poolUp orders. To order de todos on getTodos we should get this document by separate an then match them.
+
   console.log("-------------");
   console.log("newTodos");
   console.log(newReduxTodos);

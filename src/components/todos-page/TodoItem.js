@@ -1,13 +1,15 @@
-import React, { PureComponent } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import * as todosExtraActions from "../../redux/actions/todosExtraActions";
 import * as todosActions from "../../redux/actions/todosActions";
+import * as interactivityActions from "../../redux/actions/interactivityActions";
 import PropTypes from "prop-types";
 import {
   TodoItemPlace,
   TodoItemContainer,
   DraggableContainer,
   Separator,
+  DragPlaceholder,
   //DraggableIcon,
   TodoItemWrap,
   TodoTitleWrap,
@@ -21,99 +23,80 @@ import SubItemLayout from "./SubItemLayout";
 import TextDisplay from "../common/TextDisplay";
 import { dragTodo } from "../_helpers/dragableElement";
 
-export class TodoItem extends PureComponent {
-  componentDidMount() {
-    if (this.state.isNew) {
-      this.props.markNewTodoCount(this.props.todo.id);
+export const TodoItem = ({
+  todo,
+  delTodo,
+  getNewValue,
+  checkErrors,
+  markNewTodoCount,
+  moveTodoOrder,
+  setItemPosition,
+  itemPositions,
+  getItemPositions,
+}) => {
+  useEffect(() => {
+    if (todo.isNew) {
+      markNewTodoCount(todo.id);
       //isNew = todo.isNew;
     }
-    const todo = this.props.todo;
-    // const containerId = todo.id + "containerRef";
-    // const draggerId = todo.id + "draggerRef";
-    dragTodo(todo.id);
+    const containerId = todo.id + "containerRef";
+    const containerRef = document.getElementById(containerId);
+    setItemPosition(todo.id, containerRef.offsetTop);
+    dragTodo(todo.id, getItemPositions, moveTodoOrder);
     console.log("MOUNTED");
-  }
-  componentDidUpdate() {
-    console.log("UPDATED");
-  }
-  state = {
-    isNew: this.props.todo.isNew,
-    isItemDragged: this.props.isItemDragged || false,
-  };
+  }, []);
 
-  render() {
-    const {
-      todo,
-      delTodo,
-      getNewValue,
-      checkErrors,
-      moveTodoOrder,
-    } = this.props;
-    // let absoluteTop;
-    // const calculateDrag = () => {
-    //   console.log("SOMETHIN ELSE");
-    //   const element = document.getElementById(todo.id + "containerRef");
-    //   absoluteTop = element.offsetTop;
-    //   console.log("ABSOLUTE TOP: ", absoluteTop);
-    //   //		document.getElementById(this.containerId)
-    // };
-    const manageDragItem = (state) => {
-      this.setState({
-        isItemDragged: false, //------------Change
-      });
-    };
+  // let absoluteTop;
+  // const calculateDrag = () => {
+  //   console.log("SOMETHIN ELSE");
+  //   const element = document.getElementById(todo.id + "containerRef");
+  //   absoluteTop = element.offsetTop;
+  //   console.log("ABSOLUTE TOP: ", absoluteTop);
+  //   //		document.getElementById(this.containerId)
+  // };
 
-    return (
-      <>
-        {this.state.isItemDragged ? (
-          <div
-            style={{
-              height: "150px",
-              backgroundColor: "white",
-              width: "100px",
-            }}
-          ></div>
-        ) : null}
+  return (
+    <>
+      <DragPlaceholder id={todo.id + "dragPlaceholder"} />
 
-        <TodoItemPlace id={todo.id + "containerRef"}>
-          <TodoItemContainer>
-            <DraggableContainer
-              id={todo.id + "draggerRef"}
-              onMouseDown={() => manageDragItem(true)}
-              onMouseUp={() => manageDragItem(false)}
-            >
-              <IconsWrap>
-                <UpIcon onClick={() => moveTodoOrder(todo, "up")} />
-                <DownIcon onClick={() => moveTodoOrder(todo, "down")} />
-              </IconsWrap>
-              <Separator />
-            </DraggableContainer>
-            <TodoItemWrap>
-              <TodoTitleWrap>
-                <div style={{ cursor: "pointer", width: "100%" }}>
-                  <TextDisplay
-                    text={todo.title}
-                    isNew={this.state.isNew}
-                    fontSize={"20px"}
-                    getNewValue={getNewValue}
-                    todoId={todo.id}
-                    checkErrors={checkErrors}
-                  />
-                </div>
-                <div>
-                  <DeleteTodo onClick={() => delTodo(todo)} />
-                </div>
-              </TodoTitleWrap>
-              <SubItemsContainer>
-                <SubItemLayout todo={todo} />
-              </SubItemsContainer>
-            </TodoItemWrap>
-          </TodoItemContainer>
-        </TodoItemPlace>
-      </>
-    );
-  }
-}
+      <TodoItemPlace id={todo.id + "containerRef"}>
+        <TodoItemContainer id={todo.id + "itemContainerRef"}>
+          <DraggableContainer
+            id={todo.id + "draggerRef"}
+            onMouseDown={() => {}}
+            onMouseUp={() => {}}
+          >
+            <IconsWrap>
+              <UpIcon onClick={() => moveTodoOrder(todo, "up")} />
+              <DownIcon onClick={() => moveTodoOrder(todo, "down")} />
+            </IconsWrap>
+            <Separator />
+          </DraggableContainer>
+          <TodoItemWrap>
+            <TodoTitleWrap>
+              <div style={{ cursor: "pointer", width: "100%" }}>
+                <TextDisplay
+                  text={todo.title}
+                  isNew={todo.isNew}
+                  fontSize={"20px"}
+                  getNewValue={getNewValue}
+                  todoId={todo.id}
+                  checkErrors={checkErrors}
+                />
+              </div>
+              <div>
+                <DeleteTodo onClick={() => delTodo(todo)} />
+              </div>
+            </TodoTitleWrap>
+            <SubItemsContainer>
+              <SubItemLayout todo={todo} />
+            </SubItemsContainer>
+          </TodoItemWrap>
+        </TodoItemContainer>
+      </TodoItemPlace>
+    </>
+  );
+};
 
 TodoItem.propTypes = {
   todo: PropTypes.object.isRequired,
@@ -128,12 +111,15 @@ function mapStateToProps(state, ownState) {
   const stateTodos = state.todos;
   return {
     todo: stateTodos.filter((todo) => id.includes(todo.id))[0],
+    //Change this to increase efficiency...
   };
 }
 
 const mapDispatchToProps = {
   markNewTodoCount: todosExtraActions.markNewTodoCount,
   moveTodoOrder: todosActions.moveTodoOrder,
+  setItemPosition: interactivityActions.setItemPosition,
+  getItemPositions: interactivityActions.getItemPositions,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoItem);
