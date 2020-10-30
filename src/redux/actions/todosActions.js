@@ -8,6 +8,7 @@ import * as callsInProgressActions from "./callsInProgressActions";
 import { v4 as uuid } from "uuid";
 const clone = require("rfdc")();
 import { subItemPath as subItemPathFunc } from "../redux-helpers/subItemPath";
+import { reorderTodos } from "../redux-helpers/todosHelpers";
 
 //DEVELOPMENT ACTIONS
 export function deleteAllTodosSuccess() {
@@ -31,8 +32,8 @@ export function addTodoSuccess(todo) {
 export function modifyTodoSuccess(dataUpdate, todoId, isNew) {
   return { type: types.MODIFY_TODO_SUCCESS, dataUpdate, todoId, isNew };
 }
-export function moveTodoOrderSuccess(todoOrder) {
-  return { type: types.MOVE_TODO_ORDER_SUCCESS, todoOrder };
+export function moveTodoOrderSuccess(orderedTodos) {
+  return { type: types.MOVE_TODO_ORDER_SUCCESS, orderedTodos };
 }
 
 // on creation of Todo we mark is as is new in order to limit some other actions. We autofocus and autoscroll in based of "isNew" when Add Todo buton is pressed.
@@ -102,48 +103,33 @@ export function deleteSubItemSuccess(todoId, subItemPath, isDeepNested) {
 export const moveTodoOrder = (todo, action) => (dispatch, getState) => {
   const { todos } = getState();
   const clonedTodos = clone(todos);
-  const newTodos;
+  let newReduxTodos;
 
-  //Since we're not able to reorder the orderCount in all todos, we need to use the array index for it.
-  let todoIndex;
-  clonedTodos.forEach((item, uid) => {
-    if (item.id === todo.id) todoIndex = uid;
-  });
-
-  // we need to at least update two items on firebase
-  let itemWhoEchangesPosition;
+  let firebaseItem1, firebaseItem2;
 
   if (action === "up") {
-    newTodos = clonedTodos.map((item, uid) => {
-      if (uid === todoIndex - 1) {
-        itemWhoEchangesPosition = { ...item };
-        return { ...todo, orderCount: item.orderCount };
-      }
-      if (uid === todoIndex) {
-        return { ...itemWhoEchangesPosition, orderCount: todo.orderCount };
-      }
-      return todo;
-    });
+    const reordered = reorderTodos(clonedTodos, todo);
+    newReduxTodos = reordered[0];
+    firebaseItem1 = reordered[1];
+    firebaseItem2 = reordered[2];
   }
 
-  //PENDING TO DO, maybe reverse array twice, maybe play with indexes...??
   if (action === "down") {
-    newTodos = clonedTodos.map((item, uid) => {
-      if (uid === todoIndex) {
-        return { ...itemWhoEchangesPosition, orderCount: todo.orderCount };
-      }
-      if (uid === todoIndex + 1) {
-        itemWhoEchangesPosition = { ...item };
-        return { ...todo, orderCount: item.orderCount };
-      }
-      return todo;
-    });
+    const reversedTodos = clonedTodos.reverse(); //very important
+    const reordered = reorderTodos(reversedTodos, todo);
+    newReduxTodos = reordered[0].reverse();
+    firebaseItem1 = reordered[1];
+    firebaseItem2 = reordered[2];
   }
-  if (action !== "up" || action !== "down")
-    throw "Dude look at the todos actions";
+  if (action !== "up" && action !== "down")
+    throw `Dude look at the todos actions, action sent: ${action}`;
+
+  dispatch(moveTodoOrderSuccess(newReduxTodos));
+
   console.log("-------------");
   console.log("newTodos");
-  console.log(newTodos);
+  console.log(newReduxTodos);
+  console.log("for firebase", firebaseItem1, firebaseItem2);
 };
 
 //Development thunks...

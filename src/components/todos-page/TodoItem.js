@@ -61,8 +61,8 @@ export class TodoItem extends PureComponent {
         <TodoItemContainer>
           <DraggableContainer id={todo.id + "draggerRef"}>
             <IconsWrap>
-              <UpIcon onClick={() => moveTodoOrder(todo, true)} />
-              <DownIcon />
+              <UpIcon onClick={() => moveTodoOrder(todo, "up")} />
+              <DownIcon onClick={() => moveTodoOrder(todo, "down")} />
             </IconsWrap>
             <Separator />
           </DraggableContainer>

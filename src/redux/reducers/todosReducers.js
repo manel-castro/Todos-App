@@ -1,6 +1,6 @@
 import * as types from "../actions/actionTypes";
 import initialState from "./initialState";
-// Import customized algorithms for the characteristics of our database. 
+// Import customized algorithms for the characteristics of our database.
 import {
   modifyPropertyAndReturnAllObj,
   addObjAndReturnAllObj,
@@ -35,6 +35,8 @@ export default function todosReducer(state = initialState.todos, action) {
 
     case types.ADD_TODO_SUCCESS:
       return [{ ...action.todo }, ...state];
+    case types.MOVE_TODO_ORDER_SUCCESS:
+      return [...action.orderedTodos];
 
     case types.MARK_TODO_IS_NEW_SUCCESS:
       return state.map((todo) => {
@@ -60,12 +62,12 @@ export default function todosReducer(state = initialState.todos, action) {
       return state.map((todo) => {
         return todo.id === action.todoId
           ? {
-            ...todo,
-            openedKeys: {
-              ...todo.openedKeys,
-              [action.key]: action.action,
-            },
-          }
+              ...todo,
+              openedKeys: {
+                ...todo.openedKeys,
+                [action.key]: action.action,
+              },
+            }
           : todo;
       });
     case types.ADD_SUB_ITEM_SUCCESS: {
@@ -137,8 +139,11 @@ export default function todosReducer(state = initialState.todos, action) {
         } else {
           if (action.isDeepNested === false) {
             const funcSubItems = clone(todo.subItems);
-            const newSubItems = deleteSubItemAndReorder(funcSubItems, subItemId);
-            console.log(newSubItems)
+            const newSubItems = deleteSubItemAndReorder(
+              funcSubItems,
+              subItemId
+            );
+            console.log(newSubItems);
             return {
               ...todo,
               subItems: {
@@ -147,13 +152,13 @@ export default function todosReducer(state = initialState.todos, action) {
             };
           } else {
             const funcSubItems = clone(todo.subItems);
-            const itemToDeleteId = action.subItemPath[action.subItemPath.length - 1];
-            let newSubItems =
-              deleteObjAndReturnAllObj(
-                funcSubItems,
-                action.subItemPath,
-                itemToDeleteId
-              );
+            const itemToDeleteId =
+              action.subItemPath[action.subItemPath.length - 1];
+            let newSubItems = deleteObjAndReturnAllObj(
+              funcSubItems,
+              action.subItemPath,
+              itemToDeleteId
+            );
 
             return {
               ...todo,
