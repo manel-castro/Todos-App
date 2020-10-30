@@ -6,6 +6,7 @@ import * as todosExtraActions from "./todosExtraActions";
 import * as callsInProgressActions from "./callsInProgressActions";
 
 import { v4 as uuid } from "uuid";
+const clone = require("rfdc")();
 import { subItemPath as subItemPathFunc } from "../redux-helpers/subItemPath";
 
 //DEVELOPMENT ACTIONS
@@ -30,11 +31,16 @@ export function addTodoSuccess(todo) {
 export function modifyTodoSuccess(dataUpdate, todoId, isNew) {
   return { type: types.MODIFY_TODO_SUCCESS, dataUpdate, todoId, isNew };
 }
+export function moveTodoOrderSuccess(todoOrder) {
+  return { type: types.MOVE_TODO_ORDER_SUCCESS, todoOrder };
+}
 
+// on creation of Todo we mark is as is new in order to limit some other actions. We autofocus and autoscroll in based of "isNew" when Add Todo buton is pressed.
 export function markTodoIsNewSuccess(todoId) {
   return { type: types.MARK_TODO_IS_NEW_SUCCESS, todoId };
 }
 
+//dispatched when todo modified
 export function dismarkTodoIsNew(todoId) {
   return { type: types.DISMARK_TODO_IS_NEW, todoId };
 }
@@ -50,6 +56,8 @@ export function markTodoCompletedOptimistic(todo) {
 export function deleteTodoOptimistic(todo) {
   return { type: types.DELETE_TODO_OPTIMISTIC, todo };
 }
+
+//SUBITEMS ACTIONS. I want to keep subItems inside Todos document since its saving document reads and it could save document writes significantly pooling up updates.
 
 export function openSubItemLevel(todoId, key, action) {
   return { type: types.OPEN_SUB_ITEM_LEVEL, todoId, key, action };
@@ -91,6 +99,53 @@ export function deleteSubItemSuccess(todoId, subItemPath, isDeepNested) {
 //
 //THUNKS
 
+export const moveTodoOrder = (todo, action) => (dispatch, getState) => {
+  const { todos } = getState();
+  const clonedTodos = clone(todos);
+  const newTodos;
+
+  //Since we're not able to reorder the orderCount in all todos, we need to use the array index for it.
+  let todoIndex;
+  clonedTodos.forEach((item, uid) => {
+    if (item.id === todo.id) todoIndex = uid;
+  });
+
+  // we need to at least update two items on firebase
+  let itemWhoEchangesPosition;
+
+  if (action === "up") {
+    newTodos = clonedTodos.map((item, uid) => {
+      if (uid === todoIndex - 1) {
+        itemWhoEchangesPosition = { ...item };
+        return { ...todo, orderCount: item.orderCount };
+      }
+      if (uid === todoIndex) {
+        return { ...itemWhoEchangesPosition, orderCount: todo.orderCount };
+      }
+      return todo;
+    });
+  }
+
+  //PENDING TO DO, maybe reverse array twice, maybe play with indexes...??
+  if (action === "down") {
+    newTodos = clonedTodos.map((item, uid) => {
+      if (uid === todoIndex) {
+        return { ...itemWhoEchangesPosition, orderCount: todo.orderCount };
+      }
+      if (uid === todoIndex + 1) {
+        itemWhoEchangesPosition = { ...item };
+        return { ...todo, orderCount: item.orderCount };
+      }
+      return todo;
+    });
+  }
+  if (action !== "up" || action !== "down")
+    throw "Dude look at the todos actions";
+  console.log("-------------");
+  console.log("newTodos");
+  console.log(newTodos);
+};
+
 //Development thunks...
 export function deleteAllTodos() {
   return function (dispatch, getState) {
@@ -107,7 +162,7 @@ export const markTodoIsNew = (todoId) => (dispatch, getState) => {
   if (todosExtra.isAnyNewTodoCount.length > 0) return;
   dispatch(markTodoIsNewSuccess(todoId));
 };
-
+//should look in cookies first?
 export function getTodos() {
   return function (dispatch, getState) {
     const userUid = getState().user.uid;
@@ -115,7 +170,7 @@ export function getTodos() {
       .firestore()
       .collection("todos")
       .where("userId", "==", userUid)
-      .orderBy("timestamp", "desc")
+      .orderBy("orderCount", "desc")
       .get()
       .then((querySnapshot) => {
         const todos = querySnapshot.docs.map((doc) => {
@@ -159,6 +214,10 @@ export const addTodo = () => async (dispatch, getState) => {
     /// END API CALL
     throw "Todo already created.";
   }
+
+  const { todos } = getState();
+  const orderCount = todos[0] ? todos[0].orderCount + 1 : 0;
+
   const userUid = getState().user.uid;
   let newTodoData = {
     title: "Enter your title here...",
@@ -166,9 +225,10 @@ export const addTodo = () => async (dispatch, getState) => {
     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     userId: userUid,
     isNew: true,
+    orderCount: orderCount,
   };
   let newTodoLocalData = newTodoData;
-  let newId = uuid().substring(0, 11);
+  let newId = uuid();
   newTodoLocalData["id"] = newId;
   dispatch(addTodoSuccess(newTodoLocalData));
 

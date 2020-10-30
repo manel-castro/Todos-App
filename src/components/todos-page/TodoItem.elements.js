@@ -1,25 +1,19 @@
 import styled from "styled-components";
-import { BsTrash, BsChevronBarExpand } from "react-icons/bs";
+import {
+  BsTrash,
+  BsFillCaretUpFill,
+  BsFillCaretDownFill,
+} from "react-icons/bs";
 // Drag-drop
 //  https://medium.com/better-programming/the-beginners-guide-to-creating-an-interactive-list-with-react-28c8af880f35
 //
 //
+
 export const TodoItemPlace = styled.div`
   opacity: 1;
   z-index: 10;
   padding-top: 10px;
   padding-bottom: 10px;
-  position: static;
-  &:active {
-    opacity: 1;
-    z-index: 11;
-    position: absolute;
-    top: ${(props) => props.absoluteTop};
-  }
-
-  &:placeholder {
-    opacity: 0.5;
-  }
 `;
 export const TodoItemContainer = styled.div`
   display: flex;
@@ -33,12 +27,23 @@ export const DraggableContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 15px 0px 15px 15px;
-  cursor: move;
+  padding: 0px 0px 0px 15px;
 `;
 
-export const DraggableIcon = styled(BsChevronBarExpand)`
-  font-size: 20;
+export const IconsWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 4rem;
+`;
+
+export const UpIcon = styled(BsFillCaretUpFill)`
+  font-size: 30px;
+  color: rgb(199, 200, 200);
+`;
+
+export const DownIcon = styled(BsFillCaretDownFill)`
+  font-size: 30px;
   color: rgb(199, 200, 200);
 `;
 

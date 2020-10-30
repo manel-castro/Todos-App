@@ -1,21 +1,25 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import * as todosExtraActions from "../../redux/actions/todosExtraActions";
+import * as todosActions from "../../redux/actions/todosActions";
 import PropTypes from "prop-types";
 import {
   TodoItemPlace,
   TodoItemContainer,
   DraggableContainer,
   Separator,
-  DraggableIcon,
+  //DraggableIcon,
   TodoItemWrap,
   TodoTitleWrap,
   DeleteTodo,
   SubItemsContainer,
+  IconsWrap,
+  UpIcon,
+  DownIcon,
 } from "./TodoItem.elements.js";
 import SubItemLayout from "./SubItemLayout";
 import TextDisplay from "../common/TextDisplay";
-import { dragTodo, dragElement } from "../_helpers/dragableElement";
+import { dragTodo } from "../_helpers/dragableElement";
 
 export class TodoItem extends PureComponent {
   componentDidMount() {
@@ -24,9 +28,9 @@ export class TodoItem extends PureComponent {
       //isNew = todo.isNew;
     }
     const todo = this.props.todo;
-    const containerId = todo.id + "containerRef";
-    const draggerId = todo.id + "draggerRef";
-    dragTodo(draggerId, containerId);
+    //  const containerId = todo.id + "containerRef";
+    //  const draggerId = todo.id + "draggerRef";
+    //  dragTodo(todo.id);
     console.log("MOUNTED");
   }
   componentDidUpdate() {
@@ -42,24 +46,24 @@ export class TodoItem extends PureComponent {
       delTodo,
       getNewValue,
       checkErrors,
-      markNewTodoCount,
+      moveTodoOrder,
     } = this.props;
-    let absoluteTop;
-    const calculateDrag = () => {
-      console.log("SOMETHIN ELSE");
-      const element = document.getElementById(todo.id + "containerRef");
-      absoluteTop = element.offsetTop;
-      console.log("ABSOLUTE TOP: ", absoluteTop);
-      //		document.getElementById(this.containerId)
-    };
+    // let absoluteTop;
+    // const calculateDrag = () => {
+    //   console.log("SOMETHIN ELSE");
+    //   const element = document.getElementById(todo.id + "containerRef");
+    //   absoluteTop = element.offsetTop;
+    //   console.log("ABSOLUTE TOP: ", absoluteTop);
+    //   //		document.getElementById(this.containerId)
+    // };
     return (
-      <TodoItemPlace id={todo.id + "containerRef"} absoluteTop={absoluteTop}>
+      <TodoItemPlace id={todo.id + "containerRef"}>
         <TodoItemContainer>
-          <DraggableContainer
-            id={todo.id + "draggerRef"}
-            onClick={() => calculateDrag()}
-          >
-            <DraggableIcon />
+          <DraggableContainer id={todo.id + "draggerRef"}>
+            <IconsWrap>
+              <UpIcon onClick={() => moveTodoOrder(todo, true)} />
+              <DownIcon />
+            </IconsWrap>
             <Separator />
           </DraggableContainer>
           <TodoItemWrap>
@@ -106,6 +110,7 @@ function mapStateToProps(state, ownState) {
 
 const mapDispatchToProps = {
   markNewTodoCount: todosExtraActions.markNewTodoCount,
+  moveTodoOrder: todosActions.moveTodoOrder,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoItem);
