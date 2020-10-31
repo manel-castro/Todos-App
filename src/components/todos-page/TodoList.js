@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import TodoItem from "./TodoItem";
 import PropTypes from "prop-types";
 import { TodosListContainer, TodosListWrap } from "./TodoList.elements";
@@ -15,25 +15,31 @@ const TodoList = ({
   //const completedTodos = todos.filter((todo) => {
   //  return todo.completed === true;
   //});
+  useEffect(() => {
+    console.log("RENDERED TODO LIST");
+
+    return () => console.log("UNMOUNTING TODO LIST");
+  });
+
   return (
     <TodosListContainer>
       <TodosListWrap>
         {todoIds.length === 0
           ? null
           : todoIds
-            //.filter((todo) => {
-            //return todo.completed === false;
-            //})
-            .map((id) => (
-              <TodoItem
-                key={id}
-                id={id}
-                delTodo={delTodo}
-                addSubItem={addSubItem}
-                getNewValue={getNewValue}
-                checkErrors={checkErrors}
-              />
-            ))}
+              //.filter((todo) => {
+              //return todo.completed === false;
+              //})
+              .map((id) => (
+                <TodoItem
+                  key={id}
+                  id={id}
+                  delTodo={delTodo}
+                  addSubItem={addSubItem}
+                  getNewValue={getNewValue}
+                  checkErrors={checkErrors}
+                />
+              ))}
       </TodosListWrap>
     </TodosListContainer>
   );

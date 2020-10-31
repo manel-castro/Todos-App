@@ -21,7 +21,6 @@ import {
 } from "./TodoItem.elements.js";
 import SubItemLayout from "./SubItemLayout";
 import TextDisplay from "../common/TextDisplay";
-import { dragTodo } from "../_helpers/dragableElement";
 
 export const TodoItem = ({
   todo,
@@ -32,17 +31,17 @@ export const TodoItem = ({
   moveTodoOrder,
   setItemPosition,
   itemPositions,
-  getItemPositions,
 }) => {
   useEffect(() => {
     if (todo.isNew) {
       markNewTodoCount(todo.id);
       //isNew = todo.isNew;
     }
+
+    // Drag-drop funcitonality
     const containerId = todo.id + "containerRef";
     const containerRef = document.getElementById(containerId);
-    setItemPosition(todo.id, containerRef.offsetTop);
-    dragTodo(todo.id, getItemPositions, moveTodoOrder);
+    setItemPosition(todo.id, containerRef.offsetTop, containerRef.offsetHeight);
     console.log("MOUNTED");
   }, []);
 
@@ -67,10 +66,10 @@ export const TodoItem = ({
             onMouseUp={() => {}}
           >
             <IconsWrap>
-              <UpIcon onClick={() => moveTodoOrder(todo, "up")} />
-              <DownIcon onClick={() => moveTodoOrder(todo, "down")} />
+              <UpIcon onClick={() => moveTodoOrder(todo.id, "up")} />
+              <DownIcon onClick={() => moveTodoOrder(todo.id, "down")} />
             </IconsWrap>
-            <Separator />
+            <Separator id={"TodoItemObserver"} />
           </DraggableContainer>
           <TodoItemWrap>
             <TodoTitleWrap>
@@ -119,7 +118,6 @@ const mapDispatchToProps = {
   markNewTodoCount: todosExtraActions.markNewTodoCount,
   moveTodoOrder: todosActions.moveTodoOrder,
   setItemPosition: interactivityActions.setItemPosition,
-  getItemPositions: interactivityActions.getItemPositions,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoItem);

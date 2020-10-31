@@ -8,24 +8,27 @@ import { setColorPalette } from "../../redux/actions/colorActions";
 
 const Header = ({ userLogout, loggedIn, setColorPalette, deleteAllTodos }) => {
   return (
-    <StyledHeader>
-      <Title>mindTree</Title>
-      <NavBar>
-        {loggedIn ? (
-          <>
-            <StyledLink onClick={userLogout} to="/">
-              Logout
-            </StyledLink>
-            <>{"  "}</>
-            <p onClick={() => deleteAllTodos()}>Delete All</p>
+    <>
+      <StyledHeader id={"StyledHeader"}>
+        <Title>mindTree</Title>
+        <NavBar>
+          {loggedIn ? (
             <>
-              {" "}
-              <p onClick={() => setColorPalette("blueMate")}>blue</p>
+              <StyledLink onClick={userLogout} to="/">
+                Logout
+              </StyledLink>
+              <>{"  "}</>
+              <p onClick={() => deleteAllTodos()}>Delete All</p>
+              <>
+                {" "}
+                <p onClick={() => setColorPalette("blueMate")}>blue</p>
+              </>
             </>
-          </>
-        ) : null}
-      </NavBar>
-    </StyledHeader>
+          ) : null}
+        </NavBar>
+      </StyledHeader>
+      <div id={"headerHeight"}></div>
+    </>
   );
 };
 

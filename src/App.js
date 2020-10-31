@@ -17,10 +17,17 @@ import PublicRoute from "./components/common/PublicRoute";
 import { ThemeProvider } from "styled-components";
 import { themeGen } from "./theme.js";
 import GlobalStyle, { Container, Spinner } from "./globalStyles";
+import CustomStyles from "./styles/CustomStyles";
 // import uuid from 'uuid';
 
 const App = (props) => {
   const { loggedIn, colors } = props;
+  useEffect(() => {
+    console.log("APP.JS RENDERED");
+    return () => {
+      console.log("APP.JS RERENDERED");
+    };
+  });
 
   const theme = themeGen(colors);
 
@@ -36,51 +43,54 @@ const App = (props) => {
   }, []);
 
   return (
-    <Router>
-      <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        <Container ref={container}>
-          <Header />
-          <Switch>
-            <Route path="/about" render={() => <About history={history} />} />
+    <>
+      <Router>
+        <ThemeProvider theme={theme}>
+          <GlobalStyle />
+          <Container ref={container}>
+            <CustomStyles />
+            <Header />
+            <Switch>
+              <Route path="/about" render={() => <About history={history} />} />
 
-            {loggedIn !== null ? (
-              <PrivateRoute
-                exact
-                path="/app"
-                component={TodosLayout}
-                authenticated={loggedIn}
-              />
-            ) : null}
+              {loggedIn !== null ? (
+                <PrivateRoute
+                  exact
+                  path="/app"
+                  component={TodosLayout}
+                  authenticated={loggedIn}
+                />
+              ) : null}
 
-            {loggedIn !== null ? (
-              <PublicRoute
-                exact
-                path="/"
-                component={LoginPage}
-                authenticated={loggedIn}
-              />
-            ) : null}
-            {loggedIn === null ? (
-              <Route
-                render={() => (
-                  <Spinner
-                    primary
-                    fontSize="10px"
-                    size="10em"
-                    style={{ marginTop: "60px" }}
-                  />
-                )}
-              />
-            ) : null}
-            {loggedIn !== null ? (
-              <Route render={() => <NotFoundPage />} />
-            ) : null}
-          </Switch>
-          <Footer />
-        </Container>
-      </ThemeProvider>
-    </Router>
+              {loggedIn !== null ? (
+                <PublicRoute
+                  exact
+                  path="/"
+                  component={LoginPage}
+                  authenticated={loggedIn}
+                />
+              ) : null}
+              {loggedIn === null ? (
+                <Route
+                  render={() => (
+                    <Spinner
+                      primary
+                      fontSize="10px"
+                      size="10em"
+                      style={{ marginTop: "60px" }}
+                    />
+                  )}
+                />
+              ) : null}
+              {loggedIn !== null ? (
+                <Route render={() => <NotFoundPage />} />
+              ) : null}
+            </Switch>
+            <Footer />
+          </Container>
+        </ThemeProvider>
+      </Router>
+    </>
   );
 };
 

@@ -17,6 +17,7 @@ export default {
   },
   callsInProgress: [],
   interactivity: {
-    positions: [],
+    todos: [],
+    allTodoItemsMounted: false,
   },
 };

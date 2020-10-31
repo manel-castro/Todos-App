@@ -100,7 +100,7 @@ export function deleteSubItemSuccess(todoId, subItemPath, isDeepNested) {
 //
 //THUNKS
 
-export const moveTodoOrder = (todo, action) => (dispatch, getState) => {
+export const moveTodoOrder = (todoId, action) => (dispatch, getState) => {
   const { todos } = getState();
   const clonedTodos = clone(todos);
   let newReduxTodos;
@@ -108,7 +108,7 @@ export const moveTodoOrder = (todo, action) => (dispatch, getState) => {
   let firebaseItem1, firebaseItem2;
 
   if (action === "up") {
-    const reordered = reorderTodos(clonedTodos, todo);
+    const reordered = reorderTodos(clonedTodos, todoId);
     newReduxTodos = reordered[0];
     firebaseItem1 = reordered[1];
     firebaseItem2 = reordered[2];
@@ -116,7 +116,7 @@ export const moveTodoOrder = (todo, action) => (dispatch, getState) => {
 
   if (action === "down") {
     const reversedTodos = clonedTodos.reverse(); //very important
-    const reordered = reorderTodos(reversedTodos, todo);
+    const reordered = reorderTodos(reversedTodos, todoId);
     newReduxTodos = reordered[0].reverse();
     firebaseItem1 = reordered[1];
     firebaseItem2 = reordered[2];

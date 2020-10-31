@@ -30,6 +30,12 @@ class TodosLayout extends Component<Props, never> {
     }
     return !isEqual(this.props.todoIds, nextProps.todoIds);
   }
+  componentDidMount() {
+    console.log("TODOS LAYOUT RENDERED");
+  }
+  componentDidUpdate() {
+    console.log("TODOS LAYOUT RERENDERED");
+  }
 
   isNewTodoValid = (title) => {
     const regEx = /^[A-Za-z]/;

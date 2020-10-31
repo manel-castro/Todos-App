@@ -36,6 +36,7 @@ export const SET_COLOR_PALETTE_SUCCESS = "SET_COLOR_PALETTE_SUCCESS";
 
 //Interactivity actions
 export const SET_ITEM_POSITION = "SET_ITEM_POSITION";
+export const ALL_TODO_ITEMS_MOUNTED = "ALL_TODO_ITEMS_MOUNTED";
 
 //Development actions
 export const DELETE_ALL_TODOS_SUCCESS = "DELETE_ALL_TODOS_SUCCES";

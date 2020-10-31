@@ -9,6 +9,7 @@ export const StyledHeader = styled.header`
   width: 100%;
   height: 70px;
   min-height: 70px;
+  z-index: 20;
 `;
 
 export const Title = styled.h1`
