@@ -9,25 +9,28 @@ export function allTodoItemsMounted(state) {
 }
 
 //thunks
-export const getTodosInteractivity = () => (dispatch, getState) => {
-  const { interactivity, todos } = getState();
-  const todosStyling = interactivity.todos;
+export function getTodosInteractivity() {
+  return function (dispatch, getState) {
+    const { interactivity, todos } = getState();
+    const todosStyling = interactivity.todos;
 
-  return todosStyling;
-};
-
-export const areAllTodoItemsMounted = () => (dispatch) => {
-  let elementToWatch = document.getElementById("TodoItemObserver");
-  console.log("ELEMENT TO WATCH ----------", elementToWatch);
-  let flag = elementToWatch === null ? true : false;
-  const something = async () => {
-    if (flag) {
-      console.log("ARE ALL TODO ITEMS MOUNTED", flag);
-      window.setTimeout(areAllTodoItemsMounted(), 3000);
-    } else {
-      console.log("AAAAAAAAALLL MOUNTED");
-      await this.dispatch(allTodoItemsMounted(true));
-    }
+    return todosStyling;
   };
-  something();
-};
+}
+
+export function areAllTodoItemsMounted() {
+  return function (dispatch) {
+    let isPageFullyLoaded = document.readyState;
+    let flag = isPageFullyLoaded === "complete" ? false : true;
+    const something = () => {
+      if (flag) {
+        console.log("ARE ALL TODO ITEMS MOUNTED", flag);
+        window.setTimeout(areAllTodoItemsMounted(), 3000);
+      } else {
+        console.log("AAAAAAAAALLL MOUNTED");
+        dispatch(allTodoItemsMounted(true));
+      }
+    };
+    something();
+  };
+}

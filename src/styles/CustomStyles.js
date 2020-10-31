@@ -10,16 +10,22 @@ const CustomStyles = ({
   moveTodoOrder,
   allTodoItemsMounted,
   areAllTodoItemsMounted,
+  readyStateComplete,
 }) => {
   //if this useEffect doesn't work, we'll need a redux action to indicate when todos are totally loaded.
-  useEffect(async () => {
-    if (!allTodoItemsMounted) {
-      await areAllTodoItemsMounted();
-    } else {
-      //   dragTodo(getTodosInteractivity, moveTodoOrder);
-      console.log("ALL TODOS MOUNTED");
-    }
-  }, []);
+  async function something() {
+    let somethinG = true;
+    var intr = setInterval(function () {
+      console.log("------------", document.readyState);
+      if (document.readyState === "complete") {
+        clearInterval(intr);
+        console.log("CSS LOADED", document.getElementById("TodoItemObserver"));
+        dragTodo(getTodosInteractivity, moveTodoOrder);
+      }
+    }, 1000);
+  }
+
+  something();
 
   return <div>asf</div>;
 };

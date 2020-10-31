@@ -43,6 +43,7 @@ export const TodoItem = ({
     const containerRef = document.getElementById(containerId);
     setItemPosition(todo.id, containerRef.offsetTop, containerRef.offsetHeight);
     console.log("MOUNTED");
+    return () => console.log("rerendered");
   }, []);
 
   // let absoluteTop;

@@ -1,41 +1,46 @@
 import { throttle } from "../../components/_helpers/genericUtils";
-export function dragTodo(todoId, getTodosInteractivity, moveTodoOrder) {
+export function dragTodo(getTodosInteractivity, moveTodoOrder) {
   var pos1, pos2;
 
-  const draggerId = todoId + "draggerRef";
-  const containerId = todoId + "containerRef";
-  const itemContainerId = todoId + "itemContainerRef";
-  const dragPlaceholderId = todoId + "dragPlaceholder";
-  const draggerRef = document.getElementById(draggerId);
-  const containerRef = document.getElementById(containerId);
-  const itemContainerRef = document.getElementById(itemContainerId);
-  const dragPlaceholderRef = document.getElementById(dragPlaceholderId);
-  //const headerHeight = document.getElementById("headerHeight").offsetTop;
-  //get all todo positions object:
+  const todosInteractivity = getTodosInteractivity();
 
-  //get initial container position
-  const initialOffsetTop = containerRef.offsetTop;
-  //  console.log(initialOffsetTop, containerRef);
-  //  console.log(containerRef.style);
-  //  let array = [];
-  //  function ConsoleLogger(ref) {
-  //    console.log(ref, ref.offsetTop);
-  //  }
-  //  document.getElementById("todosLayout").onscroll = function () {
-  //    throttle(500, ConsoleLogger, containerRef);
-  //  };
-  draggerRef.onmousedown = dragOnMouseDown;
+  todosInteractivity.forEach((item) => {
+    let draggerRef = document.getElementById(item.id + "draggerRef");
+    let itemId = item.id;
+    draggerRef.addEventListener("mousedown", function (e) {
+      onMouseDown(e, itemId);
+    });
+  });
 
-  function dragOnMouseDown(e) {
+  const onMouseDown = (e, todoId) => {
     e = e || window.event; // for older IE
     e.preventDefault();
+    console.log("DRAGGER CLICKED", todoId);
+    let containerRef = document.getElementById(todoId + "containerRef");
+    let dragPlaceholderRef = document.getElementById(
+      todoId + "dragPlaceholder"
+    );
+    //  //get initial container position
+    //  const initialOffsetTop = containerRef.offsetTop;
+    //  //  console.log(initialOffsetTop, containerRef);
+    //  //  console.log(containerRef.style);
+    //  //  let array = [];
+    //  //  function ConsoleLogger(ref) {
+    //  //    console.log(ref, ref.offsetTop);
+    //  //  }
+    //  //  document.getElementById("todosLayout").onscroll = function () {
+    //  //    throttle(500, ConsoleLogger, containerRef);
+    //  //  };
+    //
+    //
+    //
     //when going down, it has to surpass the position of the next item.
     // when going up, it has to surpass de position of the next item plus it's height (we need the height on redux too. )
     // then we fire the action change.
 
     // CHANGES ON STYLE ON MOUSE DOWN
     // set the placeholder space when dragging.
-    const initialHeight = itemContainerRef.scrollHeight;
+    const initialHeight = containerRef.scrollHeight;
     dragPlaceholderRef.style.cssText = `display:block;height:${
       initialHeight + 20
     }px;`;
@@ -50,11 +55,10 @@ export function dragTodo(todoId, getTodosInteractivity, moveTodoOrder) {
     }px;z-index:11;width:${initialWidth}px`;
 
     // SETTING UP BEHAVIOR ON MOVE MOUSE.
-    const itemPositions = getTodosInteractivity();
 
-    function setReorderLimit(itemPositions, todoId) {
+    function setReorderLimit(todosInteractivity, todoId) {
       let itemIndex;
-      itemPositions.forEach((item, uid) => {
+      todosInteractivity.forEach((item, uid) => {
         if (item.id === todoId) {
           itemIndex = uid;
           console.log("INDEX: ", itemIndex);
@@ -62,34 +66,130 @@ export function dragTodo(todoId, getTodosInteractivity, moveTodoOrder) {
       });
       let upperLimit, lowerLimit;
       if (itemIndex === 0) {
-        lowerLimit = itemPositions[itemIndex + 1].position;
+        lowerLimit = todosInteractivity[itemIndex + 1].position;
         console.log("IS FIRST ITEM: ", lowerLimit);
         return [false, lowerLimit];
       } //cannot go up, so we'll dont have up index
-      if (itemIndex === itemPositions.length - 1) {
+      if (itemIndex === todosInteractivity.length - 1) {
         upperLimit =
-          itemPositions[itemIndex - 1].position +
-          itemPositions[itemIndex - 1].height;
+          todosInteractivity[itemIndex - 1].position +
+          todosInteractivity[itemIndex - 1].height;
         console.log("IS LAST ITEM: ", upperLimit);
         return [upperLimit, false];
       } //canot go down, so well don't have down index
       upperLimit =
-        itemPositions[itemIndex - 1].position +
-        itemPositions[itemIndex - 1].height;
-      lowerLimit = itemPositions[itemIndex + 1].position;
+        todosInteractivity[itemIndex - 1].position +
+        todosInteractivity[itemIndex - 1].height;
+      lowerLimit = todosInteractivity[itemIndex + 1].position;
       return [upperLimit, lowerLimit];
     }
-    const reorderLimits = setReorderLimit(itemPositions, todoId); //returns (upperLimit, lowerLimit)
+    const reorderLimits = setReorderLimit(todosInteractivity, todoId); //returns (upperLimit, lowerLimit)
     console.log(".....------", reorderLimits);
 
     pos1 = e.clientY; //just going to be vertical movement
     document.onmousemove = function (e) {
-      dragOnMouseMove(e, reorderLimits[0], reorderLimits[1]);
+      dragOnMouseMove(
+        e,
+        reorderLimits[0],
+        reorderLimits[1],
+        todoId,
+        containerRef
+      );
     };
-    document.onmouseup = dragOnMouseUp;
-  }
-
-  function dragOnMouseMove(e, upperLimit, lowerLimit) {
+    document.onmouseup = function (e) {
+      dragOnMouseUp(e, containerRef, dragPlaceholderRef);
+    };
+  };
+  //
+  //
+  //  const draggerId = todoId + "draggerRef";
+  //  const containerId = todoId + "containerRef";
+  //  const itemContainerId = todoId + "itemContainerRef";
+  //  const dragPlaceholderId = todoId + "dragPlaceholder";
+  //  const draggerRef = document.getElementById(draggerId);
+  //  const containerRef = document.getElementById(containerId);
+  //  const itemContainerRef = document.getElementById(itemContainerId);
+  //  const dragPlaceholderRef = document.getElementById(dragPlaceholderId);
+  //  //const headerHeight = document.getElementById("headerHeight").offsetTop;
+  //  //get all todo positions object:
+  //
+  //  //get initial container position
+  //  const initialOffsetTop = containerRef.offsetTop;
+  //  //  console.log(initialOffsetTop, containerRef);
+  //  //  console.log(containerRef.style);
+  //  //  let array = [];
+  //  //  function ConsoleLogger(ref) {
+  //  //    console.log(ref, ref.offsetTop);
+  //  //  }
+  //  //  document.getElementById("todosLayout").onscroll = function () {
+  //  //    throttle(500, ConsoleLogger, containerRef);
+  //  //  };
+  //  draggerRef.onmousedown = dragOnMouseDown;
+  //
+  //  function dragOnMouseDown(e) {
+  //    e = e || window.event; // for older IE
+  //    e.preventDefault();
+  //    //when going down, it has to surpass the position of the next item.
+  //    // when going up, it has to surpass de position of the next item plus it's height (we need the height on redux too. )
+  //    // then we fire the action change.
+  //
+  //    // CHANGES ON STYLE ON MOUSE DOWN
+  //    // set the placeholder space when dragging.
+  //    const initialHeight = itemContainerRef.scrollHeight;
+  //    dragPlaceholderRef.style.cssText = `display:block;height:${
+  //      initialHeight + 20
+  //    }px;`;
+  //
+  //    //set the position when dragging item.
+  //    const offsetTop = containerRef.offsetTop;
+  //    const initialWidth = containerRef.offsetWidth;
+  //    console.log("initialWidth");
+  //
+  //    containerRef.style.cssText = `position:absolute;top:${
+  //      offsetTop - initialHeight - 20
+  //    }px;z-index:11;width:${initialWidth}px`;
+  //
+  //    // SETTING UP BEHAVIOR ON MOVE MOUSE.
+  //    const itemPositions = getTodosInteractivity();
+  //
+  //    function setReorderLimit(itemPositions, todoId) {
+  //      let itemIndex;
+  //      itemPositions.forEach((item, uid) => {
+  //        if (item.id === todoId) {
+  //          itemIndex = uid;
+  //          console.log("INDEX: ", itemIndex);
+  //        }
+  //      });
+  //      let upperLimit, lowerLimit;
+  //      if (itemIndex === 0) {
+  //        lowerLimit = itemPositions[itemIndex + 1].position;
+  //        console.log("IS FIRST ITEM: ", lowerLimit);
+  //        return [false, lowerLimit];
+  //      } //cannot go up, so we'll dont have up index
+  //      if (itemIndex === itemPositions.length - 1) {
+  //        upperLimit =
+  //          itemPositions[itemIndex - 1].position +
+  //          itemPositions[itemIndex - 1].height;
+  //        console.log("IS LAST ITEM: ", upperLimit);
+  //        return [upperLimit, false];
+  //      } //canot go down, so well don't have down index
+  //      upperLimit =
+  //        itemPositions[itemIndex - 1].position +
+  //        itemPositions[itemIndex - 1].height;
+  //      lowerLimit = itemPositions[itemIndex + 1].position;
+  //      return [upperLimit, lowerLimit];
+  //    }
+  //    const reorderLimits = setReorderLimit(itemPositions, todoId); //returns (upperLimit, lowerLimit)
+  //    console.log(".....------", reorderLimits);
+  //
+  //    pos1 = e.clientY; //just going to be vertical movement
+  //    document.onmousemove = function (e) {
+  //      dragOnMouseMove(e, reorderLimits[0], reorderLimits[1]);
+  //    };
+  //    document.onmouseup = dragOnMouseUp;
+  //  }
+  //
+  function dragOnMouseMove(e, upperLimit, lowerLimit, todoId, containerRef) {
     e = e || window.event;
     e.preventDefault();
 
@@ -107,7 +207,7 @@ export function dragTodo(todoId, getTodosInteractivity, moveTodoOrder) {
     containerRef.style.top = containerRef.offsetTop - pos2 + "px";
   }
 
-  function dragOnMouseUp() {
+  function dragOnMouseUp(containerRef, dragPlaceholderRef) {
     containerRef.style.cssText = `position:static;z-index:10;width:auto;`;
     dragPlaceholderRef.style.cssText = `display:none;height:0px;`;
     document.onmousemove = null;

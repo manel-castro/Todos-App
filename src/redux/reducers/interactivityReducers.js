@@ -16,6 +16,8 @@ export default function interactivityReducer(
             id: action.todoId,
             position: action.position,
             height: action.height,
+            upperLimit: action.position,
+            lowerLimit: action.position + action.height,
           },
         ],
       };
