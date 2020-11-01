@@ -37,18 +37,12 @@ export function dragTodo(moveTodoOrder) {
       offsetTop - initialHeight
     }px;z-index:11;width:${initialWidth}px`;
 
+    let itemsToWatch = [];
     for (let i = 0; i < todoItemNodes.length - 1; i++) {
       if (todoItemNodes[i].attributes.id.nodeValue === todoId) continue;
-      todoItemNodes[
-        i
-      ].childNodes[1].childNodes[0].childNodes[0].childNodes[0].addEventListener(
-        "mouseenter",
-        function (e) {
-          console.log("entered");
-          console.log(e);
-        }
-      );
+      itemsToWatch.push(todoItemNodes[i]);
     }
+    console.log(itemsToWatch);
 
     // SETTING UP BEHAVIOR ON MOVE MOUSE.
 

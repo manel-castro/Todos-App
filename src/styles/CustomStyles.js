@@ -11,7 +11,7 @@ const CustomStyles = ({ getReduxTodos, moveTodoOrder }) => {
       if (document.readyState === "complete") {
         clearInterval(intr);
         console.log("CSS LOADED", document.getElementById("TodoItemObserver"));
-        dragTodo(moveTodoOrder);
+        //        dragTodo(moveTodoOrder);
       }
     }, 1000);
   }

@@ -232,17 +232,17 @@ export const addTodo = () => async (dispatch, getState) => {
   newTodoLocalData["id"] = newId;
   dispatch(addTodoSuccess(newTodoLocalData));
 
-  firebase
-    .firestore()
-    .collection("todos")
-    .doc(newId)
-    .set(newTodoData)
-    .catch((err) => {
-      dispatch(deleteTodoOptimistic(newTodoLocalData));
-      dispatch(todosExtraActions.dismarkNewTodoCount());
-      dispatch(callsInProgressActions.endActionCall("add todo"));
-      throw err;
-    });
+  //  firebase
+  //    .firestore()
+  //    .collection("todos")
+  //    .doc(newId)
+  //    .set(newTodoData)
+  //    .catch((err) => {
+  //      dispatch(deleteTodoOptimistic(newTodoLocalData));
+  //      dispatch(todosExtraActions.dismarkNewTodoCount());
+  //      dispatch(callsInProgressActions.endActionCall("add todo"));
+  //      throw err;
+  //    });
   dispatch(callsInProgressActions.endActionCall("add todo"));
   //need to update store to avoid fire Snapshot.
 
@@ -271,14 +271,14 @@ export const modifyTodo = (todoId, title, isNew = false) => async (
     };
   }
   /// ------------
-  firebase
-    .firestore()
-    .collection("todos")
-    .doc(todoId)
-    .update(dataUpdate)
-    .catch((err) => {
-      throw err;
-    });
+  //  firebase
+  //    .firestore()
+  //    .collection("todos")
+  //    .doc(todoId)
+  //    .update(dataUpdate)
+  //    .catch((err) => {
+  //      throw err;
+  //    });
   //need to update store to avoid fire Snapshot.
   await dispatch(modifyTodoSuccess(title, todoId, isNew));
 };

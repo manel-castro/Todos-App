@@ -34,14 +34,14 @@ export function TextDisplayChild({
         textArea.current.style.height = textArea.current.scrollHeight + "px";
       }, 0);
 
-      const validateTimer = setTimeout(() => {
-        textArea.current.addEventListener("keypress", validate());
-      }, 2000);
-      return function () {
-        //    console.log("CleanedTimeout");
-        clearTimeout(sizeTimer);
-        clearTimeout(validateTimer);
-      };
+  //    const validateTimer = setTimeout(() => {
+  //      textArea.current.addEventListener("keypress", validate());
+  //    }, 2000);
+  //    return function () {
+  //      //    console.log("CleanedTimeout");
+  //      clearTimeout(sizeTimer);
+  //      clearTimeout(validateTimer);
+  //    };
     },
     [text]
   );
@@ -129,7 +129,11 @@ function TextDisplay({
       return;
     }
     if (initialValue !== value) {
-      getNewValue(todoId, value, isNew);
+      try {
+        getNewValue(todoId, value, isNew);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 

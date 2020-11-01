@@ -9,7 +9,6 @@ import TodoList from "./TodoList";
 class TodosLayout extends Component<Props, never> {
   constructor(props) {
     super(props);
-    this.containerRef = React.createRef();
   }
   //eslint-disable-next-line
   shouldComponentUpdate(nextProps: props) {
@@ -48,25 +47,12 @@ class TodosLayout extends Component<Props, never> {
     return "";
   };
 
-  handleAddTodoSubmit = async () => {
-    this.containerRef.current.scrollTop = 0;
-    if (this.props.anyTodoNew.length > 0) {
-      const elementDOM = document.getElementById(
-        this.props.anyTodoNew + "textDisplayArea"
-      );
-      if (elementDOM) elementDOM.focus();
-      return;
-    } else {
-      try {
-        this.props.addTodo();
-      } catch (err) {
-        console.log("addTodo failed", err);
-      }
-    }
-  };
-
   handleChangeTodo = async (todoId, title, isNew) => {
-    this.props.modifyTodo(todoId, title, isNew);
+    try {
+      this.props.modifyTodo(todoId, title, isNew);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   //  handleMarkCompleted = async (todo) => {
@@ -95,18 +81,13 @@ class TodosLayout extends Component<Props, never> {
     }
   };
   render() {
-    const { todoIds, todosExist, inProgress } = this.props;
+    const { todoIds } = this.props;
 
     return (
       <>
-        <AddTodo
-          onSubmit={this.handleAddTodoSubmit}
-          todosExist={todosExist}
-          inProgress={inProgress}
-        />
+        <AddTodo />
         <div
-          ref={this.containerRef}
-          id={"todosLayout"}
+          id={"todosLayoutId"}
           style={{
             overflowY: "auto",
             marginBottom: "5px",
@@ -138,14 +119,10 @@ export function mapStateToProps(state) {
   let todoIds = state.todos.map((todo) => todo.id);
   return {
     todoIds: todoIds,
-    todosExist: todoIds.length !== 0,
-    anyTodoNew: state.todosExtra.isAnyNewTodoCount,
-    inProgress: state.callsInProgress,
   };
 }
 
 export const mapDispatchToProps = {
-  addTodo: todosActions.addTodo,
   delTodo: todosActions.deleteTodo,
   addSubItem: todosActions.addSubItem,
   modifyTodo: todosActions.modifyTodo,
