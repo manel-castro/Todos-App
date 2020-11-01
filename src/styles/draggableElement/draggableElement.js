@@ -1,18 +1,20 @@
 import { throttle } from "../../components/_helpers/genericUtils";
-export function dragTodo(getTodosInteractivity, moveTodoOrder) {
-  var pos1, pos2;
+export function dragTodo(moveTodoOrder) {
+  var pos1, pos2, pos3, pos4;
 
-  const todosInteractivity = getTodosInteractivity();
-
-  todosInteractivity.forEach((item) => {
-    let draggerRef = document.getElementById(item.id + "draggerRef");
-    let itemId = item.id;
+  const todoItemNodes = document.getElementsByClassName("TodoItemNodeDiv");
+  const todoIds = [];
+  for (let i = 0; i < todoItemNodes.length - 1; i++) {
+    todoIds.push(todoItemNodes[i].attributes.id.nodeValue);
+  }
+  todoIds.forEach((item) => {
+    let draggerRef = document.getElementById(item + "draggerRef");
     draggerRef.addEventListener("mousedown", function (e) {
-      onMouseDown(e, itemId);
+      onMouseDown(e, item, todoItemNodes, draggerRef);
     });
   });
 
-  const onMouseDown = (e, todoId) => {
+  const onMouseDown = (e, todoId, todoItemNodes, draggerRef) => {
     e = e || window.event; // for older IE
     e.preventDefault();
     console.log("DRAGGER CLICKED", todoId);
@@ -41,9 +43,7 @@ export function dragTodo(getTodosInteractivity, moveTodoOrder) {
     // CHANGES ON STYLE ON MOUSE DOWN
     // set the placeholder space when dragging.
     const initialHeight = containerRef.scrollHeight;
-    dragPlaceholderRef.style.cssText = `display:block;height:${
-      initialHeight + 20
-    }px;`;
+    dragPlaceholderRef.style.cssText = `display:block;height:${initialHeight}px;`;
 
     //set the position when dragging item.
     const offsetTop = containerRef.offsetTop;
@@ -51,7 +51,7 @@ export function dragTodo(getTodosInteractivity, moveTodoOrder) {
     console.log("initialWidth");
 
     containerRef.style.cssText = `position:absolute;top:${
-      offsetTop - initialHeight - 20
+      offsetTop - initialHeight
     }px;z-index:11;width:${initialWidth}px`;
 
     // SETTING UP BEHAVIOR ON MOVE MOUSE.
@@ -83,17 +83,20 @@ export function dragTodo(getTodosInteractivity, moveTodoOrder) {
       lowerLimit = todosInteractivity[itemIndex + 1].position;
       return [upperLimit, lowerLimit];
     }
-    const reorderLimits = setReorderLimit(todosInteractivity, todoId); //returns (upperLimit, lowerLimit)
-    console.log(".....------", reorderLimits);
+    //    const reorderLimits = setReorderLimit(todosInteractivity, todoId); //returns (upperLimit, lowerLimit)
+    //  console.log(".....------", reorderLimits);
 
     pos1 = e.clientY; //just going to be vertical movement
+    pos3 = e.clientX;
     document.onmousemove = function (e) {
       dragOnMouseMove(
         e,
-        reorderLimits[0],
-        reorderLimits[1],
+        //  reorderLimits[0],
+        //reorderLimits[1],
         todoId,
-        containerRef
+        containerRef,
+        draggerRef,
+        dragPlaceholderRef
       );
     };
     document.onmouseup = function (e) {
@@ -189,25 +192,38 @@ export function dragTodo(getTodosInteractivity, moveTodoOrder) {
   //    document.onmouseup = dragOnMouseUp;
   //  }
   //
-  function dragOnMouseMove(e, upperLimit, lowerLimit, todoId, containerRef) {
+  function dragOnMouseMove(
+    e,
+    todoId,
+    containerRef,
+    draggerRef,
+    dragPlaceholderRef
+  ) {
     e = e || window.event;
     e.preventDefault();
 
     pos2 = pos1 - e.clientY;
     pos1 = e.clientY;
+    pos4 = pos3 - e.clientX;
+    pos3 = e.clientX;
 
     //set change order
-    if (upperLimit) {
-      if (pos1 < upperLimit) {
-        moveTodoOrder(todoId, "up");
-      }
+    // if (upperLimit) {
+    //   if (pos1 < upperLimit) {
+    //     moveTodoOrder(todoId, "up");
+    //   }
+    // }
+
+    //Drop the element if out of dragger width.
+    let draggerBounding = draggerRef.getBoundingClientRect();
+    if (pos3 < draggerBounding.left || pos3 > draggerBounding.right) {
+      dragOnMouseUp(e, containerRef, dragPlaceholderRef);
     }
 
-    //  console.log(containerRef.offsetTop);
     containerRef.style.top = containerRef.offsetTop - pos2 + "px";
   }
 
-  function dragOnMouseUp(containerRef, dragPlaceholderRef) {
+  function dragOnMouseUp(e, containerRef, dragPlaceholderRef) {
     containerRef.style.cssText = `position:static;z-index:10;width:auto;`;
     dragPlaceholderRef.style.cssText = `display:none;height:0px;`;
     document.onmousemove = null;

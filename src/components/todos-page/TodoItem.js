@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import * as todosExtraActions from "../../redux/actions/todosExtraActions";
 import * as todosActions from "../../redux/actions/todosActions";
-import * as interactivityActions from "../../redux/actions/interactivityActions";
 import PropTypes from "prop-types";
 import {
   TodoItemPlace,
@@ -29,34 +28,39 @@ export const TodoItem = ({
   checkErrors,
   markNewTodoCount,
   moveTodoOrder,
-  setItemPosition,
-  itemPositions,
 }) => {
   useEffect(() => {
     if (todo.isNew) {
       markNewTodoCount(todo.id);
       //isNew = todo.isNew;
     }
-
-    // Drag-drop funcitonality
-    const containerId = todo.id + "containerRef";
-    const containerRef = document.getElementById(containerId);
-    setItemPosition(todo.id, containerRef.offsetTop, containerRef.offsetHeight);
-    console.log("MOUNTED");
-    return () => console.log("rerendered");
+    console.log("TODO ITEM MOUNTED");
+    return () => console.log("TODO ITEM UNMOUNTING");
   }, []);
 
-  // let absoluteTop;
-  // const calculateDrag = () => {
-  //   console.log("SOMETHIN ELSE");
-  //   const element = document.getElementById(todo.id + "containerRef");
-  //   absoluteTop = element.offsetTop;
-  //   console.log("ABSOLUTE TOP: ", absoluteTop);
-  //   //		document.getElementById(this.containerId)
-  // };
+  const onClick = (direction) => {
+    //up or down
+    var x = document.getElementsByClassName("TodoItemNodeDiv");
+    let thisTodoDivIndex;
+    let todoToSwitchId, activeTodoId;
+    console.log(x);
+
+    let a = direction === "up" ? -1 : +1;
+
+    for (let i = 0; i < x.length - 1; i++) {
+      if (x[i].attributes.id.nodeValue === todo.id) thisTodoDivIndex = i;
+    }
+    // x[thisTodoDivIndex + a].parentNode.insertBefore(
+    //   x[thisTodoDivIndex],
+    //   x[thisTodoDivIndex + a]
+    // );
+    activeTodoId = x[thisTodoDivIndex].attributes.id.nodeValue;
+    todoToSwitchId = x[thisTodoDivIndex + a].attributes.id.nodeValue;
+    moveTodoOrder(activeTodoId, todoToSwitchId, direction);
+  };
 
   return (
-    <>
+    <div id={todo.id} className={"TodoItemNodeDiv"}>
       <DragPlaceholder id={todo.id + "dragPlaceholder"} />
 
       <TodoItemPlace id={todo.id + "containerRef"}>
@@ -67,8 +71,12 @@ export const TodoItem = ({
             onMouseUp={() => {}}
           >
             <IconsWrap>
-              <UpIcon onClick={() => moveTodoOrder(todo.id, "up")} />
-              <DownIcon onClick={() => moveTodoOrder(todo.id, "down")} />
+              <UpIcon
+                onClick={() => {
+                  onClick("up");
+                }}
+              />
+              <DownIcon onClick={() => onClick("down")} />
             </IconsWrap>
             <Separator id={"TodoItemObserver"} />
           </DraggableContainer>
@@ -94,7 +102,7 @@ export const TodoItem = ({
           </TodoItemWrap>
         </TodoItemContainer>
       </TodoItemPlace>
-    </>
+    </div>
   );
 };
 
@@ -118,7 +126,6 @@ function mapStateToProps(state, ownState) {
 const mapDispatchToProps = {
   markNewTodoCount: todosExtraActions.markNewTodoCount,
   moveTodoOrder: todosActions.moveTodoOrder,
-  setItemPosition: interactivityActions.setItemPosition,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoItem);

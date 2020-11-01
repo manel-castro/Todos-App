@@ -1,32 +1,25 @@
-export const reorderTodos = (array, todoToReorderId) => {
-  //Reorders items by switching them using the array index and switching their orderCount.
-  //Returns array with reordered todos and the todos that have been switched.
+export const reorderTodos = (todos, activeTodoId, todoToSwitchId) => {
+  let todoIndex, activeTodo, todoToSwitch, switchedItem1, switchedItem2;
 
-  let todoToReorder,
-    todoIndex,
-    itemWhoEchangesPosition,
-    switchedItem1,
-    switchedItem2;
-
-  array.forEach((item, uid) => {
-    if (item.id === todoToReorderId) {
+  todos.forEach((item, uid) => {
+    if (item.id === activeTodoId) {
       todoIndex = uid;
-      todoToReorder = item;
+      activeTodo = item;
     }
   });
 
   if (todoIndex === 0) throw "Beyond array scope"; //beyondArray = true;
 
-  const returnArray = array.map((item, uid) => {
-    if (uid === todoIndex - 1) {
-      itemWhoEchangesPosition = { ...item };
-      switchedItem1 = { ...todoToReorder, orderCount: item.orderCount };
+  const returnArray = todos.map((item, uid) => {
+    if (item.id === todoToSwitchId) {
+      todoToSwitch = item;
+      switchedItem1 = { ...activeTodo, orderCount: todoToSwitch.orderCount };
       return switchedItem1;
     }
-    if (uid === todoIndex) {
+    if (item.id === activeTodo.id) {
       switchedItem2 = {
-        ...itemWhoEchangesPosition,
-        orderCount: todoToReorder.orderCount,
+        ...todoToSwitch,
+        orderCount: activeTodo.orderCount,
       };
       return switchedItem2;
     }

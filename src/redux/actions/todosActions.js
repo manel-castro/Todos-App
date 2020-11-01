@@ -100,7 +100,10 @@ export function deleteSubItemSuccess(todoId, subItemPath, isDeepNested) {
 //
 //THUNKS
 
-export const moveTodoOrder = (todoId, action) => (dispatch, getState) => {
+export const moveTodoOrder = (activeTodoId, todoToSwitchId, action) => (
+  dispatch,
+  getState
+) => {
   const { todos } = getState();
   const clonedTodos = clone(todos);
   let newReduxTodos;
@@ -108,7 +111,7 @@ export const moveTodoOrder = (todoId, action) => (dispatch, getState) => {
   let firebaseItem1, firebaseItem2;
 
   if (action === "up") {
-    const reordered = reorderTodos(clonedTodos, todoId);
+    const reordered = reorderTodos(clonedTodos, activeTodoId, todoToSwitchId);
     newReduxTodos = reordered[0];
     firebaseItem1 = reordered[1];
     firebaseItem2 = reordered[2];
@@ -116,13 +119,13 @@ export const moveTodoOrder = (todoId, action) => (dispatch, getState) => {
 
   if (action === "down") {
     const reversedTodos = clonedTodos.reverse(); //very important
-    const reordered = reorderTodos(reversedTodos, todoId);
+    const reordered = reorderTodos(reversedTodos, activeTodoId, todoToSwitchId);
     newReduxTodos = reordered[0].reverse();
     firebaseItem1 = reordered[1];
     firebaseItem2 = reordered[2];
   }
   if (action !== "up" && action !== "down")
-    throw `Dude look at the todos actions, action sent: ${action}`;
+    throw `Look at the todos actions, action sent: ${action}`;
 
   dispatch(moveTodoOrderSuccess(newReduxTodos));
 
@@ -150,6 +153,15 @@ export const markTodoIsNew = (todoId) => (dispatch, getState) => {
   if (todosExtra.isAnyNewTodoCount.length > 0) return;
   dispatch(markTodoIsNewSuccess(todoId));
 };
+//
+//
+
+export function getReduxTodos() {
+  return function (dispatch, getState) {
+    const { todos } = getState();
+    return todos;
+  };
+}
 //should look in cookies first?
 export function getTodos() {
   return function (dispatch, getState) {

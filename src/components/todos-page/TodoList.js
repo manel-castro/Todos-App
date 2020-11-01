@@ -34,6 +34,7 @@ const TodoList = ({
                 <TodoItem
                   key={id}
                   id={id}
+                  className={"TodoItemNode"}
                   delTodo={delTodo}
                   addSubItem={addSubItem}
                   getNewValue={getNewValue}

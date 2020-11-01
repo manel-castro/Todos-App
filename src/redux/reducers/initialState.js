@@ -16,8 +16,4 @@ export default {
     bodyText: "rgb(50, 50, 50)",
   },
   callsInProgress: [],
-  interactivity: {
-    todos: [],
-    allTodoItemsMounted: false,
-  },
 };

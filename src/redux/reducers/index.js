@@ -4,7 +4,6 @@ import todos from "./todosReducers";
 import colors from "./colorsReducers";
 import todosExtra from "./todosExtraReducers";
 import calls from "./callsInProgressReducers";
-import interactivity from "./interactivityReducers";
 
 const rootReducer = combineReducers({
   user: user,
@@ -12,7 +11,6 @@ const rootReducer = combineReducers({
   todosExtra: todosExtra,
   colors: colors,
   callsInProgress: calls,
-  interactivity: interactivity,
 });
 
 export default rootReducer;
