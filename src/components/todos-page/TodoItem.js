@@ -9,14 +9,14 @@ import {
   DraggableContainer,
   Separator,
   DragPlaceholder,
-  //DraggableIcon,
+  DraggableIcon,
   TodoItemWrap,
   TodoTitleWrap,
   DeleteTodo,
   SubItemsContainer,
   IconsWrap,
-  UpIcon,
-  DownIcon,
+  // UpIcon,
+  // DownIcon,
 } from "./TodoItem.elements.js";
 import SubItemLayout from "./SubItemLayout";
 import TextDisplay from "../common/TextDisplay";
@@ -70,13 +70,8 @@ export const TodoItem = ({
             onMouseDown={() => {}}
             onMouseUp={() => {}}
           >
-            <IconsWrap>
-              <UpIcon
-                onClick={() => {
-                  onClick("up");
-                }}
-              />
-              <DownIcon onClick={() => onClick("down")} />
+            <IconsWrap id={todo.id + "iconsWrap"}>
+              <DraggableIcon />
             </IconsWrap>
             <Separator id={"TodoItemObserver"} />
           </DraggableContainer>

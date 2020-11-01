@@ -3,6 +3,8 @@ import {
   BsTrash,
   BsFillCaretUpFill,
   BsFillCaretDownFill,
+  BsChevronBarExpand,
+  BsArrowsExpand,
 } from "react-icons/bs";
 // Drag-drop
 //  https://medium.com/better-programming/the-beginners-guide-to-creating-an-interactive-list-with-react-28c8af880f35
@@ -30,14 +32,19 @@ export const DraggableContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0px 0px 0px 15px;
 `;
 
 export const IconsWrap = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 4rem;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+`;
+
+export const DraggableIcon = styled(BsChevronBarExpand)`
+  font-size: 20px;
+  color: rgb(199, 200, 200);
 `;
 
 export const UpIcon = styled(BsFillCaretUpFill)`
@@ -56,7 +63,6 @@ export const Separator = styled.div`
   border-left: 0px solid rgb(199, 200, 200);
   border-right: 1px solid rgb(199, 200, 200);
   border-bottom: 0px solid grey;
-  margin-left: 10px;
 `;
 
 export const DragPlaceholder = styled.div`

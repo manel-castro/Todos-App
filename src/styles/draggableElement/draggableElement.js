@@ -22,23 +22,6 @@ export function dragTodo(moveTodoOrder) {
     let dragPlaceholderRef = document.getElementById(
       todoId + "dragPlaceholder"
     );
-    //  //get initial container position
-    //  const initialOffsetTop = containerRef.offsetTop;
-    //  //  console.log(initialOffsetTop, containerRef);
-    //  //  console.log(containerRef.style);
-    //  //  let array = [];
-    //  //  function ConsoleLogger(ref) {
-    //  //    console.log(ref, ref.offsetTop);
-    //  //  }
-    //  //  document.getElementById("todosLayout").onscroll = function () {
-    //  //    throttle(500, ConsoleLogger, containerRef);
-    //  //  };
-    //
-    //
-    //
-    //when going down, it has to surpass the position of the next item.
-    // when going up, it has to surpass de position of the next item plus it's height (we need the height on redux too. )
-    // then we fire the action change.
 
     // CHANGES ON STYLE ON MOUSE DOWN
     // set the placeholder space when dragging.
@@ -53,6 +36,19 @@ export function dragTodo(moveTodoOrder) {
     containerRef.style.cssText = `position:absolute;top:${
       offsetTop - initialHeight
     }px;z-index:11;width:${initialWidth}px`;
+
+    for (let i = 0; i < todoItemNodes.length - 1; i++) {
+      if (todoItemNodes[i].attributes.id.nodeValue === todoId) continue;
+      todoItemNodes[
+        i
+      ].childNodes[1].childNodes[0].childNodes[0].childNodes[0].addEventListener(
+        "mouseenter",
+        function (e) {
+          console.log("entered");
+          console.log(e);
+        }
+      );
+    }
 
     // SETTING UP BEHAVIOR ON MOVE MOUSE.
 
@@ -96,7 +92,8 @@ export function dragTodo(moveTodoOrder) {
         todoId,
         containerRef,
         draggerRef,
-        dragPlaceholderRef
+        dragPlaceholderRef,
+        todoItemNodes
       );
     };
     document.onmouseup = function (e) {
@@ -104,53 +101,6 @@ export function dragTodo(moveTodoOrder) {
     };
   };
   //
-  //
-  //  const draggerId = todoId + "draggerRef";
-  //  const containerId = todoId + "containerRef";
-  //  const itemContainerId = todoId + "itemContainerRef";
-  //  const dragPlaceholderId = todoId + "dragPlaceholder";
-  //  const draggerRef = document.getElementById(draggerId);
-  //  const containerRef = document.getElementById(containerId);
-  //  const itemContainerRef = document.getElementById(itemContainerId);
-  //  const dragPlaceholderRef = document.getElementById(dragPlaceholderId);
-  //  //const headerHeight = document.getElementById("headerHeight").offsetTop;
-  //  //get all todo positions object:
-  //
-  //  //get initial container position
-  //  const initialOffsetTop = containerRef.offsetTop;
-  //  //  console.log(initialOffsetTop, containerRef);
-  //  //  console.log(containerRef.style);
-  //  //  let array = [];
-  //  //  function ConsoleLogger(ref) {
-  //  //    console.log(ref, ref.offsetTop);
-  //  //  }
-  //  //  document.getElementById("todosLayout").onscroll = function () {
-  //  //    throttle(500, ConsoleLogger, containerRef);
-  //  //  };
-  //  draggerRef.onmousedown = dragOnMouseDown;
-  //
-  //  function dragOnMouseDown(e) {
-  //    e = e || window.event; // for older IE
-  //    e.preventDefault();
-  //    //when going down, it has to surpass the position of the next item.
-  //    // when going up, it has to surpass de position of the next item plus it's height (we need the height on redux too. )
-  //    // then we fire the action change.
-  //
-  //    // CHANGES ON STYLE ON MOUSE DOWN
-  //    // set the placeholder space when dragging.
-  //    const initialHeight = itemContainerRef.scrollHeight;
-  //    dragPlaceholderRef.style.cssText = `display:block;height:${
-  //      initialHeight + 20
-  //    }px;`;
-  //
-  //    //set the position when dragging item.
-  //    const offsetTop = containerRef.offsetTop;
-  //    const initialWidth = containerRef.offsetWidth;
-  //    console.log("initialWidth");
-  //
-  //    containerRef.style.cssText = `position:absolute;top:${
-  //      offsetTop - initialHeight - 20
-  //    }px;z-index:11;width:${initialWidth}px`;
   //
   //    // SETTING UP BEHAVIOR ON MOVE MOUSE.
   //    const itemPositions = getTodosInteractivity();
@@ -214,11 +164,23 @@ export function dragTodo(moveTodoOrder) {
     //   }
     // }
 
+    const outOfDragger = () => {
+      let draggerBounding = draggerRef.getBoundingClientRect();
+      if (pos3 < draggerBounding.left || pos3 > draggerBounding.right) {
+        dragOnMouseUp(e, containerRef, dragPlaceholderRef);
+      }
+    };
+
+    const detectChange = () => {
+      console.log(" ");
+    };
+
+    throttle(400, () => {
+      outOfDragger();
+      detectChange();
+    });
+
     //Drop the element if out of dragger width.
-    let draggerBounding = draggerRef.getBoundingClientRect();
-    if (pos3 < draggerBounding.left || pos3 > draggerBounding.right) {
-      dragOnMouseUp(e, containerRef, dragPlaceholderRef);
-    }
 
     containerRef.style.top = containerRef.offsetTop - pos2 + "px";
   }
