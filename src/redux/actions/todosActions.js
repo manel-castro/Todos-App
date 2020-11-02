@@ -208,13 +208,7 @@ export function getTodos() {
 }
 
 export const addTodo = () => async (dispatch, getState) => {
-  dispatch(
-    callsInProgressActions.startActionCall({
-      addTodo: {
-        addTodoButton: true,
-      },
-    })
-  );
+  dispatch(callsInProgressActions.startActionCall({ addTodoButton: true }));
   const { todosExtra } = getState();
   if (todosExtra.isAnyNewTodoCount.length > 0) {
     /// END API CALL
@@ -249,7 +243,7 @@ export const addTodo = () => async (dispatch, getState) => {
   //      dispatch(callsInProgressActions.endActionCall("add todo"));
   //      throw err;
   //    });
-  //  dispatch(callsInProgressActions.endActionCall("add todo"));
+  dispatch(callsInProgressActions.endActionCall("addTodoButton"));
   //need to update store to avoid fire Snapshot.
 
   return;

@@ -14,7 +14,7 @@ import {
 } from "./AddTodo.elements.js";
 import { Spinner } from "../../globalStyles";
 
-const AddTodo = ({ addTodo, anyTodoNew, todosExist, inProgress = [] }) => {
+const AddTodo = ({ addTodo, anyTodoNew, todosExist, inProgress }) => {
   const [addIcon, setAddIcon] = useState(false);
   // const handleMouse = (state) => {
   //   setAddIcon(state);
@@ -26,8 +26,8 @@ const AddTodo = ({ addTodo, anyTodoNew, todosExist, inProgress = [] }) => {
       const elementDOM = document.getElementById(
         anyTodoNew + "textDisplayArea"
       );
-      //      if (elementDOM) elementDOM.focus();
-      //      return;
+      if (elementDOM) elementDOM.focus();
+      return;
     } else {
       try {
         addTodo();
@@ -47,7 +47,7 @@ const AddTodo = ({ addTodo, anyTodoNew, todosExist, inProgress = [] }) => {
           // onMouseLeave={() => handleMouse(false)}
           // onTouchStart={() => handleMouse(false)}
         >
-          {inProgress.includes("add todo") ? (
+          {inProgress.addTodoButton ? (
             <Spinner fontSize="5px" size="8em" />
           ) : (
             <PencilIcon />
@@ -79,18 +79,15 @@ const AddTodo = ({ addTodo, anyTodoNew, todosExist, inProgress = [] }) => {
 AddTodo.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   todosExist: PropTypes.bool.isRequired,
-  inProgress: PropTypes.array.isRequired,
+  inProgress: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state, ownState) {
   let todoIds = state.todos.map((todo) => todo.id);
-  let inProgressArray = state.callsInProgress.filter((item) => {
-    return item === "addTodo";
-  });
   return {
     anyTodoNew: state.todosExtra.isAnyNewTodoCount,
     todosExist: todoIds.length !== 0,
-    inProgress: inProgressArray.addTodo,
+    inProgress: state.callsInProgress,
   };
 }
 const mapDispatchToProps = {

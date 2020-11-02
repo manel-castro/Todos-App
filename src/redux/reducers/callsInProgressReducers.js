@@ -7,10 +7,18 @@ export default function callsInProgress(
 ) {
   switch (action.type) {
     case types.START_ACTION_CALL:
-      return [...state, action.element];
+      console.log("FROM REDUX API");
+      console.log(action.element.addTodo);
+      return { ...state, ...action.element };
 
     case types.END_ACTION_CALL:
-      return state.filter((element) => element !== action.element);
+      //let newObj = {};
+      console.log("ON END ACTION CALL");
+      Object.keys(state).forEach((element) => {
+        console.log(element);
+				element === action.element ? { [action.element]: false } : element
+      });
+      return state;
 
     default:
       return state;
