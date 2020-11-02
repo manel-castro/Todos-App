@@ -208,7 +208,13 @@ export function getTodos() {
 }
 
 export const addTodo = () => async (dispatch, getState) => {
-  dispatch(callsInProgressActions.startActionCall("add todo"));
+  dispatch(
+    callsInProgressActions.startActionCall({
+      addTodo: {
+        addTodoButton: true,
+      },
+    })
+  );
   const { todosExtra } = getState();
   if (todosExtra.isAnyNewTodoCount.length > 0) {
     /// END API CALL
@@ -230,7 +236,7 @@ export const addTodo = () => async (dispatch, getState) => {
   let newTodoLocalData = newTodoData;
   let newId = uuid();
   newTodoLocalData["id"] = newId;
-  dispatch(addTodoSuccess(newTodoLocalData));
+  // dispatch(addTodoSuccess(newTodoLocalData));
 
   //  firebase
   //    .firestore()
@@ -243,7 +249,7 @@ export const addTodo = () => async (dispatch, getState) => {
   //      dispatch(callsInProgressActions.endActionCall("add todo"));
   //      throw err;
   //    });
-  dispatch(callsInProgressActions.endActionCall("add todo"));
+  //  dispatch(callsInProgressActions.endActionCall("add todo"));
   //need to update store to avoid fire Snapshot.
 
   return;

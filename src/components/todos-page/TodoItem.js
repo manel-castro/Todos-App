@@ -91,6 +91,7 @@ export const TodoItem = ({
                 <DeleteTodo onClick={() => delTodo(todo)} />
               </div>
             </TodoTitleWrap>
+            <>Saved</>
             <SubItemsContainer>
               <SubItemLayout todo={todo} />
             </SubItemsContainer>

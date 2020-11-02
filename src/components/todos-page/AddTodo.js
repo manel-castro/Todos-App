@@ -36,6 +36,7 @@ const AddTodo = ({ addTodo, anyTodoNew, todosExist, inProgress = [] }) => {
       }
     }
   };
+  console.log("-------______", inProgress);
 
   return (
     <AddNoteButtonWrap todosExist={todosExist}>
@@ -59,7 +60,7 @@ const AddTodo = ({ addTodo, anyTodoNew, todosExist, inProgress = [] }) => {
           // onMouseLeave={() => handleMouse(false)}
           // onTouchStart={() => handleMouse(false)}
         >
-          {inProgress.includes("add todo") ? (
+          {inProgress.addTodoButton ? (
             <Spinner fontSize="5px" size="10em" />
           ) : (
             <>
@@ -83,10 +84,13 @@ AddTodo.propTypes = {
 
 function mapStateToProps(state, ownState) {
   let todoIds = state.todos.map((todo) => todo.id);
+  let inProgressArray = state.callsInProgress.filter((item) => {
+    return item === "addTodo";
+  });
   return {
     anyTodoNew: state.todosExtra.isAnyNewTodoCount,
-    inProgress: state.callsInProgress,
     todosExist: todoIds.length !== 0,
+    inProgress: inProgressArray.addTodo,
   };
 }
 const mapDispatchToProps = {
