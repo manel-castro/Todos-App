@@ -5,6 +5,10 @@ import * as todosActions from "../../redux/actions/todosActions";
 
 import AddTodo from "./AddTodo";
 import TodoList from "./TodoList";
+
+//Development
+import ErrorBoundary from "../../errorhandling/ErrorBoundary";
+
 //eslint-disable-next-line
 class TodosLayout extends Component<Props, never> {
   constructor(props) {
@@ -47,14 +51,6 @@ class TodosLayout extends Component<Props, never> {
     return "";
   };
 
-  handleChangeTodo = async (todoId, title, isNew) => {
-    try {
-      this.props.modifyTodo(todoId, title, isNew);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   //  handleMarkCompleted = async (todo) => {
   //   try {
   //     await markComplete(todo);
@@ -85,7 +81,9 @@ class TodosLayout extends Component<Props, never> {
 
     return (
       <>
-        <AddTodo />
+        <ErrorBoundary>
+          <AddTodo />
+        </ErrorBoundary>
         <div
           id={"todosLayoutId"}
           style={{
@@ -94,13 +92,14 @@ class TodosLayout extends Component<Props, never> {
             paddingBottom: "70px",
           }}
         >
-          <TodoList
-            todoIds={todoIds}
-            delTodo={this.handleDeleteTodo}
-            addSubItem={this.handleAddSubItem}
-            getNewValue={this.handleChangeTodo}
-            checkErrors={this.isNewTodoValid}
-          />
+          <ErrorBoundary>
+            <TodoList
+              todoIds={todoIds}
+              delTodo={this.handleDeleteTodo}
+              addSubItem={this.handleAddSubItem}
+              checkErrors={this.isNewTodoValid}
+            />
+          </ErrorBoundary>
         </div>
       </>
     );

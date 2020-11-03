@@ -11,15 +11,15 @@ export default function callsInProgress(
       console.log(action.element.addTodo);
       return { ...state, ...action.element };
 
-    case types.END_ACTION_CALL:
+    case types.END_ACTION_CALL: {
       //let newObj = {};
-      console.log("ON END ACTION CALL");
-      Object.keys(state).forEach((element) => {
-        console.log(element);
-				element === action.element ? { [action.element]: false } : element
-      });
-      return state;
-
+      let newArr = Object.assign(
+        Object.keys(state).map((element) => {
+          element[0] === action.element ? { [action.element]: false } : element;
+        })
+      );
+      return newArr;
+    }
     default:
       return state;
   }

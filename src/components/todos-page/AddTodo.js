@@ -19,6 +19,7 @@ const AddTodo = ({ addTodo, anyTodoNew, todosExist, inProgress }) => {
   // const handleMouse = (state) => {
   //   setAddIcon(state);
   // };
+
   const handleAddTodo = async () => {
     const containerRef = document.getElementById("todosLayoutId");
     // containerRef.scrollTop = 0;
@@ -26,8 +27,8 @@ const AddTodo = ({ addTodo, anyTodoNew, todosExist, inProgress }) => {
       const elementDOM = document.getElementById(
         anyTodoNew + "textDisplayArea"
       );
+      console.log(document.hasFocus());
       if (elementDOM) elementDOM.focus();
-      return;
     } else {
       try {
         addTodo();
@@ -36,42 +37,41 @@ const AddTodo = ({ addTodo, anyTodoNew, todosExist, inProgress }) => {
       }
     }
   };
-  console.log("-------______", inProgress);
 
   return (
     <AddNoteButtonWrap todosExist={todosExist}>
       {todosExist ? (
         <AddNoteButton
           onClick={handleAddTodo}
-          // onMouseEnter={() => handleMouse(true)}
-          // onMouseLeave={() => handleMouse(false)}
-          // onTouchStart={() => handleMouse(false)}
+        // onMouseEnter={() => handleMouse(true)}
+        // onMouseLeave={() => handleMouse(false)}
+        // onTouchStart={() => handleMouse(false)}
         >
           {inProgress.addTodoButton ? (
             <Spinner fontSize="5px" size="8em" />
           ) : (
-            <PencilIcon />
-          )}
+              <PencilIcon />
+            )}
         </AddNoteButton>
       ) : (
-        <LargeAddNoteButton
-          onClick={handleAddTodo}
+          <LargeAddNoteButton
+            onClick={handleAddTodo}
           // onMouseEnter={() => handleMouse(true)}
           // onMouseLeave={() => handleMouse(false)}
           // onTouchStart={() => handleMouse(false)}
-        >
-          {inProgress.addTodoButton ? (
-            <Spinner fontSize="5px" size="10em" />
-          ) : (
-            <>
-              <IconWrap>
-                <PencilIcon />
-              </IconWrap>
-              <ButtonText>Add note</ButtonText>
-            </>
-          )}
-        </LargeAddNoteButton>
-      )}
+          >
+            {inProgress.addTodoButton ? (
+              <Spinner fontSize="5px" size="10em" />
+            ) : (
+                <>
+                  <IconWrap>
+                    <PencilIcon />
+                  </IconWrap>
+                  <ButtonText>Add note</ButtonText>
+                </>
+              )}
+          </LargeAddNoteButton>
+        )}
     </AddNoteButtonWrap>
   );
 };
@@ -82,12 +82,12 @@ AddTodo.propTypes = {
   inProgress: PropTypes.object.isRequired,
 };
 
-function mapStateToProps(state, ownState) {
+function mapStateToProps(state) {
   let todoIds = state.todos.map((todo) => todo.id);
   return {
-    anyTodoNew: state.todosExtra.isAnyNewTodoCount,
-    todosExist: todoIds.length !== 0,
-    inProgress: state.callsInProgress,
+    anyTodoNew: state.todosExtra.isAnyNewTodoCount, //for avoiding create more than one new
+    todosExist: todoIds.length !== 0, //for button styling 
+    inProgress: state.callsInProgress, //for spinner
   };
 }
 const mapDispatchToProps = {

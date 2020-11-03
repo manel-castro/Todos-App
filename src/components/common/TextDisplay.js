@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 //import { useEventListener } from "../_helpers/hooks";
 import PropTypes from "prop-types";
+//
+//Development
+import ErrorBoundary from "../../errorhandling/ErrorBoundary";
 
-export function TextDisplayChild({
+function TextDisplayChild({
   text,
   isNew = false,
   fontSize,
@@ -34,51 +37,53 @@ export function TextDisplayChild({
         textArea.current.style.height = textArea.current.scrollHeight + "px";
       }, 0);
 
-  //    const validateTimer = setTimeout(() => {
-  //      textArea.current.addEventListener("keypress", validate());
-  //    }, 2000);
-  //    return function () {
-  //      //    console.log("CleanedTimeout");
-  //      clearTimeout(sizeTimer);
-  //      clearTimeout(validateTimer);
-  //    };
+      const validateTimer = setTimeout(() => {
+        textArea.current.addEventListener("keypress", validate());
+      }, 2000);
+      return function () {
+        //    console.log("CleanedTimeout");
+        clearTimeout(sizeTimer);
+        clearTimeout(validateTimer);
+      };
     },
     [text]
   );
 
   //  The next code is made to autofocus when a todo is new.
-  if (isNew) {
-    useEffect(function () {
-      textArea.current.focus();
-    }, []);
-  }
+  useEffect(() => {
+    isNew ? textArea.current.focus() : null;
+  }, [isNew]);
 
   return (
     <div style={{ cursor: "text" }}>
-      <textarea
-        style={{
-          color: color,
-          fontSize: fontSize,
-          border: "none",
-          outline: "none",
-          resize: "none",
-          width: "100%",
-          overflow: "hidden",
-          maxWidth: "100%",
-          paddingRight: "10px",
-        }}
-        id={todoId + "textDisplayArea"}
-        ref={textArea}
-        type="textarea"
-        required
-        value={text}
-        onChange={handleChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-      ></textarea>
-      <small style={{ color: "red" }}>{error}</small>
-      {/* ADd component here to say when saved
-       */}
+      <ErrorBoundary>
+        <textarea
+          style={{
+            color: color,
+            fontSize: fontSize,
+            border: "none",
+            outline: "none",
+            resize: "none",
+            width: "100%",
+            overflow: "hidden",
+            maxWidth: "100%",
+            paddingRight: "10px",
+          }}
+          id={todoId + "textDisplayArea"}
+          ref={textArea}
+          type="textarea"
+          required
+          value={text}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+        ></textarea>
+      </ErrorBoundary>
+      <ErrorBoundary>
+        <small style={{ color: "red" }}>{error}</small>
+        {/* ADd component here to say when saved
+         */}
+      </ErrorBoundary>
     </div>
   );
 }
@@ -96,13 +101,14 @@ TextDisplayChild.propTypes = {
 
 function TextDisplay({
   todoId,
+  modifyingElement,
   text,
   isNew = false,
   fontSize = "16px",
   colorOff = "black",
   colorActive = "grey",
   checkErrors = false,
-  getNewValue,
+  reduxCall,
 }) {
   const [color, setColor] = useState(colorOff);
   const [value, setValue] = useState(text);
@@ -130,7 +136,7 @@ function TextDisplay({
     }
     if (initialValue !== value) {
       try {
-        getNewValue(todoId, value, isNew);
+        reduxCall(todoId, text, isNew, modifyingElement);
       } catch (err) {
         console.log(err);
       }
@@ -139,17 +145,19 @@ function TextDisplay({
 
   return (
     <div>
-      <TextDisplayChild
-        text={value}
-        isNew={isNew}
-        fontSize={fontSize}
-        error={error}
-        handleChange={handleChange}
-        validate={validate}
-        handleColor={handleColor}
-        color={color}
-        todoId={todoId}
-      />
+      <ErrorBoundary>
+        <TextDisplayChild
+          text={value}
+          isNew={isNew}
+          fontSize={fontSize}
+          error={error}
+          handleChange={handleChange}
+          validate={validate}
+          handleColor={handleColor}
+          color={color}
+          todoId={todoId}
+        />
+      </ErrorBoundary>
     </div>
   );
 }

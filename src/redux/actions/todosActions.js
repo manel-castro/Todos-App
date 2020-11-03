@@ -176,6 +176,7 @@ export function getTodos() {
         const todos = querySnapshot.docs.map((doc) => {
           const data = doc.data();
           data["id"] = doc.id;
+          if (data.isNew) dispatch(todosExtraActions.markNewTodoCount(doc.id));
           return data;
         });
 
@@ -208,13 +209,24 @@ export function getTodos() {
 }
 
 export const addTodo = () => async (dispatch, getState) => {
+  const { todosExtra, callsInProgress } = getState();
+
+  console.log("-----------------", callsInProgress);
+  let todoItemInProgress = false;
+  Object.keys(callsInProgress).forEach((item) => {
+    console.log("ITEM---", item);
+    if (item === "TodoItem") todoItemInProgress = true;
+  });
+  console.log(todoItemInProgress);
+
+  //  if (todoItemInProgress) return;
   dispatch(callsInProgressActions.startActionCall({ addTodoButton: true }));
-  const { todosExtra } = getState();
   if (todosExtra.isAnyNewTodoCount.length > 0) {
     /// END API CALL
     throw "Todo already created.";
   }
-
+  let newId = uuid();
+  dispatch(todosExtraActions.markNewTodoCount(newId));
   const { todos } = getState();
   const orderCount = todos[0] ? todos[0].orderCount + 1 : 0;
 
@@ -228,9 +240,8 @@ export const addTodo = () => async (dispatch, getState) => {
     orderCount: orderCount,
   };
   let newTodoLocalData = newTodoData;
-  let newId = uuid();
   newTodoLocalData["id"] = newId;
-  // dispatch(addTodoSuccess(newTodoLocalData));
+  dispatch(addTodoSuccess(newTodoLocalData));
 
   //  firebase
   //    .firestore()
@@ -249,10 +260,17 @@ export const addTodo = () => async (dispatch, getState) => {
   return;
 };
 
-export const modifyTodo = (todoId, title, isNew = false) => async (
-  dispatch,
-  getState
-) => {
+export const modifyTodo = (
+  todoId,
+  title,
+  isNew = false,
+  modifyingElement
+) => async (dispatch, getState) => {
+  //control for calls in progress, if there is already one, skip this action.
+  console.log("MODIFYING ELEMENT IS => ", modifyingElement);
+  dispatch(
+    callsInProgressActions.startActionCall({ [modifyingElement]: true })
+  );
   const { todosExtra } = getState();
   if (todosExtra.isAnyNewTodoCount === todoId) {
     dispatch(todosExtraActions.dismarkNewTodoCount());

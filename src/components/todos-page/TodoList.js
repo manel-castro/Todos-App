@@ -27,20 +27,19 @@ const TodoList = ({
         {todoIds.length === 0
           ? null
           : todoIds
-              //.filter((todo) => {
-              //return todo.completed === false;
-              //})
-              .map((id) => (
-                <TodoItem
-                  key={id}
-                  id={id}
-                  className={"TodoItemNode"}
-                  delTodo={delTodo}
-                  addSubItem={addSubItem}
-                  getNewValue={getNewValue}
-                  checkErrors={checkErrors}
-                />
-              ))}
+            //.filter((todo) => {
+            //return todo.completed === false;
+            //})
+            .map((id) => (
+              <TodoItem
+                key={id}
+                id={id}
+                className={"TodoItemNode"}
+                delTodo={delTodo}
+
+                checkErrors={checkErrors}
+              />
+            ))}
       </TodosListWrap>
     </TodosListContainer>
   );

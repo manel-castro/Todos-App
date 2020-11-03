@@ -23,7 +23,8 @@ export default function todosReducer(state = initialState.todos, action) {
       return state.map((todo) => {
         if (todo.id === action.todoId) {
           if (action.isNew) {
-            const { isNew, ...rest } = todo;
+            //eslint-disable-next-line
+            const { isNew, ...rest } = todo; //this line is made to shift this value from todo, so that the todo doesn't is new anymore when it's modified
             return { ...rest, title: action.dataUpdate };
           } else {
             return { ...todo, title: action.dataUpdate };
@@ -131,7 +132,6 @@ export default function todosReducer(state = initialState.todos, action) {
       });
     }
     case types.DELETE_SUB_ITEM_SUCCESS: {
-      const todoData = action.todoData;
       return state.map((todo) => {
         const subItemId = action.subItemPath[action.subItemPath.length - 1];
         if (todo.id !== action.todoId) {

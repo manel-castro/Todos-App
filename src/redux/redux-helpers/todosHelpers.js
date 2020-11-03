@@ -10,7 +10,7 @@ export const reorderTodos = (todos, activeTodoId, todoToSwitchId) => {
 
   if (todoIndex === 0) throw "Beyond array scope"; //beyondArray = true;
 
-  const returnArray = todos.map((item, uid) => {
+  const returnArray = todos.map((item) => {
     if (item.id === todoToSwitchId) {
       todoToSwitch = item;
       switchedItem1 = { ...activeTodo, orderCount: todoToSwitch.orderCount };

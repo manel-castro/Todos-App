@@ -21,19 +21,18 @@ import {
 import SubItemLayout from "./SubItemLayout";
 import TextDisplay from "../common/TextDisplay";
 
+//Development
+import ErrorBoundary from "../../errorhandling/ErrorBoundary";
+
 export const TodoItem = ({
   todo,
   delTodo,
-  getNewValue,
   checkErrors,
   markNewTodoCount,
   moveTodoOrder,
+  modifyTodo,
 }) => {
   useEffect(() => {
-    if (todo.isNew) {
-      markNewTodoCount(todo.id);
-      //isNew = todo.isNew;
-    }
     console.log("TODO ITEM MOUNTED");
     return () => console.log("TODO ITEM UNMOUNTING");
   }, []);
@@ -78,14 +77,17 @@ export const TodoItem = ({
           <TodoItemWrap>
             <TodoTitleWrap>
               <div style={{ cursor: "pointer", width: "100%" }}>
-                <TextDisplay
-                  text={todo.title}
-                  isNew={todo.isNew}
-                  fontSize={"20px"}
-                  getNewValue={getNewValue}
-                  todoId={todo.id}
-                  checkErrors={checkErrors}
-                />
+                <ErrorBoundary>
+                  <TextDisplay
+                    text={todo.title}
+                    modifyingElement={"TodoItem"}
+                    isNew={todo.isNew}
+                    fontSize={"20px"}
+                    reduxCall={modifyTodo}
+                    todoId={todo.id}
+                    checkErrors={checkErrors}
+                  />
+                </ErrorBoundary>
               </div>
               <div>
                 <DeleteTodo onClick={() => delTodo(todo)} />
@@ -122,6 +124,7 @@ function mapStateToProps(state, ownState) {
 const mapDispatchToProps = {
   markNewTodoCount: todosExtraActions.markNewTodoCount,
   moveTodoOrder: todosActions.moveTodoOrder,
+  modifyTodo: todosActions.modifyTodo,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoItem);

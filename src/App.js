@@ -18,6 +18,8 @@ import { ThemeProvider } from "styled-components";
 import { themeGen } from "./theme.js";
 import GlobalStyle, { Container, Spinner } from "./globalStyles";
 import CustomStyles from "./styles/CustomStyles";
+
+
 // import uuid from 'uuid';
 
 const App = (props) => {
