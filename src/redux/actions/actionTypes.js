@@ -11,14 +11,19 @@ export const ADD_TODO_SUCCESS = "ADD_TODO_SUCCESS";
 export const MODIFY_TODO_SUCCESS = "MODIFY_TODO_SUCCESS";
 export const MARK_TODO_COMPLETED_OPTIMISTIC = "MARK_TODO_COMPLETED_OPTIMISTIC";
 export const DELETE_TODO_OPTIMISTIC = "DELETE_TODO_OPTIMISTIC";
+export const MOVE_TODO_ORDER_SUCCESS = "MOVE_TODO_ORDER_SUCCESS";
+
+//Isnew behavior in todos: Optimize/refactor?
+export const MARK_TODO_IS_NEW_SUCCESS = "MARK_TODO_IS_NEW_SUCCESS";
+export const DISMARK_TODO_IS_NEW = "DISMARK_TODO_IS_NEW";
+
+//Sub Item todos (integrated into todos)
 export const ADD_SUB_ITEM_SUCCESS = "ADD_SUB_ITEM_SUCCESS";
 export const OPEN_SUB_ITEM_LEVEL = "OPEN_SUB_ITEM_LEVEL";
 export const MODIFY_SUB_ITEM_SUCCESS = "MODIFY_SUB_ITEM_SUCCESS";
 export const DELETE_SUB_ITEM_SUCCESS = "DELETE_SUB_ITEM_SUCCESS";
-export const MARK_TODO_IS_NEW_SUCCESS = "MARK_TODO_IS_NEW_SUCCESS";
-export const DISMARK_TODO_IS_NEW = "DISMARK_TODO_IS_NEW";
 
-//Todos Extra Actions
+//Todos Extra Actions (optimize/refactor?)
 export const MARK_NEW_TODO_COUNT = "MARK_NEW_TODO_COUNT";
 export const DISMARK_NEW_TODO_COUNT = "DISMARK_NEW_TODO_COUNT";
 
@@ -28,6 +33,10 @@ export const END_ACTION_CALL = "END_ACTION_CALL";
 
 // Color actions
 export const SET_COLOR_PALETTE_SUCCESS = "SET_COLOR_PALETTE_SUCCESS";
+
+//Interactivity actions
+export const SET_ITEM_POSITION = "SET_ITEM_POSITION";
+export const ALL_TODO_ITEMS_MOUNTED = "ALL_TODO_ITEMS_MOUNTED";
 
 //Development actions
 export const DELETE_ALL_TODOS_SUCCESS = "DELETE_ALL_TODOS_SUCCES";

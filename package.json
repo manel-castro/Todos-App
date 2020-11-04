@@ -53,6 +53,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.12.3",
+    "@babel/plugin-transform-react-jsx-source": "^7.12.1",
     "babel-eslint": "10.1.0",
     "babel-loader": "8.1.0",
     "babel-preset-react-app": "10.0.0",
@@ -98,6 +99,9 @@
         {
           "pure": true
         }
+      ],
+      [
+        "@babel/plugin-transform-react-jsx-source"
       ]
     ]
   },

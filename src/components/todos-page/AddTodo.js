@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
+import * as todosActions from "../../redux/actions/todosActions";
+
 import PropTypes from "prop-types";
 import {
   AddNoteButtonWrap,
@@ -11,22 +14,40 @@ import {
 } from "./AddTodo.elements.js";
 import { Spinner } from "../../globalStyles";
 
-const AddTodo = ({ onSubmit, todosExist, inProgress = [] }) => {
+const AddTodo = ({ addTodo, anyTodoNew, todosExist, buttonInProgress }) => {
   const [addIcon, setAddIcon] = useState(false);
-  const handleMouse = (state) => {
-    setAddIcon(state);
+  // const handleMouse = (state) => {
+  //   setAddIcon(state);
+  // };
+
+  const handleAddTodo = async () => {
+    const containerRef = document.getElementById("todosLayoutId");
+    // containerRef.scrollTop = 0;
+    if (anyTodoNew.length > 0) {
+      const elementDOM = document.getElementById(
+        anyTodoNew + "textDisplayArea"
+      );
+      console.log(document.hasFocus());
+      if (elementDOM) elementDOM.focus();
+    } else {
+      try {
+        addTodo();
+      } catch (err) {
+        console.log("addTodo failed", err);
+      }
+    }
   };
 
   return (
     <AddNoteButtonWrap todosExist={todosExist}>
       {todosExist ? (
         <AddNoteButton
-          onClick={onSubmit}
-          onMouseEnter={() => handleMouse(true)}
-          onMouseLeave={() => handleMouse(false)}
-          onTouchStart={() => handleMouse(false)}
+          onClick={handleAddTodo}
+          // onMouseEnter={() => handleMouse(true)}
+          // onMouseLeave={() => handleMouse(false)}
+          // onTouchStart={() => handleMouse(false)}
         >
-          {inProgress.includes("add todo") ? (
+          {buttonInProgress ? (
             <Spinner fontSize="5px" size="8em" />
           ) : (
             <PencilIcon />
@@ -34,12 +55,12 @@ const AddTodo = ({ onSubmit, todosExist, inProgress = [] }) => {
         </AddNoteButton>
       ) : (
         <LargeAddNoteButton
-          onClick={onSubmit}
-          onMouseEnter={() => handleMouse(true)}
-          onMouseLeave={() => handleMouse(false)}
-          onTouchStart={() => handleMouse(false)}
+          onClick={handleAddTodo}
+          // onMouseEnter={() => handleMouse(true)}
+          // onMouseLeave={() => handleMouse(false)}
+          // onTouchStart={() => handleMouse(false)}
         >
-          {inProgress.includes("add todo") ? (
+          {buttonInProgress ? (
             <Spinner fontSize="5px" size="10em" />
           ) : (
             <>
@@ -58,7 +79,21 @@ const AddTodo = ({ onSubmit, todosExist, inProgress = [] }) => {
 AddTodo.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   todosExist: PropTypes.bool.isRequired,
-  inProgress: PropTypes.array.isRequired,
+  inProgress: PropTypes.object.isRequired,
 };
 
-export default AddTodo;
+function mapStateToProps(state) {
+  let todoIds = state.todos.map((todo) => todo.id);
+  return {
+    anyTodoNew: state.todosExtra.isAnyNewTodoCount, //for avoiding create more than one new
+    todosExist: todoIds.length !== 0, //for button styling
+    buttonInProgress: state.callsInProgress.find(
+      ({ id }) => id === "addTodoButton"
+    ), //for spinner
+  };
+}
+const mapDispatchToProps = {
+  addTodo: todosActions.addTodo,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddTodo);

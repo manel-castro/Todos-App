@@ -47,26 +47,26 @@ function SubItemLevel({
                     <TextDisplay
                       text={childrenList[key].title}
                       fontSize={inputSize}
-                      getNewValue={handleModifySubItem}
+                      returnValue={handleModifySubItem}
                       todoId={key}
-                      checkErrors={() => {}}
+                      checkErrors={() => { }}
                     />
                   </div>
                   <ButtonWrap display={"flex-start"} mobileDisplay={"flex-end"}>
                     <>
                       {(isSubOpened || !childrenList[key].hasChildren) &&
-                      isMaxLevel ? (
-                        <ButtonWrap>
-                          <SubLevelButton
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleNewSubItem(key);
-                            }}
-                          >
-                            Add
+                        isMaxLevel ? (
+                          <ButtonWrap>
+                            <SubLevelButton
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleNewSubItem(key);
+                              }}
+                            >
+                              Add
                           </SubLevelButton>
-                        </ButtonWrap>
-                      ) : null}
+                          </ButtonWrap>
+                        ) : null}
                     </>
                     <>
                       {childrenList[key].hasChildren ? (
@@ -82,19 +82,19 @@ function SubItemLevel({
                             </SubLevelButton>
                           </ButtonWrap>
                         ) : (
-                          <>
-                            <ButtonWrap>
-                              <SubLevelButton
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  handleOpenLevel(key, false);
-                                }}
-                              >
-                                Contract
+                            <>
+                              <ButtonWrap>
+                                <SubLevelButton
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleOpenLevel(key, false);
+                                  }}
+                                >
+                                  Contract
                               </SubLevelButton>
-                            </ButtonWrap>
-                          </>
-                        )
+                              </ButtonWrap>
+                            </>
+                          )
                       ) : null}
                       <ButtonWrap>
                         <DeleteSubLevel

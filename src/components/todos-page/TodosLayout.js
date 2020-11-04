@@ -5,11 +5,14 @@ import * as todosActions from "../../redux/actions/todosActions";
 
 import AddTodo from "./AddTodo";
 import TodoList from "./TodoList";
+
+//Development
+import ErrorBoundary from "../../errorhandling/ErrorBoundary";
+
 //eslint-disable-next-line
 class TodosLayout extends Component<Props, never> {
   constructor(props) {
     super(props);
-    this.containerRef = React.createRef();
   }
   //eslint-disable-next-line
   shouldComponentUpdate(nextProps: props) {
@@ -30,6 +33,12 @@ class TodosLayout extends Component<Props, never> {
     }
     return !isEqual(this.props.todoIds, nextProps.todoIds);
   }
+  componentDidMount() {
+    console.log("TODOS LAYOUT RENDERED");
+  }
+  componentDidUpdate() {
+    console.log("TODOS LAYOUT RERENDERED");
+  }
 
   isNewTodoValid = (title) => {
     const regEx = /^[A-Za-z]/;
@@ -42,27 +51,6 @@ class TodosLayout extends Component<Props, never> {
     return "";
   };
 
-  handleAddTodoSubmit = async () => {
-    this.containerRef.current.scrollTop = 0;
-    if (this.props.anyTodoNew.length > 0) {
-      const elementDOM = document.getElementById(
-        this.props.anyTodoNew + "textDisplayArea"
-      );
-      if (elementDOM) elementDOM.focus();
-      return;
-    } else {
-      try {
-        this.props.addTodo();
-      } catch (err) {
-        console.log("addTodo failed", err);
-      }
-    }
-  };
-
-  handleChangeTodo = async (todoId, title, isNew) => {
-    this.props.modifyTodo(todoId, title, isNew);
-  };
-
   //  handleMarkCompleted = async (todo) => {
   //   try {
   //     await markComplete(todo);
@@ -70,6 +58,15 @@ class TodosLayout extends Component<Props, never> {
   //     alert("Server error: Todo haven't been marked");
   //   }
   // };
+
+
+  handleModifyTodo = (todoId, text, isNew, modifyingElement) => {
+    try {
+      this.props.modifyTodo(todoId, text, isNew, modifyingElement);
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   handleDeleteTodo = async (todo) => {
     if (window.confirm("Are you sure to delete this note?")) {
@@ -81,38 +78,31 @@ class TodosLayout extends Component<Props, never> {
     }
   };
 
-  handleAddSubItem = async (todo) => {
-    try {
-      await this.props.addSubItem(todo);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+
   render() {
-    const { todoIds, todosExist, inProgress } = this.props;
+    const { todoIds } = this.props;
 
     return (
       <>
-        <AddTodo
-          onSubmit={this.handleAddTodoSubmit}
-          todosExist={todosExist}
-          inProgress={inProgress}
-        />
+        <ErrorBoundary>
+          <AddTodo />
+        </ErrorBoundary>
         <div
-          ref={this.containerRef}
+          id={"todosLayoutId"}
           style={{
             overflowY: "auto",
             marginBottom: "5px",
             paddingBottom: "70px",
           }}
         >
-          <TodoList
-            todoIds={todoIds}
-            delTodo={this.handleDeleteTodo}
-            addSubItem={this.handleAddSubItem}
-            getNewValue={this.handleChangeTodo}
-            checkErrors={this.isNewTodoValid}
-          />
+          <ErrorBoundary>
+            <TodoList
+              todoIds={todoIds}
+              delTodo={this.handleDeleteTodo}
+              handleModifyTodo={this.handleModifyTodo}
+              checkErrors={this.isNewTodoValid}
+            />
+          </ErrorBoundary>
         </div>
       </>
     );
@@ -131,16 +121,11 @@ export function mapStateToProps(state) {
   let todoIds = state.todos.map((todo) => todo.id);
   return {
     todoIds: todoIds,
-    todosExist: todoIds.length !== 0,
-    anyTodoNew: state.todosExtra.isAnyNewTodoCount,
-    inProgress: state.callsInProgress,
   };
 }
 
 export const mapDispatchToProps = {
-  addTodo: todosActions.addTodo,
   delTodo: todosActions.deleteTodo,
-  addSubItem: todosActions.addSubItem,
   modifyTodo: todosActions.modifyTodo,
 };
 

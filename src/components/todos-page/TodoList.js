@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import TodoItem from "./TodoItem";
 import PropTypes from "prop-types";
 import { TodosListContainer, TodosListWrap } from "./TodoList.elements";
 
 const TodoList = ({
   todoIds = [],
+  handleModifyTodo,
   delTodo,
-  addSubItem,
-  getNewValue,
   checkErrors,
 }) => {
   //For conditional rendering below.
@@ -15,6 +14,12 @@ const TodoList = ({
   //const completedTodos = todos.filter((todo) => {
   //  return todo.completed === true;
   //});
+  useEffect(() => {
+    console.log("RENDERED TODO LIST");
+
+    return () => console.log("UNMOUNTING TODO LIST");
+  });
+
   return (
     <TodosListContainer>
       <TodosListWrap>
@@ -28,9 +33,9 @@ const TodoList = ({
               <TodoItem
                 key={id}
                 id={id}
+                className={"TodoItemNode"}
                 delTodo={delTodo}
-                addSubItem={addSubItem}
-                getNewValue={getNewValue}
+                handleModifyTodo={handleModifyTodo}
                 checkErrors={checkErrors}
               />
             ))}
