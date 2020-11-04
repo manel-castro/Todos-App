@@ -180,6 +180,7 @@ export function getTodos() {
           return data;
         });
 
+        //This code is saved for potential use in collaborative editing.
         //  .onSnapshot((serverUpdate) => {
         //    serverUpdate.docChanges().forEach((change) => {
         //      if (change.type === "modified") {
@@ -212,15 +213,16 @@ export const addTodo = () => async (dispatch, getState) => {
   const { todosExtra, callsInProgress } = getState();
 
   console.log("-----------------", callsInProgress);
-  let todoItemInProgress = false;
-  Object.keys(callsInProgress).forEach((item) => {
-    console.log("ITEM---", item);
-    if (item === "TodoItem") todoItemInProgress = true;
-  });
-  console.log(todoItemInProgress);
+
+  //  let todoItemInProgress = false;
+  //  Object.keys(callsInProgress).forEach((item) => {
+  //    console.log("ITEM---", item);
+  //    if (item === "TodoItem") todoItemInProgress = true;
+  //  });
+  //  console.log(todoItemInProgress);
 
   //  if (todoItemInProgress) return;
-  dispatch(callsInProgressActions.startActionCall({ addTodoButton: true }));
+  dispatch(callsInProgressActions.startActionCall("addTodoButton"));
   if (todosExtra.isAnyNewTodoCount.length > 0) {
     /// END API CALL
     throw "Todo already created.";
@@ -249,7 +251,7 @@ export const addTodo = () => async (dispatch, getState) => {
   //    .doc(newId)
   //    .set(newTodoData)
   //    .catch((err) => {
-  //      dispatch(deleteTodoOptimistic(newTodoLocalData));
+  //      dispatch(deleteTodoOptimistic(newTodoLocalData)); // instead of deleting the new todo, should let the user modify it, and just keep try to connect with the database, and warn the user that the changes still have not been saved.
   //      dispatch(todosExtraActions.dismarkNewTodoCount());
   //      dispatch(callsInProgressActions.endActionCall("add todo"));
   //      throw err;
@@ -268,9 +270,8 @@ export const modifyTodo = (
 ) => async (dispatch, getState) => {
   //control for calls in progress, if there is already one, skip this action.
   console.log("MODIFYING ELEMENT IS => ", modifyingElement);
-  dispatch(
-    callsInProgressActions.startActionCall({ [modifyingElement]: true })
-  );
+  // It can happen, that the user starts modifying other todos while another another api call hasn't finished yet, so we should register the Todo Id
+  dispatch(callsInProgressActions.startActionCall(modifyingElement));
   const { todosExtra } = getState();
   if (todosExtra.isAnyNewTodoCount === todoId) {
     dispatch(todosExtraActions.dismarkNewTodoCount());
@@ -298,6 +299,7 @@ export const modifyTodo = (
   //      throw err;
   //    });
   //need to update store to avoid fire Snapshot.
+  dispatch(callsInProgressActions.endActionCall(modifyingElement));
   await dispatch(modifyTodoSuccess(title, todoId, isNew));
 };
 

@@ -1,24 +1,18 @@
 import * as types from "../actions/actionTypes";
 import initialState from "./initialState";
 
+import { deleteArrayItemById } from "../../shared/utils/js-plain-arrays";
+
 export default function callsInProgress(
   state = initialState.callsInProgress,
   action
 ) {
   switch (action.type) {
     case types.START_ACTION_CALL:
-      console.log("FROM REDUX API");
-      console.log(action.element.addTodo);
-      return { ...state, ...action.element };
+      return [...state, { id: action.element }];
 
     case types.END_ACTION_CALL: {
-      //let newObj = {};
-      let newArr = Object.assign(
-        Object.keys(state).map((element) => {
-          element[0] === action.element ? { [action.element]: false } : element;
-        })
-      );
-      return newArr;
+      return deleteArrayItemById(state, action.element);
     }
     default:
       return state;

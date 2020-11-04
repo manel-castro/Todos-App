@@ -59,6 +59,15 @@ class TodosLayout extends Component<Props, never> {
   //   }
   // };
 
+
+  handleModifyTodo = (todoId, text, isNew, modifyingElement) => {
+    try {
+      this.props.modifyTodo(todoId, text, isNew, modifyingElement);
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   handleDeleteTodo = async (todo) => {
     if (window.confirm("Are you sure to delete this note?")) {
       try {
@@ -69,13 +78,7 @@ class TodosLayout extends Component<Props, never> {
     }
   };
 
-  handleAddSubItem = async (todo) => {
-    try {
-      await this.props.addSubItem(todo);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+
   render() {
     const { todoIds } = this.props;
 
@@ -96,7 +99,7 @@ class TodosLayout extends Component<Props, never> {
             <TodoList
               todoIds={todoIds}
               delTodo={this.handleDeleteTodo}
-              addSubItem={this.handleAddSubItem}
+              handleModifyTodo={this.handleModifyTodo}
               checkErrors={this.isNewTodoValid}
             />
           </ErrorBoundary>
@@ -123,7 +126,6 @@ export function mapStateToProps(state) {
 
 export const mapDispatchToProps = {
   delTodo: todosActions.deleteTodo,
-  addSubItem: todosActions.addSubItem,
   modifyTodo: todosActions.modifyTodo,
 };
 

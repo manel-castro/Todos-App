@@ -108,7 +108,7 @@ function TextDisplay({
   colorOff = "black",
   colorActive = "grey",
   checkErrors = false,
-  reduxCall,
+  returnValue,
 }) {
   const [color, setColor] = useState(colorOff);
   const [value, setValue] = useState(text);
@@ -135,11 +135,7 @@ function TextDisplay({
       return;
     }
     if (initialValue !== value) {
-      try {
-        reduxCall(todoId, text, isNew, modifyingElement);
-      } catch (err) {
-        console.log(err);
-      }
+      returnValue(todoId, value, isNew, modifyingElement);
     }
   };
 

@@ -15,5 +15,5 @@ export default {
     footerText: "rgb(150,150,150)",
     bodyText: "rgb(50, 50, 50)",
   },
-  callsInProgress: {},
+  callsInProgress: [],
 };

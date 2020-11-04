@@ -28,9 +28,9 @@ export const TodoItem = ({
   todo,
   delTodo,
   checkErrors,
-  markNewTodoCount,
+  //(depcrecated) markNewTodoCount,
   moveTodoOrder,
-  modifyTodo,
+  handleModifyTodo,
 }) => {
   useEffect(() => {
     console.log("TODO ITEM MOUNTED");
@@ -58,6 +58,9 @@ export const TodoItem = ({
     moveTodoOrder(activeTodoId, todoToSwitchId, direction);
   };
 
+
+
+
   return (
     <div id={todo.id} className={"TodoItemNodeDiv"}>
       <DragPlaceholder id={todo.id + "dragPlaceholder"} />
@@ -66,8 +69,8 @@ export const TodoItem = ({
         <TodoItemContainer id={todo.id + "itemContainerRef"}>
           <DraggableContainer
             id={todo.id + "draggerRef"}
-            onMouseDown={() => {}}
-            onMouseUp={() => {}}
+            onMouseDown={() => { }}
+            onMouseUp={() => { }}
           >
             <IconsWrap id={todo.id + "iconsWrap"}>
               <DraggableIcon />
@@ -83,7 +86,7 @@ export const TodoItem = ({
                     modifyingElement={"TodoItem"}
                     isNew={todo.isNew}
                     fontSize={"20px"}
-                    reduxCall={modifyTodo}
+                    returnValue={handleModifyTodo}
                     todoId={todo.id}
                     checkErrors={checkErrors}
                   />
@@ -102,14 +105,18 @@ export const TodoItem = ({
       </TodoItemPlace>
     </div>
   );
+
+
 };
+
+
 
 TodoItem.propTypes = {
   todo: PropTypes.object.isRequired,
   delTodo: PropTypes.func.isRequired,
   getNewValue: PropTypes.func.isRequired,
   checkErrors: PropTypes.func.isRequired,
-  markNewTodoCount: PropTypes.func.isRequired,
+  //(depcrecated) markNewTodoCount: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state, ownState) {
@@ -122,9 +129,9 @@ function mapStateToProps(state, ownState) {
 }
 
 const mapDispatchToProps = {
-  markNewTodoCount: todosExtraActions.markNewTodoCount,
+  //(depcrecated) markNewTodoCount: todosExtraActions.markNewTodoCount,
   moveTodoOrder: todosActions.moveTodoOrder,
-  modifyTodo: todosActions.modifyTodo,
+
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoItem);

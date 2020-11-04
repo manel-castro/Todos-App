@@ -5,9 +5,8 @@ import { TodosListContainer, TodosListWrap } from "./TodoList.elements";
 
 const TodoList = ({
   todoIds = [],
+  handleModifyTodo,
   delTodo,
-  addSubItem,
-  getNewValue,
   checkErrors,
 }) => {
   //For conditional rendering below.
@@ -36,7 +35,7 @@ const TodoList = ({
                 id={id}
                 className={"TodoItemNode"}
                 delTodo={delTodo}
-
+                handleModifyTodo={handleModifyTodo}
                 checkErrors={checkErrors}
               />
             ))}
