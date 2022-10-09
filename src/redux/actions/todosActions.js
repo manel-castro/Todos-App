@@ -1,6 +1,3 @@
-import * as firebase from "firebase/app";
-import "firebase/firestore";
-
 import * as types from "./actionTypes";
 import * as todosExtraActions from "./todosExtraActions";
 import * as callsInProgressActions from "./callsInProgressActions";
@@ -9,6 +6,7 @@ import { v4 as uuid } from "uuid";
 const clone = require("rfdc")();
 import { subItemPath as subItemPathFunc } from "../redux-helpers/subItemPath";
 import { reorderTodos } from "../redux-helpers/todosHelpers";
+import { db } from "./userActions";
 
 //DEVELOPMENT ACTIONS
 export function deleteAllTodosSuccess() {
@@ -166,9 +164,7 @@ export function getReduxTodos() {
 export function getTodos() {
   return function (dispatch, getState) {
     const userUid = getState().user.uid;
-    firebase
-      .firestore()
-      .collection("todos")
+    db.collection("todos")
       .where("userId", "==", userUid)
       .orderBy("orderCount", "desc")
       .get()
@@ -236,7 +232,7 @@ export const addTodo = () => async (dispatch, getState) => {
   let newTodoData = {
     title: "Enter your title here...",
     subItems: {},
-    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    timestamp: db.FieldValue.serverTimestamp(),
     userId: userUid,
     isNew: true,
     orderCount: orderCount,
@@ -281,7 +277,7 @@ export const modifyTodo = (
   let dataUpdate = {};
   if (isNew === true) {
     dataUpdate = {
-      isNew: firebase.firestore.FieldValue.delete(),
+      isNew: db.FieldValue.delete(),
       title: title,
     };
   } else {
@@ -331,9 +327,7 @@ export function deleteTodo(todo) {
     if (todosExtra.isAnyNewTodoCount === todo.id) {
       dispatch(todosExtraActions.dismarkNewTodoCount());
     }
-    firebase
-      .firestore()
-      .collection("todos")
+    db.collection("todos")
       .doc(todo.id)
       .delete()
       .catch((err) => {
@@ -401,8 +395,7 @@ export const addSubItem = (
   );
   firebaseObjectPath = firebaseObjectPath + "." + newSubItemId;
 
-  await firebase
-    .firestore()
+  await db
     .collection("todos")
     .doc(todoId)
     .update({
@@ -446,8 +439,7 @@ export const modifySubItem = (todo, subItemId, subItemText) => async (
   }
   dispatch(modifySubItemSuccess(todoData, id, subItemPath, isDeepNested));
 
-  await firebase
-    .firestore()
+  await db
     .collection("todos")
     .doc(id)
     .update({
@@ -478,14 +470,13 @@ export const deleteSubItem = (todo, subItemId) => async (dispatch) => {
   dispatch(deleteSubItemSuccess(id, subItemPath, isDeepNested));
 
   //.update({
-  //  "subItem.subItem2": firebase.firestore.FieldValue.delete(),
+  //  "subItem.subItem2": db.FieldValue.delete(),
   //})
-  await firebase
-    .firestore()
+  await db
     .collection("todos")
     .doc(id)
     .update({
-      [firebaseObjectPath]: firebase.firestore.FieldValue.delete(),
+      [firebaseObjectPath]: db.FieldValue.delete(),
     })
     .then(() => {
       // Stop api call redux

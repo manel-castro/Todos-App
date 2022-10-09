@@ -1,10 +1,21 @@
-import * as firebase from "firebase/app";
-import "firebase/auth";
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import {
+  getAuth,
+  sendPasswordResetEmail,
+  signOut,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 import { config } from "../../firebaseConfig";
 import * as types from "./actionTypes";
 import * as todosActions from "./todosActions";
 
-firebase.initializeApp(config);
+const app = initializeApp(config);
+export const db = getFirestore(app);
+
+const auth = getAuth();
 
 //Todo: manage errors redux.
 
@@ -31,9 +42,8 @@ export function userLogin(user) {
   //eslint-disable-next-line
   return function (dispatch, getState) {
     const { email, password } = user;
-    return firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
+
+    signInWithEmailAndPassword(auth, email, password)
       .then((cred) => {
         dispatch(userLoginSuccess(cred.user.uid));
       })
@@ -45,9 +55,11 @@ export function userLogin(user) {
 
 export function userSignup(newUserData) {
   return function (dispatch) {
-    return firebase
-      .auth()
-      .createUserWithEmailAndPassword(newUserData.email, newUserData.password)
+    return createUserWithEmailAndPassword(
+      auth,
+      newUserData.email,
+      newUserData.password
+    )
       .then((cred) => {
         dispatch(userSignupSuccess(cred.user.uid));
       })
@@ -59,17 +71,14 @@ export function userSignup(newUserData) {
 
 export function userLogout() {
   return function (dispatch) {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        dispatch(userLogoutSuccess());
-      });
+    signOut(auth).then(() => {
+      dispatch(userLogoutSuccess());
+    });
   };
 }
 
 export const verifyAuth = () => async (dispatch) => {
-  firebase.auth().onAuthStateChanged(async (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
       dispatch(userLoginSuccess(user.uid));
       dispatch(todosActions.getTodos());
@@ -80,9 +89,7 @@ export const verifyAuth = () => async (dispatch) => {
 };
 
 export const resetPassword = (email) => async (dispatch) => {
-  await firebase
-    .auth()
-    .sendPasswordResetEmail(email)
+  await sendPasswordResetEmail(auth, email)
     .then(function () {
       dispatch(resetPasswordSuccess());
     })
