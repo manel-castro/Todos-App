@@ -2,6 +2,8 @@ import * as types from "./actionTypes";
 import * as todosExtraActions from "./todosExtraActions";
 import * as callsInProgressActions from "./callsInProgressActions";
 
+import { serverTimestamp, collection } from "firebase/firestore";
+
 import { v4 as uuid } from "uuid";
 const clone = require("rfdc")();
 import { subItemPath as subItemPathFunc } from "../redux-helpers/subItemPath";
@@ -164,7 +166,7 @@ export function getReduxTodos() {
 export function getTodos() {
   return function (dispatch, getState) {
     const userUid = getState().user.uid;
-    db.collection("todos")
+    collection(db, "todos")
       .where("userId", "==", userUid)
       .orderBy("orderCount", "desc")
       .get()
@@ -232,7 +234,7 @@ export const addTodo = () => async (dispatch, getState) => {
   let newTodoData = {
     title: "Enter your title here...",
     subItems: {},
-    timestamp: db.FieldValue.serverTimestamp(),
+    timestamp: serverTimestamp(),
     userId: userUid,
     isNew: true,
     orderCount: orderCount,
@@ -327,7 +329,7 @@ export function deleteTodo(todo) {
     if (todosExtra.isAnyNewTodoCount === todo.id) {
       dispatch(todosExtraActions.dismarkNewTodoCount());
     }
-    db.collection("todos")
+    collection(db, "todos")
       .doc(todo.id)
       .delete()
       .catch((err) => {
@@ -395,8 +397,7 @@ export const addSubItem = (
   );
   firebaseObjectPath = firebaseObjectPath + "." + newSubItemId;
 
-  await db
-    .collection("todos")
+  await collection(db, "todos")
     .doc(todoId)
     .update({
       [firebaseObjectPath]: {
@@ -439,8 +440,7 @@ export const modifySubItem = (todo, subItemId, subItemText) => async (
   }
   dispatch(modifySubItemSuccess(todoData, id, subItemPath, isDeepNested));
 
-  await db
-    .collection("todos")
+  collection(db, "todos")
     .doc(id)
     .update({
       [firebaseObjectPath]: subItemText,
@@ -472,8 +472,7 @@ export const deleteSubItem = (todo, subItemId) => async (dispatch) => {
   //.update({
   //  "subItem.subItem2": db.FieldValue.delete(),
   //})
-  await db
-    .collection("todos")
+  await collection(db, "todos")
     .doc(id)
     .update({
       [firebaseObjectPath]: db.FieldValue.delete(),

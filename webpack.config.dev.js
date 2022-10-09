@@ -15,10 +15,17 @@ module.exports = {
     filename: "bundle.js",
   },
   devServer: {
-    stats: "minimal",
-    overlay: true, //send errors in the browser
-    historyApiFallback: true, // all request will be sent to index.html, we can send deep links and all will be maanaged by router
+    port: 3000,
+    // contentBase: path.join(__dirname, "dist"),
+    // compress: true,
+    static: "./dist",
+    // stats: "minimal",
+    // overlay: true, //send errors in the browser
+    // historyApiFallback: true, // all request will be sent to index.html, we can send deep links and all will be maanaged by router
   },
+  // optimization: {
+  //   runtimeChunk: "single",
+  // },
   plugins: [
     new webpack.DefinePlugin({
       "process.env.API_URL": JSON.stringify("http://localhost:3001"),
