@@ -9,7 +9,6 @@ import {
   where,
   orderBy,
   getDocs,
-  getDocs,
   deleteDoc,
 } from "firebase/firestore";
 
@@ -388,10 +387,10 @@ export function deleteTodo(todo) {
 
     const dbTodos = getDbTodos();
 
-    const deletingDoc = doc(db, "todos", todo.id);
-    deleteDoc(deletingDoc).catch((err) => {
-      throw err;
-    });
+    // const deletingDoc = doc(db, "todos", todo.id);
+    // deleteDoc(deletingDoc).catch((err) => {
+    //   throw err;
+    // });
 
     // collection(db, "todos")
     //   .doc(todo.id)
