@@ -2,7 +2,16 @@ import * as types from "./actionTypes";
 import * as todosExtraActions from "./todosExtraActions";
 import * as callsInProgressActions from "./callsInProgressActions";
 
-import { serverTimestamp, collection } from "firebase/firestore";
+import {
+  serverTimestamp,
+  collection,
+  query,
+  where,
+  orderBy,
+  getDocs,
+  getDocs,
+  deleteDoc,
+} from "firebase/firestore";
 
 import { v4 as uuid } from "uuid";
 const clone = require("rfdc")();
@@ -162,48 +171,95 @@ export function getReduxTodos() {
     return todos;
   };
 }
+
+const getDbTodos = () => collection(db, "todos");
+
 //should look in cookies first?
 export function getTodos() {
   return function (dispatch, getState) {
     const userUid = getState().user.uid;
-    collection(db, "todos")
-      .where("userId", "==", userUid)
-      .orderBy("orderCount", "desc")
-      .get()
-      .then((querySnapshot) => {
-        const todos = querySnapshot.docs.map((doc) => {
-          const data = doc.data();
-          data["id"] = doc.id;
-          if (data.isNew) dispatch(todosExtraActions.markNewTodoCount(doc.id));
-          return data;
-        });
 
-        //This code is saved for potential use in collaborative editing.
-        //  .onSnapshot((serverUpdate) => {
-        //    serverUpdate.docChanges().forEach((change) => {
-        //      if (change.type === "modified") {
-        //        console.log("ALERt: ", change.doc.id, change.doc.data());
-        //        dispatch(modifiedTodoBackEnd(change.doc.id, change.doc.data()));
-        //        breaker = true;
-        //      }
-        //    });
-        //    if (breaker) {
-        //      breaker = false;
-        //      return;
-        //    }
-        //    console.log("ALL SNAPSHOT");
-        //    const todos = serverUpdate.docs.map(
-        //      (todo) => {
-        //        const data = todo.data();
-        //        data["id"] = todo.id;
-        //        return data;
-        //      },
-        //      (err) => {
-        //        throw err;
-        //      }
-        //    );
-        dispatch(getTodosSuccess(todos));
+    const dbTodos = getDbTodos();
+
+    const q = query(
+      dbTodos,
+      where("userId", "==", userUid),
+      orderBy("orderCount", "desc")
+    );
+
+    getDocs(q).then((querySnapshot) => {
+      const todos = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        data["id"] = doc.id;
+        if (data.isNew) dispatch(todosExtraActions.markNewTodoCount(doc.id));
+        return data;
       });
+
+      //This code is saved for potential use in collaborative editing.
+      //  .onSnapshot((serverUpdate) => {
+      //    serverUpdate.docChanges().forEach((change) => {
+      //      if (change.type === "modified") {
+      //        console.log("ALERt: ", change.doc.id, change.doc.data());
+      //        dispatch(modifiedTodoBackEnd(change.doc.id, change.doc.data()));
+      //        breaker = true;
+      //      }
+      //    });
+      //    if (breaker) {
+      //      breaker = false;
+      //      return;
+      //    }
+      //    console.log("ALL SNAPSHOT");
+      //    const todos = serverUpdate.docs.map(
+      //      (todo) => {
+      //        const data = todo.data();
+      //        data["id"] = todo.id;
+      //        return data;
+      //      },
+      //      (err) => {
+      //        throw err;
+      //      }
+      //    );
+      dispatch(getTodosSuccess(todos));
+    });
+
+    // collection(db, "todos")
+    //   .where("userId", "==", userUid)
+    //   .orderBy("orderCount", "desc")
+    //   .get()
+    //   .then((querySnapshot) => {
+    //     const todos = querySnapshot.docs.map((doc) => {
+    //       const data = doc.data();
+    //       data["id"] = doc.id;
+    //       if (data.isNew) dispatch(todosExtraActions.markNewTodoCount(doc.id));
+    //       return data;
+    //     });
+
+    //     //This code is saved for potential use in collaborative editing.
+    //     //  .onSnapshot((serverUpdate) => {
+    //     //    serverUpdate.docChanges().forEach((change) => {
+    //     //      if (change.type === "modified") {
+    //     //        console.log("ALERt: ", change.doc.id, change.doc.data());
+    //     //        dispatch(modifiedTodoBackEnd(change.doc.id, change.doc.data()));
+    //     //        breaker = true;
+    //     //      }
+    //     //    });
+    //     //    if (breaker) {
+    //     //      breaker = false;
+    //     //      return;
+    //     //    }
+    //     //    console.log("ALL SNAPSHOT");
+    //     //    const todos = serverUpdate.docs.map(
+    //     //      (todo) => {
+    //     //        const data = todo.data();
+    //     //        data["id"] = todo.id;
+    //     //        return data;
+    //     //      },
+    //     //      (err) => {
+    //     //        throw err;
+    //     //      }
+    //     //    );
+    //     dispatch(getTodosSuccess(todos));
+    //   });
   };
 }
 
@@ -329,12 +385,20 @@ export function deleteTodo(todo) {
     if (todosExtra.isAnyNewTodoCount === todo.id) {
       dispatch(todosExtraActions.dismarkNewTodoCount());
     }
-    collection(db, "todos")
-      .doc(todo.id)
-      .delete()
-      .catch((err) => {
-        throw err;
-      });
+
+    const dbTodos = getDbTodos();
+
+    const deletingDoc = doc(db, "todos", todo.id);
+    deleteDoc(deletingDoc).catch((err) => {
+      throw err;
+    });
+
+    // collection(db, "todos")
+    //   .doc(todo.id)
+    //   .delete()
+    //   .catch((err) => {
+    //     throw err;
+    //   });
   };
 }
 
@@ -396,6 +460,8 @@ export const addSubItem = (
     addSubItemSuccess(localSubItemData, todoId, subItemPath, isDeepNested)
   );
   firebaseObjectPath = firebaseObjectPath + "." + newSubItemId;
+
+  const dbTodos = getDbTodos();
 
   await collection(db, "todos")
     .doc(todoId)
