@@ -10,13 +10,19 @@ import {
   orderBy,
   getDocs,
   deleteDoc,
+  deleteField,
+  setDoc,
+  doc,
 } from "firebase/firestore";
+
+console.log("test change");
 
 import { v4 as uuid } from "uuid";
 const clone = require("rfdc")();
 import { subItemPath as subItemPathFunc } from "../redux-helpers/subItemPath";
 import { reorderTodos } from "../redux-helpers/todosHelpers";
 import { db } from "./userActions";
+import { logger } from "firebase-tools";
 
 //DEVELOPMENT ACTIONS
 export function deleteAllTodosSuccess() {
@@ -298,6 +304,19 @@ export const addTodo = () => async (dispatch, getState) => {
   newTodoLocalData["id"] = newId;
   dispatch(addTodoSuccess(newTodoLocalData));
 
+  const dbTodos = getDbTodos();
+
+  const newDoc = doc(db, "todos", newId);
+
+  await setDoc(newDoc, newTodoData)
+    .then((res) => {
+      console.log("firebase error todo created, ", res);
+      return res;
+    })
+    .catch((e) => {
+      console.log("firebase error todo failed to be created, ", e);
+    });
+
   //  firebase
   //    .firestore()
   //    .collection("todos")
@@ -334,7 +353,7 @@ export const modifyTodo = (
   let dataUpdate = {};
   if (isNew === true) {
     dataUpdate = {
-      isNew: db.FieldValue.delete(),
+      isNew: deleteField(),
       title: title,
     };
   } else {
@@ -540,7 +559,7 @@ export const deleteSubItem = (todo, subItemId) => async (dispatch) => {
   await collection(db, "todos")
     .doc(id)
     .update({
-      [firebaseObjectPath]: db.FieldValue.delete(),
+      [firebaseObjectPath]: deleteField(),
     })
     .then(() => {
       // Stop api call redux
