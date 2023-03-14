@@ -407,22 +407,29 @@ export const addSubItem =
     );
     firebaseObjectPath = firebaseObjectPath + "." + newSubItemId;
 
-    await db
-      .collection("todos")
-      .doc(todoId)
-      .update({
-        [firebaseObjectPath]: {
-          title: subItemText,
-          orderCount: orderCount,
-        },
-      })
-      .then(() => {
-        // STop api call redux
-      })
-      .catch((err) => {
-        // throw errors redux
-        throw err;
-      });
+    updateDoc(doc(db, `todos`, todoId), {
+      [firebaseObjectPath]: {
+        title: subItemText,
+        orderCount: orderCount,
+      },
+    });
+
+    // await db
+    //   .collection("todos")
+    //   .doc(todoId)
+    //   .update({
+    //     [firebaseObjectPath]: {
+    //       title: subItemText,
+    //       orderCount: orderCount,
+    //     },
+    //   })
+    //   .then(() => {
+    //     // STop api call redux
+    //   })
+    //   .catch((err) => {
+    //     // throw errors redux
+    //     throw err;
+    //   });
   };
 
 export const modifySubItem =
@@ -450,19 +457,22 @@ export const modifySubItem =
     }
     dispatch(modifySubItemSuccess(todoData, id, subItemPath, isDeepNested));
 
-    await db
-      .collection("todos")
-      .doc(id)
-      .update({
-        [firebaseObjectPath]: subItemText,
-      })
-      .then(() => {
-        // Stop api call redux
-      })
-      .catch((err) => {
-        // throw error redux
-        throw err;
-      });
+    updateDoc(doc(db, `todos`, id), {
+      [firebaseObjectPath]: subItemText,
+    });
+    // await db
+    //   .collection("todos")
+    //   .doc(id)
+    //   .update({
+    //     [firebaseObjectPath]: subItemText,
+    //   })
+    //   .then(() => {
+    //     // Stop api call redux
+    //   })
+    //   .catch((err) => {
+    //     // throw error redux
+    //     throw err;
+    //   });
   };
 
 export const deleteSubItem = (todo, subItemId) => async (dispatch) => {
@@ -480,9 +490,10 @@ export const deleteSubItem = (todo, subItemId) => async (dispatch) => {
 
   dispatch(deleteSubItemSuccess(id, subItemPath, isDeepNested));
 
-  //.update({
-  //  "subItem.subItem2": db.FieldValue.delete(),
-  //})
+  updateDoc(doc(db, `todos`, id), {
+    [firebaseObjectPath]: db.FieldValue.delete(),
+  });
+
   await db
     .collection("todos")
     .doc(id)
