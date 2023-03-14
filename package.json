@@ -7,8 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "heroku-postbuild": "webpack --config webpack.config.prod.js",
-    "start:dev": "webpack-cli serve -c webpack.config.prod.js --port 3000",
-    "start:test": "webpack-dev-server",
+    "start:dev": "webpack-dev-server",
     "prestart:api": "node tools/createMockDb.js",
     "start:api": "node tools/apiServer.js",
     "build": "webpack --config webpack.config.prod.js",

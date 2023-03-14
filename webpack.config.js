@@ -5,7 +5,7 @@ const webpack = require("webpack");
 process.env.BABEL_ENV = "development";
 module.exports = {
   mode: "development",
-  entry: "./src/index.jsx", // main js
+  entry: "./src/index.js", // main js
   devtool: "source-map",
   stats: { warnings: false },
 
@@ -15,26 +15,26 @@ module.exports = {
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".jsx"],
-    fallback: {
-      path: false,
-      stream: false,
-      http: false,
-      https: false,
-      url: false,
-      util: false,
-      os: false,
-      zlib: false,
-      assert: false,
-      crypto: false,
-      tty: false,
-      fs: false,
-      net: false,
-      http2: false,
-      async_hooks: false,
-      worker_threads: false,
-      tls: false,
-      dns: false,
-    },
+    // fallback: {
+    //   path: false,
+    //   stream: false,
+    //   http: false,
+    //   https: false,
+    //   url: false,
+    //   util: false,
+    //   os: false,
+    //   zlib: false,
+    //   assert: false,
+    //   crypto: false,
+    //   tty: false,
+    //   fs: false,
+    //   net: false,
+    //   http2: false,
+    //   async_hooks: false,
+    //   worker_threads: false,
+    //   tls: false,
+    //   dns: false,
+    // },
   },
   devServer: {
     historyApiFallback: true,
