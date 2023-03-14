@@ -59,14 +59,13 @@ class TodosLayout extends Component<Props, never> {
   //   }
   // };
 
-
   handleModifyTodo = (todoId, text, isNew, modifyingElement) => {
     try {
       this.props.modifyTodo(todoId, text, isNew, modifyingElement);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   handleDeleteTodo = async (todo) => {
     if (window.confirm("Are you sure to delete this note?")) {
@@ -77,7 +76,6 @@ class TodosLayout extends Component<Props, never> {
       }
     }
   };
-
 
   render() {
     const { todoIds } = this.props;
@@ -113,8 +111,6 @@ class TodosLayout extends Component<Props, never> {
 TodosLayout.propTypes = {
   todoIds: PropTypes.array.isRequired,
   delTodo: PropTypes.func.isRequired,
-  addTodo: PropTypes.func.isRequired,
-  anyTodoNew: PropTypes.string.isRequired,
 };
 
 export function mapStateToProps(state) {

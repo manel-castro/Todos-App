@@ -77,9 +77,7 @@ const AddTodo = ({ addTodo, anyTodoNew, todosExist, buttonInProgress }) => {
 };
 
 AddTodo.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
   todosExist: PropTypes.bool.isRequired,
-  inProgress: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state) {

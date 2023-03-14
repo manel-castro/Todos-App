@@ -7,6 +7,15 @@ const clone = require("rfdc")();
 import { subItemPath as subItemPathFunc } from "../redux-helpers/subItemPath";
 import { reorderTodos } from "../redux-helpers/todosHelpers";
 import { db } from "./userActions";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  serverTimestamp,
+  setDoc,
+  where,
+} from "firebase/firestore";
 
 //DEVELOPMENT ACTIONS
 export function deleteAllTodosSuccess() {
@@ -98,42 +107,44 @@ export function deleteSubItemSuccess(todoId, subItemPath, isDeepNested) {
 //
 //THUNKS
 
-export const moveTodoOrder = (activeTodoId, todoToSwitchId, action) => (
-  dispatch,
-  getState
-) => {
-  const { todos } = getState();
-  const clonedTodos = clone(todos);
-  let newReduxTodos;
+export const moveTodoOrder =
+  (activeTodoId, todoToSwitchId, action) => (dispatch, getState) => {
+    const { todos } = getState();
+    const clonedTodos = clone(todos);
+    let newReduxTodos;
 
-  let firebaseItem1, firebaseItem2;
+    let firebaseItem1, firebaseItem2;
 
-  if (action === "up") {
-    const reordered = reorderTodos(clonedTodos, activeTodoId, todoToSwitchId);
-    newReduxTodos = reordered[0];
-    firebaseItem1 = reordered[1];
-    firebaseItem2 = reordered[2];
-  }
+    if (action === "up") {
+      const reordered = reorderTodos(clonedTodos, activeTodoId, todoToSwitchId);
+      newReduxTodos = reordered[0];
+      firebaseItem1 = reordered[1];
+      firebaseItem2 = reordered[2];
+    }
 
-  if (action === "down") {
-    const reversedTodos = clonedTodos.reverse(); //very important
-    const reordered = reorderTodos(reversedTodos, activeTodoId, todoToSwitchId);
-    newReduxTodos = reordered[0].reverse();
-    firebaseItem1 = reordered[1];
-    firebaseItem2 = reordered[2];
-  }
-  if (action !== "up" && action !== "down")
-    throw `Look at the todos actions, action sent: ${action}`;
+    if (action === "down") {
+      const reversedTodos = clonedTodos.reverse(); //very important
+      const reordered = reorderTodos(
+        reversedTodos,
+        activeTodoId,
+        todoToSwitchId
+      );
+      newReduxTodos = reordered[0].reverse();
+      firebaseItem1 = reordered[1];
+      firebaseItem2 = reordered[2];
+    }
+    if (action !== "up" && action !== "down")
+      throw `Look at the todos actions, action sent: ${action}`;
 
-  dispatch(moveTodoOrderSuccess(newReduxTodos));
+    dispatch(moveTodoOrderSuccess(newReduxTodos));
 
-  // firebase should be another action that it's only dispatched after certain time, and updates those documents that had changes on the order. We could also have the order separated in another document in a collection "extraDataTodos", so that we can poolUp orders. To order de todos on getTodos we should get this document by separate an then match them.
+    // firebase should be another action that it's only dispatched after certain time, and updates those documents that had changes on the order. We could also have the order separated in another document in a collection "extraDataTodos", so that we can poolUp orders. To order de todos on getTodos we should get this document by separate an then match them.
 
-  console.log("-------------");
-  console.log("newTodos");
-  console.log(newReduxTodos);
-  console.log("for firebase", firebaseItem1, firebaseItem2);
-};
+    console.log("-------------");
+    console.log("newTodos");
+    console.log(newReduxTodos);
+    console.log("for firebase", firebaseItem1, firebaseItem2);
+  };
 
 //Development thunks...
 export function deleteAllTodos() {
@@ -162,46 +173,36 @@ export function getReduxTodos() {
 }
 //should look in cookies first?
 export function getTodos() {
-  return function (dispatch, getState) {
+  return async function (dispatch, getState) {
     const userUid = getState().user.uid;
-    db.collection("todos")
-      .where("userId", "==", userUid)
-      .orderBy("orderCount", "desc")
-      .get()
-      .then((querySnapshot) => {
-        const todos = querySnapshot.docs.map((doc) => {
-          const data = doc.data();
-          data["id"] = doc.id;
-          if (data.isNew) dispatch(todosExtraActions.markNewTodoCount(doc.id));
-          return data;
-        });
+    console.log("userUid: ", userUid);
 
-        //This code is saved for potential use in collaborative editing.
-        //  .onSnapshot((serverUpdate) => {
-        //    serverUpdate.docChanges().forEach((change) => {
-        //      if (change.type === "modified") {
-        //        console.log("ALERt: ", change.doc.id, change.doc.data());
-        //        dispatch(modifiedTodoBackEnd(change.doc.id, change.doc.data()));
-        //        breaker = true;
-        //      }
-        //    });
-        //    if (breaker) {
-        //      breaker = false;
-        //      return;
-        //    }
-        //    console.log("ALL SNAPSHOT");
-        //    const todos = serverUpdate.docs.map(
-        //      (todo) => {
-        //        const data = todo.data();
-        //        data["id"] = todo.id;
-        //        return data;
-        //      },
-        //      (err) => {
-        //        throw err;
-        //      }
-        //    );
-        dispatch(getTodosSuccess(todos));
-      });
+    const q = query(collection(db, "todos"), where("userId", "==", userUid));
+
+    const querySnapshot = await getDocs(q);
+
+    const todos = querySnapshot?.docs?.map((doc) => {
+      const data = doc.data();
+      data["id"] = doc.id;
+      if (data.isNew) dispatch(todosExtraActions.markNewTodoCount(doc.id));
+      return data;
+    });
+    dispatch(getTodosSuccess(todos));
+
+    // db.collection("todos")
+    //   .where("userId", "==", userUid)
+    //   .orderBy("orderCount", "desc")
+    //   .get()
+    //   .then((querySnapshot) => {
+    //     console.log("dbg1 querySnapshot: ", querySnapshot);
+    //     const todos = querySnapshot?.docs?.map((doc) => {
+    //       const data = doc.data();
+    //       data["id"] = doc.id;
+    //       if (data.isNew) dispatch(todosExtraActions.markNewTodoCount(doc.id));
+    //       return data;
+    //     });
+    //     dispatch(getTodosSuccess(todos));
+    //   });
   };
 }
 
@@ -232,7 +233,7 @@ export const addTodo = () => async (dispatch, getState) => {
   let newTodoData = {
     title: "Enter your title here...",
     subItems: {},
-    timestamp: db.FieldValue.serverTimestamp(),
+    timestamp: serverTimestamp(),
     userId: userUid,
     isNew: true,
     orderCount: orderCount,
@@ -240,6 +241,8 @@ export const addTodo = () => async (dispatch, getState) => {
   let newTodoLocalData = newTodoData;
   newTodoLocalData["id"] = newId;
   dispatch(addTodoSuccess(newTodoLocalData));
+
+  await setDoc(doc(db, "todos", newId), newTodoData);
 
   //  firebase
   //    .firestore()
@@ -258,46 +261,43 @@ export const addTodo = () => async (dispatch, getState) => {
   return;
 };
 
-export const modifyTodo = (
-  todoId,
-  title,
-  isNew = false,
-  modifyingElement
-) => async (dispatch, getState) => {
-  //control for calls in progress, if there is already one, skip this action.
-  console.log("MODIFYING ELEMENT IS => ", modifyingElement);
-  // It can happen, that the user starts modifying other todos while another another api call hasn't finished yet, so we should register the Todo Id
-  dispatch(callsInProgressActions.startActionCall(modifyingElement));
-  const { todosExtra } = getState();
-  if (todosExtra.isAnyNewTodoCount === todoId) {
-    dispatch(todosExtraActions.dismarkNewTodoCount());
-  }
-  //const userUid = getState().user.uid;
-  //The next code is made to handle the property of New in each TODO document. which only exist when it's created, and then here it's deleted at first modification
-  let dataUpdate = {};
-  if (isNew === true) {
-    dataUpdate = {
-      isNew: db.FieldValue.delete(),
-      title: title,
-    };
-  } else {
-    dataUpdate = {
-      title: title,
-    };
-  }
-  /// ------------
-  //  firebase
-  //    .firestore()
-  //    .collection("todos")
-  //    .doc(todoId)
-  //    .update(dataUpdate)
-  //    .catch((err) => {
-  //      throw err;
-  //    });
-  //need to update store to avoid fire Snapshot.
-  dispatch(callsInProgressActions.endActionCall(modifyingElement));
-  await dispatch(modifyTodoSuccess(title, todoId, isNew));
-};
+export const modifyTodo =
+  (todoId, title, isNew = false, modifyingElement) =>
+  async (dispatch, getState) => {
+    //control for calls in progress, if there is already one, skip this action.
+    console.log("MODIFYING ELEMENT IS => ", modifyingElement);
+    // It can happen, that the user starts modifying other todos while another another api call hasn't finished yet, so we should register the Todo Id
+    dispatch(callsInProgressActions.startActionCall(modifyingElement));
+    const { todosExtra } = getState();
+    if (todosExtra.isAnyNewTodoCount === todoId) {
+      dispatch(todosExtraActions.dismarkNewTodoCount());
+    }
+    //const userUid = getState().user.uid;
+    //The next code is made to handle the property of New in each TODO document. which only exist when it's created, and then here it's deleted at first modification
+    let dataUpdate = {};
+    if (isNew === true) {
+      dataUpdate = {
+        isNew: db.FieldValue.delete(),
+        title: title,
+      };
+    } else {
+      dataUpdate = {
+        title: title,
+      };
+    }
+    /// ------------
+    //  firebase
+    //    .firestore()
+    //    .collection("todos")
+    //    .doc(todoId)
+    //    .update(dataUpdate)
+    //    .catch((err) => {
+    //      throw err;
+    //    });
+    //need to update store to avoid fire Snapshot.
+    dispatch(callsInProgressActions.endActionCall(modifyingElement));
+    await dispatch(modifyTodoSuccess(title, todoId, isNew));
+  };
 
 //DEPRECATED potentially useful for labeling
 {
@@ -336,123 +336,120 @@ export function deleteTodo(todo) {
   };
 }
 
-export const addSubItem = (
-  todo,
-  subItemParentId = false,
-  subItemText = "Edit your sub-item"
-) => async (dispatch) => {
-  const todoId = todo.id;
+export const addSubItem =
+  (todo, subItemParentId = false, subItemText = "Edit your sub-item") =>
+  async (dispatch) => {
+    const todoId = todo.id;
 
-  let firebaseObjectPath = "subItems";
-  let orderCount;
+    let firebaseObjectPath = "subItems";
+    let orderCount;
 
-  //Set subItemPath and backEnd path
-  let subItemPath = {};
-  let isDeepNested = false;
-  if (subItemParentId) {
-    isDeepNested = true;
-    subItemPath = subItemPathFunc(subItemParentId, todo);
+    //Set subItemPath and backEnd path
+    let subItemPath = {};
+    let isDeepNested = false;
+    if (subItemParentId) {
+      isDeepNested = true;
+      subItemPath = subItemPathFunc(subItemParentId, todo);
+      subItemPath.forEach((item) => {
+        firebaseObjectPath = firebaseObjectPath + "." + item;
+      });
+    }
+
+    const getCounter = (subItemPath) => {
+      let currentOrderCount = 0;
+      let counterPath = todo.subItems;
+
+      subItemPath.forEach((item) => {
+        counterPath = counterPath[item];
+      });
+
+      Object.keys(counterPath).forEach((key) => {
+        if (typeof counterPath[key] === "object") currentOrderCount++;
+      });
+      currentOrderCount++;
+
+      return currentOrderCount;
+    };
+
+    //Set orderCount-
+    //  //Used for keeping order of subItems.
+    if (subItemParentId) {
+      orderCount = getCounter(subItemPath);
+    } else {
+      orderCount = Object.keys(todo.subItems).length + 1;
+    }
+
+    let newSubItemId = uuid().substring(0, 13);
+    let localSubItemData = {
+      [newSubItemId]: {
+        title: subItemText,
+        orderCount: orderCount,
+        randomProperty: uuid(),
+      },
+    };
+
+    dispatch(
+      addSubItemSuccess(localSubItemData, todoId, subItemPath, isDeepNested)
+    );
+    firebaseObjectPath = firebaseObjectPath + "." + newSubItemId;
+
+    await db
+      .collection("todos")
+      .doc(todoId)
+      .update({
+        [firebaseObjectPath]: {
+          title: subItemText,
+          orderCount: orderCount,
+        },
+      })
+      .then(() => {
+        // STop api call redux
+      })
+      .catch((err) => {
+        // throw errors redux
+        throw err;
+      });
+  };
+
+export const modifySubItem =
+  (todo, subItemId, subItemText) => async (dispatch) => {
+    const { id } = todo;
+
+    let firebaseObjectPath = "subItems";
+
+    const subItemPath = subItemPathFunc(subItemId, todo);
+
     subItemPath.forEach((item) => {
       firebaseObjectPath = firebaseObjectPath + "." + item;
     });
-  }
 
-  const getCounter = (subItemPath) => {
-    let currentOrderCount = 0;
-    let counterPath = todo.subItems;
-
-    subItemPath.forEach((item) => {
-      counterPath = counterPath[item];
-    });
-
-    Object.keys(counterPath).forEach((key) => {
-      if (typeof counterPath[key] === "object") currentOrderCount++;
-    });
-    currentOrderCount++;
-
-    return currentOrderCount;
-  };
-
-  //Set orderCount-
-  //  //Used for keeping order of subItems.
-  if (subItemParentId) {
-    orderCount = getCounter(subItemPath);
-  } else {
-    orderCount = Object.keys(todo.subItems).length + 1;
-  }
-
-  let newSubItemId = uuid().substring(0, 13);
-  let localSubItemData = {
-    [newSubItemId]: {
-      title: subItemText,
-      orderCount: orderCount,
-      randomProperty: uuid(),
-    },
-  };
-
-  dispatch(
-    addSubItemSuccess(localSubItemData, todoId, subItemPath, isDeepNested)
-  );
-  firebaseObjectPath = firebaseObjectPath + "." + newSubItemId;
-
-  await db
-    .collection("todos")
-    .doc(todoId)
-    .update({
-      [firebaseObjectPath]: {
+    firebaseObjectPath = firebaseObjectPath + ".title";
+    const todoData = {
+      [subItemId]: {
         title: subItemText,
-        orderCount: orderCount,
       },
-    })
-    .then(() => {
-      // STop api call redux
-    })
-    .catch((err) => {
-      // throw errors redux
-      throw err;
-    });
-};
+    };
+    let isDeepNested = false;
 
-export const modifySubItem = (todo, subItemId, subItemText) => async (
-  dispatch
-) => {
-  const { id } = todo;
+    if (subItemPath.length - 1 > 0) {
+      isDeepNested = true;
+    }
+    dispatch(modifySubItemSuccess(todoData, id, subItemPath, isDeepNested));
 
-  let firebaseObjectPath = "subItems";
-
-  const subItemPath = subItemPathFunc(subItemId, todo);
-
-  subItemPath.forEach((item) => {
-    firebaseObjectPath = firebaseObjectPath + "." + item;
-  });
-
-  firebaseObjectPath = firebaseObjectPath + ".title";
-  const todoData = {
-    [subItemId]: {
-      title: subItemText,
-    },
+    await db
+      .collection("todos")
+      .doc(id)
+      .update({
+        [firebaseObjectPath]: subItemText,
+      })
+      .then(() => {
+        // Stop api call redux
+      })
+      .catch((err) => {
+        // throw error redux
+        throw err;
+      });
   };
-  let isDeepNested = false;
-
-  if (subItemPath.length - 1 > 0) {
-    isDeepNested = true;
-  }
-  dispatch(modifySubItemSuccess(todoData, id, subItemPath, isDeepNested));
-
-  await db
-    .collection("todos")
-    .doc(id)
-    .update({
-      [firebaseObjectPath]: subItemText,
-    })
-    .then(() => {
-      // Stop api call redux
-    })
-    .catch((err) => {
-      // throw error redux
-      throw err;
-    });
-};
 
 export const deleteSubItem = (todo, subItemId) => async (dispatch) => {
   const { id } = todo;

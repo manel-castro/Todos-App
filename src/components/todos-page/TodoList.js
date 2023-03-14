@@ -3,12 +3,7 @@ import TodoItem from "./TodoItem";
 import PropTypes from "prop-types";
 import { TodosListContainer, TodosListWrap } from "./TodoList.elements";
 
-const TodoList = ({
-  todoIds = [],
-  handleModifyTodo,
-  delTodo,
-  checkErrors,
-}) => {
+const TodoList = ({ todoIds = [], handleModifyTodo, delTodo, checkErrors }) => {
   //For conditional rendering below.
   //useful to order items by label, or search items?
   //const completedTodos = todos.filter((todo) => {
@@ -26,19 +21,19 @@ const TodoList = ({
         {todoIds.length === 0
           ? null
           : todoIds
-            //.filter((todo) => {
-            //return todo.completed === false;
-            //})
-            .map((id) => (
-              <TodoItem
-                key={id}
-                id={id}
-                className={"TodoItemNode"}
-                delTodo={delTodo}
-                handleModifyTodo={handleModifyTodo}
-                checkErrors={checkErrors}
-              />
-            ))}
+              //.filter((todo) => {
+              //return todo.completed === false;
+              //})
+              .map((id) => (
+                <TodoItem
+                  key={id}
+                  id={id}
+                  className={"TodoItemNode"}
+                  delTodo={delTodo}
+                  handleModifyTodo={handleModifyTodo}
+                  checkErrors={checkErrors}
+                />
+              ))}
       </TodosListWrap>
     </TodosListContainer>
   );
@@ -47,8 +42,6 @@ const TodoList = ({
 TodoList.propTypes = {
   todoIds: PropTypes.array.isRequired,
   delTodo: PropTypes.func.isRequired,
-  addSubItem: PropTypes.func.isRequired,
-  getNewValue: PropTypes.func.isRequired,
   checkErrors: PropTypes.func.isRequired,
 };
 
