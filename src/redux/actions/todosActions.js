@@ -9,13 +9,16 @@ import { reorderTodos } from "../redux-helpers/todosHelpers";
 import { db } from "./userActions";
 import {
   collection,
+  deleteField,
   doc,
   getDocs,
   query,
   serverTimestamp,
   setDoc,
+  updateDoc,
   where,
 } from "firebase/firestore";
+import { ref, set, getDatabase } from "firebase/database";
 
 //DEVELOPMENT ACTIONS
 export function deleteAllTodosSuccess() {
@@ -277,7 +280,7 @@ export const modifyTodo =
     let dataUpdate = {};
     if (isNew === true) {
       dataUpdate = {
-        isNew: db.FieldValue.delete(),
+        isNew: deleteField(),
         title: title,
       };
     } else {
@@ -285,6 +288,9 @@ export const modifyTodo =
         title: title,
       };
     }
+
+    updateDoc(doc(db, `todos`, todoId), dataUpdate);
+
     /// ------------
     //  firebase
     //    .firestore()
