@@ -9,9 +9,11 @@ import { reorderTodos } from "../redux-helpers/todosHelpers";
 import { db } from "./userActions";
 import {
   collection,
+  deleteDoc,
   deleteField,
   doc,
   getDocs,
+  orderBy,
   query,
   serverTimestamp,
   setDoc,
@@ -180,7 +182,11 @@ export function getTodos() {
     const userUid = getState().user.uid;
     console.log("userUid: ", userUid);
 
-    const q = query(collection(db, "todos"), where("userId", "==", userUid));
+    const q = query(
+      collection(db, "todos"),
+      where("userId", "==", userUid),
+      orderBy("orderCount", "desc")
+    );
 
     const querySnapshot = await getDocs(q);
 
@@ -333,12 +339,14 @@ export function deleteTodo(todo) {
     if (todosExtra.isAnyNewTodoCount === todo.id) {
       dispatch(todosExtraActions.dismarkNewTodoCount());
     }
-    db.collection("todos")
-      .doc(todo.id)
-      .delete()
-      .catch((err) => {
-        throw err;
-      });
+
+    deleteDoc(doc(db, "todos", todo.id));
+    // db.collection("todos")
+    //   .doc(todo.id)
+    //   .delete()
+    //   .catch((err) => {
+    //     throw err;
+    //   });
   };
 }
 
