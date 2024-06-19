@@ -22,7 +22,6 @@ const clone = require("rfdc")();
 import { subItemPath as subItemPathFunc } from "../redux-helpers/subItemPath";
 import { reorderTodos } from "../redux-helpers/todosHelpers";
 import { db } from "./userActions";
-import { logger } from "firebase-tools";
 
 //DEVELOPMENT ACTIONS
 export function deleteAllTodosSuccess() {
